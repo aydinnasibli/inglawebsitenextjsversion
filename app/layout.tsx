@@ -18,8 +18,8 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="az" className="scroll-smooth">
-      <body className={`${inter.className} min-h-screen bg-white text-gray-900 antialiased`}>
+    <html lang="az" >
+      <body className={`${inter.className} min-h-screen bg-black text-gray-300 `}>
         <Navbar />
         <main className="flex-grow">
           {children}

@@ -98,9 +98,11 @@ export default function Home() {
                     className="absolute inset-0 -z-10"
                     style={{ transform: `translateY(${scrollY * 0.5}px)` }}
                 >
-                    <div className="relative w-full h-full">
+                    <div
+                        className="relative w-full h-full"
+                    >
                         <Image
-                            src="/images/hero-bg.jpg"
+                            src="/assets/bg.webp"
                             alt="İngla School"
                             fill
                             priority
@@ -111,7 +113,7 @@ export default function Home() {
             </section>
 
             {/* Welcome Section */}
-            <section className="py-16 bg-white">
+            <section className="py-16">
                 <div className="container mx-auto px-4">
                     <div className="max-w-3xl mx-auto text-center">
                         <h2 className="text-3xl font-bold mb-4">İngla School-a Xoş Gəlmisiniz</h2>
@@ -129,7 +131,7 @@ export default function Home() {
                     <section
                         key={section.id}
                         id={section.id}
-                        className={`py-20 ${index % 2 === 0 ? 'bg-gray-50' : 'bg-white'}`}
+                        className={`py-20 ${index % 2 === 0 ? 'bg-gray-900' : 'bg-black'}`}
                     >
                         <div className="container mx-auto px-4">
                             <div
@@ -145,7 +147,7 @@ export default function Home() {
                                         <div className="absolute inset-0 bg-black/20 z-10"></div>
                                         <div className="relative h-full w-full">
                                             <Image
-                                                src={section.imageUrl}
+                                                src={`/assets${section.imageUrl}`}
                                                 alt={section.title}
                                                 fill
                                                 style={{ objectFit: 'cover' }}
@@ -192,7 +194,7 @@ export default function Home() {
                 >
                     <div className="relative w-full h-full">
                         <Image
-                            src="/images/cta-bg.jpg"
+                            src="/assets/cta-bg.jpg"
                             alt="Call to action background"
                             fill
                             style={{ objectFit: 'cover' }}
@@ -219,7 +221,7 @@ export default function Home() {
             </section>
 
             {/* Numbers/Stats Section */}
-            <section className="py-16 bg-white">
+            <section className="py-16 ">
                 <div className="container mx-auto px-4">
                     <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
                         <div className="text-center">
