@@ -1,6 +1,8 @@
 import { type SchemaTypeDefinition } from 'sanity'
 import { homepageCarousel } from './homepageCarousel'
+import { faq } from './faq'
+import { testimonials } from './testimonials'
 
 export const schema: { types: SchemaTypeDefinition[] } = {
-  types: [homepageCarousel],
+  types: [homepageCarousel, faq, testimonials],
 }

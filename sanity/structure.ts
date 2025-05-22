@@ -6,9 +6,10 @@ export const structure: StructureResolver = (S) =>
     .title('Content Management')
     .items([
       S.documentTypeListItem('homepageCarousel').title('Homepage Carousel'),
-      S.divider(),
+      S.documentTypeListItem('faq').title('FAQ'),
+      S.documentTypeListItem('testimonials').title('Testimonials'),
       S.divider(),
       ...S.documentTypeListItems().filter(
-        (item) => item.getId() && !['homepageCarousel',].includes(item.getId()!),
+        (item) => item.getId() && !['homepageCarousel', 'faq', 'testimonials'].includes(item.getId()!),
       ),
     ])
