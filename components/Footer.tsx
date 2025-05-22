@@ -88,9 +88,9 @@ export default function Footer() {
                             </h3>
                             <ul className="space-y-3">
                                 {[
-                                    { name: "Tədris İstiqamətləri", href: "/xidmetler" },
+                                    { name: "Tədris İstiqamətləri", href: "/services" },
                                     { name: "Haqqımızda", href: "/haqqimizda" },
-                                    { name: "Xaricdə Təhsil", href: "/xaricde-tehsil" },
+                                    { name: "Xaricdə Təhsil", href: "/studyabroad" },
                                     { name: "Preschool", href: "/preschool" },
                                     { name: "Təlim Mərkəzi", href: "/telim-merkezi" },
                                 ].map((link) => (

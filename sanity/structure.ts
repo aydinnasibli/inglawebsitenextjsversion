@@ -7,10 +7,22 @@ export const structure: StructureResolver = (S) =>
     .items([
       S.documentTypeListItem('homepageCarousel').title('Homepage Carousel'),
       S.documentTypeListItem('services').title('Services (Tədris İstiqamətləri)'),
+      S.divider(),
+      S.listItem()
+        .title('Study Abroad (Xaricdə Təhsil)')
+        .child(
+          S.list()
+            .title('Study Abroad Content')
+            .items([
+              S.documentTypeListItem('country').title('Countries'),
+              S.documentTypeListItem('university').title('Universities'),
+            ])
+        ),
+      S.divider(),
       S.documentTypeListItem('faq').title('FAQ'),
       S.documentTypeListItem('testimonials').title('Testimonials'),
       S.divider(),
       ...S.documentTypeListItems().filter(
-        (item) => item.getId() && !['homepageCarousel', 'faq', 'testimonials', 'services'].includes(item.getId()!),
+        (item) => item.getId() && !['homepageCarousel', 'faq', 'testimonials', 'services', 'country', 'university', 'educationExhibitions'].includes(item.getId()!),
       ),
     ])

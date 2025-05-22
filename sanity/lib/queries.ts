@@ -115,6 +115,10 @@ export const FAQ_QUERY = groq`
   }
 `
 
+
+
+
+
 export const TESTIMONIALS_QUERY = groq`
   *[_type == "testimonials" && isActive == true] | order(featured desc, order asc) {
     _id,
@@ -130,3 +134,113 @@ export const TESTIMONIALS_QUERY = groq`
     featured
   }
 `
+
+// Countries queries
+export const COUNTRIES_QUERY = groq`
+  *[_type == "country" && isActive == true] | order(isFeatured desc, order asc) {
+    _id,
+    name,
+    nameAz,
+    slug,
+    shortDescription,
+    flagImage,
+    coverImage,
+    highlights,
+    studyInfo,
+    popularPrograms,
+    order,
+    isActive,
+    isFeatured
+  }
+`
+
+export const COUNTRY_BY_SLUG_QUERY = groq`
+  *[_type == "country" && slug.current == $slug && isActive == true][0] {
+    _id,
+    name,
+    nameAz,
+    slug,
+    shortDescription,
+    fullDescription,
+    flagImage,
+    coverImage,
+    gallery,
+    highlights,
+    studyInfo,
+    popularPrograms,
+    seoTitle,
+    seoDescription
+  }
+`
+
+// Universities queries
+export const UNIVERSITIES_BY_COUNTRY_QUERY = groq`
+  *[_type == "university" && country._ref == $countryId && isActive == true] | order(isFeatured desc, order asc) {
+    _id,
+    name,
+    slug,
+    shortDescription,
+    logo,
+    coverImage,
+    ranking,
+    established,
+    studentCount,
+    location,
+    programs,
+    facilities,
+    admissionInfo,
+    scholarships,
+    contactInfo,
+    order,
+    isActive,
+    isFeatured
+  }
+`
+
+export const UNIVERSITY_BY_SLUG_QUERY = groq`
+  *[_type == "university" && slug.current == $slug && isActive == true][0] {
+    _id,
+    name,
+    slug,
+    shortDescription,
+    fullDescription,
+    logo,
+    coverImage,
+    gallery,
+    ranking,
+    established,
+    studentCount,
+    location,
+    programs,
+    facilities,
+    admissionInfo,
+    scholarships,
+    contactInfo,
+    country-> {
+      _id,
+      name,
+      nameAz,
+      slug
+    },
+    seoTitle,
+    seoDescription
+  }
+`
+
+
+
+
+// Get country slugs for static generation
+export const COUNTRY_SLUGS_QUERY = groq`
+  *[_type == "country" && isActive == true] {
+    "slug": slug.current
+  }
+`
+
+// Get university slugs for static generation
+export const UNIVERSITY_SLUGS_QUERY = groq`
+  *[_type == "university" && isActive == true] {
+    "slug": slug.current
+  }
+`
+
