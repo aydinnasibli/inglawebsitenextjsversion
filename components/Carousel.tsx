@@ -68,8 +68,9 @@ export default function Carousel({
     };
 
     // Auto-play functionality with smoother handling
+    // Auto-play functionality with better cleanup
     useEffect(() => {
-        if (!isPlaying) {
+        if (!isPlaying || items.length <= 1) {
             if (intervalRef.current) {
                 clearInterval(intervalRef.current);
                 intervalRef.current = null;
@@ -93,7 +94,7 @@ export default function Carousel({
                 intervalRef.current = null;
             }
         };
-    }, [isPlaying, nextSlide, autoPlayInterval]);
+    }, [isPlaying, nextSlide, autoPlayInterval, items.length]);
 
     // Cleanup on unmount
     useEffect(() => {

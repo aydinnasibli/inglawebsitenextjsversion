@@ -82,55 +82,95 @@ export default function HomeClient({ initialCarouselData }: HomeClientProps) {
         },
     };
 
-    // Transform Sanity data to CarouselItem format
     const transformSanityData = (sanityItems: SanityCarouselItem[]): CarouselItem[] => {
-        return sanityItems.map((item) => ({
-            id: item._id,
-            title: item.title,
-            description: item.description,
-            image: urlFor(item.image).url(),
-            buttonText: item.buttonText,
-            buttonAction: item.buttonLink ? () => {
-                if (item.buttonLink?.startsWith('http')) {
-                    window.open(item.buttonLink, '_blank');
-                } else {
-                    window.location.href = item.buttonLink || '#';
+        return sanityItems
+            .filter(item => item && item._id && item.title && item.description) // Filter invalid items
+            .map((item) => {
+                try {
+                    return {
+                        id: item._id,
+                        title: item.title,
+                        description: item.description,
+                        image: item.image ? urlFor(item.image).width(1920).height(1080).quality(85).url() : '/assets/bg.webp',
+                        buttonText: item.buttonText,
+                        buttonAction: item.buttonLink ? () => {
+                            try {
+                                if (item.buttonLink?.startsWith('http')) {
+                                    window.open(item.buttonLink, '_blank', 'noopener,noreferrer');
+                                } else {
+                                    window.location.href = item.buttonLink || '#';
+                                }
+                            } catch (error) {
+                                console.error('Error navigating to link:', error);
+                            }
+                        } : undefined,
+                    };
+                } catch (error) {
+                    console.error('Error transforming carousel item:', item, error);
+                    // Return fallback item
+                    return {
+                        id: item._id || 'fallback',
+                        title: item.title || 'Untitled',
+                        description: item.description || 'No description available',
+                        image: '/assets/bg.webp',
+                    };
                 }
-            } : undefined,
-        }));
+            });
     };
 
-    // Load carousel data from Sanity
     useEffect(() => {
+        let isMounted = true; // Prevent memory leaks
+
         const loadCarouselData = async () => {
             try {
                 // If we have initial data, use it
                 if (initialCarouselData && initialCarouselData.length > 0) {
-                    setCarouselItems(transformSanityData(initialCarouselData));
-                    setIsLoading(false);
+                    if (isMounted) {
+                        setCarouselItems(transformSanityData(initialCarouselData));
+                        setIsLoading(false);
+                    }
                     return;
                 }
 
-                // Otherwise, fetch from Sanity
-                const data = await client.fetch<SanityCarouselItem[]>(HOMEPAGE_CAROUSEL_QUERY);
+                // Otherwise, fetch from Sanity with timeout
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 10000); // 10s timeout
 
-                if (data && data.length > 0) {
-                    setCarouselItems(transformSanityData(data));
-                } else {
-                    // Keep fallback data if no Sanity data is available
-                    console.log('No carousel data found in Sanity, using fallback data');
+                const data = await client.fetch<SanityCarouselItem[]>(
+                    HOMEPAGE_CAROUSEL_QUERY,
+                    {},
+                    {
+                        signal: controller.signal,
+                        cache: 'force-cache' // Enable caching
+                    }
+                );
+
+                clearTimeout(timeoutId);
+
+                if (isMounted) {
+                    if (data && data.length > 0) {
+                        setCarouselItems(transformSanityData(data));
+                    } else {
+                        console.log('No carousel data found in Sanity, using fallback data');
+                    }
+                    setIsLoading(false);
                 }
             } catch (error) {
                 console.error('Error fetching carousel data from Sanity:', error);
-                // Keep fallback data on error
-            } finally {
-                setIsLoading(false);
+                if (isMounted) {
+                    setIsLoading(false);
+                    // Keep fallback data on error
+                }
             }
         };
 
         loadCarouselData();
-    }, [initialCarouselData]);
 
+        // Cleanup function
+        return () => {
+            isMounted = false;
+        };
+    }, [initialCarouselData]);
     return (
         <div ref={containerRef} className="relative min-h-screen  text-white">
             {/* Hero Section */}

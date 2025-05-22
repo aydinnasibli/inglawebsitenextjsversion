@@ -1,15 +1,13 @@
 import { SanityImageSource } from "@sanity/image-url/lib/types/types"
 
 export interface CarouselItem {
-    id: string
-    title: string
-    description: string
-    image: string | SanityImageSource
-    buttonText?: string
-    buttonAction?: () => void
-    buttonLink?: string
+    id: string;
+    title: string;
+    description: string;
+    image: string;
+    buttonText?: string;
+    buttonAction?: () => void;
 }
-
 export interface SanityCarouselItem {
     _id: string
     title: string
