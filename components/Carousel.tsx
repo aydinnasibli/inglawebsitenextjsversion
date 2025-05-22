@@ -35,7 +35,6 @@ export default function Carousel({
     const [currentIndex, setCurrentIndex] = useState(0);
     const [isPlaying, setIsPlaying] = useState(autoPlay);
     const [direction, setDirection] = useState(0);
-    const [progressKey, setProgressKey] = useState(0);
     const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
     const nextSlide = useCallback(() => {
@@ -43,7 +42,6 @@ export default function Carousel({
         setCurrentIndex((prevIndex) =>
             prevIndex === items.length - 1 ? 0 : prevIndex + 1
         );
-        setProgressKey(prev => prev + 1); // Reset progress bar
     }, [items.length]);
 
     const prevSlide = useCallback(() => {
@@ -51,19 +49,16 @@ export default function Carousel({
         setCurrentIndex((prevIndex) =>
             prevIndex === 0 ? items.length - 1 : prevIndex - 1
         );
-        setProgressKey(prev => prev + 1); // Reset progress bar
     }, [items.length]);
 
     const goToSlide = (index: number) => {
         setDirection(index > currentIndex ? 1 : -1);
         setCurrentIndex(index);
-        setProgressKey(prev => prev + 1); // Reset progress bar
     };
 
     const toggleAutoPlay = () => {
         setIsPlaying(!isPlaying);
         if (!isPlaying) {
-            setProgressKey(prev => prev + 1); // Reset progress bar when resuming
         }
     };
 

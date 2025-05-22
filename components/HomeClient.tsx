@@ -2,11 +2,9 @@
 
 import { useRef, useEffect, useState } from "react";
 import Image from "next/image";
-import Link from "next/link";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { ChevronRight, GraduationCap, Globe, Lightbulb, BookOpen, Users } from "lucide-react";
+import { ChevronRight } from "lucide-react";
 import Carousel from "./Carousel";
 import { client } from "@/sanity/lib/client";
 import { urlFor } from "@/sanity/lib/image";

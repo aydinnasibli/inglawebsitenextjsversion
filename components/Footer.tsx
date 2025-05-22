@@ -2,7 +2,6 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
 import { Facebook, Instagram, Twitter, Phone, Mail, MapPin, Clock } from "lucide-react";
 import { motion } from "framer-motion";
 
