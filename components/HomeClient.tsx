@@ -732,7 +732,7 @@ export default function HomeClient({ initialCarouselData, initialFaqData, initia
 
                                     {/* Testimonial Text */}
                                     <blockquote className="text-gray-300 mb-6 italic">
-                                        "{testimonial.testimonial}"
+                                        {testimonial.testimonial}
                                     </blockquote>
 
                                     {/* Author Info */}
