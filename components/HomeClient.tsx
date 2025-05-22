@@ -8,136 +8,17 @@ import { ChevronRight } from "lucide-react";
 import Carousel from "./Carousel";
 import { client } from "@/sanity/lib/client";
 import { urlFor } from "@/sanity/lib/image";
-import { HOMEPAGE_CAROUSEL_QUERY } from "@/sanity/lib/queries";
+import { HOMEPAGE_CAROUSEL_QUERY, FAQ_QUERY, TESTIMONIALS_QUERY } from "@/sanity/lib/queries";
 import { SanityCarouselItem, CarouselItem } from "@/types/carousel";
-// Add these imports to the top of your HomeClient.tsx:
-import { FAQ_QUERY, TESTIMONIALS_QUERY } from "@/sanity/lib/queries";
 import { SanityFAQItem, SanityTestimonialItem, FAQItem, TestimonialItem } from "@/types/faq-testimonials";
 
-// Add these to your interface:
+// Updated interface to include all props
 interface HomeClientProps {
     initialCarouselData?: SanityCarouselItem[];
     initialFaqData?: SanityFAQItem[];
     initialTestimonialsData?: SanityTestimonialItem[];
 }
 
-// Add these state variables after your existing useState declarations:
-const [faqItems, setFaqItems] = useState<FAQItem[]>([]);
-const [faqLoading, setFaqLoading] = useState(!initialFaqData);
-const [activeFaq, setActiveFaq] = useState<string | null>(null);
-const [activeFaqCategory, setActiveFaqCategory] = useState<string>('all');
-
-const [testimonialItems, setTestimonialItems] = useState<TestimonialItem[]>([]);
-const [testimonialsLoading, setTestimonialsLoading] = useState(!initialTestimonialsData);
-
-// Add these computed values after your state declarations:
-const faqCategories = ['all', ...Array.from(new Set(faqItems.map(item => item.category)))];
-const filteredFaqItems = activeFaqCategory === 'all'
-    ? faqItems
-    : faqItems.filter(item => item.category === activeFaqCategory);
-
-// Add these helper functions:
-const getCategoryDisplayName = (category: string) => {
-    const categoryNames: Record<string, string> = {
-        'all': 'Hamısı',
-        'general': 'Ümumi',
-        'admissions': 'Qəbul',
-        'programs': 'Proqramlar',
-        'study-abroad': 'Xaricdə Təhsil',
-        'preschool': 'Preschool'
-    };
-    return categoryNames[category] || category;
-};
-
-const getProgramDisplayName = (program: string) => {
-    const programNames: Record<string, string> = {
-        'language-courses': 'Dil Kursları',
-        'study-abroad': 'Xaricdə Təhsil',
-        'preschool': 'Preschool',
-        'training-center': 'Təlim Mərkəzi',
-        'general': 'Ümumi'
-    };
-    return programNames[program] || program;
-};
-
-// Add these transform functions:
-const transformFaqData = (sanityItems: SanityFAQItem[]): FAQItem[] => {
-    return sanityItems
-        .filter(item => item && item._id && item.question && item.answer)
-        .map((item) => ({
-            id: item._id,
-            question: item.question,
-            answer: item.answer,
-            category: item.category || 'general',
-        }));
-};
-
-const transformTestimonialsData = (sanityItems: SanityTestimonialItem[]): TestimonialItem[] => {
-    return sanityItems
-        .filter(item => item && item._id && item.name && item.testimonial)
-        .map((item) => ({
-            id: item._id,
-            name: item.name,
-            position: item.position,
-            company: item.company,
-            testimonial: item.testimonial,
-            image: item.image ? urlFor(item.image).width(96).height(96).quality(85).url() : undefined,
-            rating: item.rating || 5,
-            program: item.program || 'general',
-            featured: item.featured || false,
-        }));
-};
-
-// Add this useEffect for FAQ and Testimonials data loading:
-useEffect(() => {
-    let isMounted = true;
-
-    const loadFaqAndTestimonials = async () => {
-        try {
-            // Handle FAQ data
-            if (initialFaqData && initialFaqData.length > 0) {
-                if (isMounted) {
-                    setFaqItems(transformFaqData(initialFaqData));
-                    setFaqLoading(false);
-                }
-            } else {
-                // Fetch FAQ data
-                const faqData = await client.fetch<SanityFAQItem[]>(FAQ_QUERY);
-                if (isMounted && faqData) {
-                    setFaqItems(transformFaqData(faqData));
-                    setFaqLoading(false);
-                }
-            }
-
-            // Handle Testimonials data
-            if (initialTestimonialsData && initialTestimonialsData.length > 0) {
-                if (isMounted) {
-                    setTestimonialItems(transformTestimonialsData(initialTestimonialsData));
-                    setTestimonialsLoading(false);
-                }
-            } else {
-                // Fetch Testimonials data
-                const testimonialsData = await client.fetch<SanityTestimonialItem[]>(TESTIMONIALS_QUERY);
-                if (isMounted && testimonialsData) {
-                    setTestimonialItems(transformTestimonialsData(testimonialsData));
-                    setTestimonialsLoading(false);
-                }
-            }
-        } catch (error) {
-            console.error('Error fetching FAQ or Testimonials data:', error);
-            if (isMounted) {
-                setFaqLoading(false);
-                setTestimonialsLoading(false);
-            }
-        }
-    };
-
-    loadFaqAndTestimonials();
-
-    return () => {
-        isMounted = false;
-    };
-}, [initialFaqData, initialTestimonialsData]);
 // Fallback carousel items in case Sanity data is not available
 const fallbackCarouselItems: CarouselItem[] = [
     {
@@ -174,13 +55,72 @@ const fallbackCarouselItems: CarouselItem[] = [
     }
 ];
 
-interface HomeClientProps {
-    initialCarouselData?: SanityCarouselItem[];
-}
+// Helper functions
+const getCategoryDisplayName = (category: string) => {
+    const categoryNames: Record<string, string> = {
+        'all': 'Hamısı',
+        'general': 'Ümumi',
+        'admissions': 'Qəbul',
+        'programs': 'Proqramlar',
+        'study-abroad': 'Xaricdə Təhsil',
+        'preschool': 'Preschool'
+    };
+    return categoryNames[category] || category;
+};
 
-export default function HomeClient({ initialCarouselData }: HomeClientProps) {
+const getProgramDisplayName = (program: string) => {
+    const programNames: Record<string, string> = {
+        'language-courses': 'Dil Kursları',
+        'study-abroad': 'Xaricdə Təhsil',
+        'preschool': 'Preschool',
+        'training-center': 'Təlim Mərkəzi',
+        'general': 'Ümumi'
+    };
+    return programNames[program] || program;
+};
+
+// Transform functions
+const transformFaqData = (sanityItems: SanityFAQItem[]): FAQItem[] => {
+    return sanityItems
+        .filter(item => item && item._id && item.question && item.answer)
+        .map((item) => ({
+            id: item._id,
+            question: item.question,
+            answer: item.answer,
+            category: item.category || 'general',
+        }));
+};
+
+const transformTestimonialsData = (sanityItems: SanityTestimonialItem[]): TestimonialItem[] => {
+    return sanityItems
+        .filter(item => item && item._id && item.name && item.testimonial)
+        .map((item) => ({
+            id: item._id,
+            name: item.name,
+            position: item.position,
+            company: item.company,
+            testimonial: item.testimonial,
+            image: item.image ? urlFor(item.image).width(96).height(96).quality(85).url() : undefined,
+            rating: item.rating || 5,
+            program: item.program || 'general',
+            featured: item.featured || false,
+        }));
+};
+
+export default function HomeClient({ initialCarouselData, initialFaqData, initialTestimonialsData }: HomeClientProps) {
+    // Carousel state
     const [carouselItems, setCarouselItems] = useState<CarouselItem[]>(fallbackCarouselItems);
     const [isLoading, setIsLoading] = useState(!initialCarouselData);
+
+    // FAQ state
+    const [faqItems, setFaqItems] = useState<FAQItem[]>([]);
+    const [faqLoading, setFaqLoading] = useState(!initialFaqData);
+    const [activeFaq, setActiveFaq] = useState<string | null>(null);
+    const [activeFaqCategory, setActiveFaqCategory] = useState<string>('all');
+
+    // Testimonials state
+    const [testimonialItems, setTestimonialItems] = useState<TestimonialItem[]>([]);
+    const [testimonialsLoading, setTestimonialsLoading] = useState(!initialTestimonialsData);
 
     // References for parallax sections
     const containerRef = useRef<HTMLDivElement>(null);
@@ -207,9 +147,15 @@ export default function HomeClient({ initialCarouselData }: HomeClientProps) {
         },
     };
 
+    // Computed values for FAQ
+    const faqCategories = ['all', ...Array.from(new Set(faqItems.map(item => item.category)))];
+    const filteredFaqItems = activeFaqCategory === 'all'
+        ? faqItems
+        : faqItems.filter(item => item.category === activeFaqCategory);
+
     const transformSanityData = (sanityItems: SanityCarouselItem[]): CarouselItem[] => {
         return sanityItems
-            .filter(item => item && item._id && item.title && item.description) // Filter invalid items
+            .filter(item => item && item._id && item.title && item.description)
             .map((item) => {
                 try {
                     return {
@@ -232,7 +178,6 @@ export default function HomeClient({ initialCarouselData }: HomeClientProps) {
                     };
                 } catch (error) {
                     console.error('Error transforming carousel item:', item, error);
-                    // Return fallback item
                     return {
                         id: item._id || 'fallback',
                         title: item.title || 'Untitled',
@@ -243,12 +188,12 @@ export default function HomeClient({ initialCarouselData }: HomeClientProps) {
             });
     };
 
+    // Effect for carousel data
     useEffect(() => {
-        let isMounted = true; // Prevent memory leaks
+        let isMounted = true;
 
         const loadCarouselData = async () => {
             try {
-                // If we have initial data, use it
                 if (initialCarouselData && initialCarouselData.length > 0) {
                     if (isMounted) {
                         setCarouselItems(transformSanityData(initialCarouselData));
@@ -257,16 +202,15 @@ export default function HomeClient({ initialCarouselData }: HomeClientProps) {
                     return;
                 }
 
-                // Otherwise, fetch from Sanity with timeout
                 const controller = new AbortController();
-                const timeoutId = setTimeout(() => controller.abort(), 10000); // 10s timeout
+                const timeoutId = setTimeout(() => controller.abort(), 10000);
 
                 const data = await client.fetch<SanityCarouselItem[]>(
                     HOMEPAGE_CAROUSEL_QUERY,
                     {},
                     {
                         signal: controller.signal,
-                        cache: 'force-cache' // Enable caching
+                        cache: 'force-cache'
                     }
                 );
 
@@ -284,20 +228,68 @@ export default function HomeClient({ initialCarouselData }: HomeClientProps) {
                 console.error('Error fetching carousel data from Sanity:', error);
                 if (isMounted) {
                     setIsLoading(false);
-                    // Keep fallback data on error
                 }
             }
         };
 
         loadCarouselData();
 
-        // Cleanup function
         return () => {
             isMounted = false;
         };
     }, [initialCarouselData]);
+
+    // Effect for FAQ and Testimonials data
+    useEffect(() => {
+        let isMounted = true;
+
+        const loadFaqAndTestimonials = async () => {
+            try {
+                // Handle FAQ data
+                if (initialFaqData && initialFaqData.length > 0) {
+                    if (isMounted) {
+                        setFaqItems(transformFaqData(initialFaqData));
+                        setFaqLoading(false);
+                    }
+                } else {
+                    const faqData = await client.fetch<SanityFAQItem[]>(FAQ_QUERY);
+                    if (isMounted && faqData) {
+                        setFaqItems(transformFaqData(faqData));
+                        setFaqLoading(false);
+                    }
+                }
+
+                // Handle Testimonials data
+                if (initialTestimonialsData && initialTestimonialsData.length > 0) {
+                    if (isMounted) {
+                        setTestimonialItems(transformTestimonialsData(initialTestimonialsData));
+                        setTestimonialsLoading(false);
+                    }
+                } else {
+                    const testimonialsData = await client.fetch<SanityTestimonialItem[]>(TESTIMONIALS_QUERY);
+                    if (isMounted && testimonialsData) {
+                        setTestimonialItems(transformTestimonialsData(testimonialsData));
+                        setTestimonialsLoading(false);
+                    }
+                }
+            } catch (error) {
+                console.error('Error fetching FAQ or Testimonials data:', error);
+                if (isMounted) {
+                    setFaqLoading(false);
+                    setTestimonialsLoading(false);
+                }
+            }
+        };
+
+        loadFaqAndTestimonials();
+
+        return () => {
+            isMounted = false;
+        };
+    }, [initialFaqData, initialTestimonialsData]);
+
     return (
-        <div ref={containerRef} className="relative min-h-screen  text-white">
+        <div ref={containerRef} className="relative min-h-screen text-white">
             {/* Hero Section */}
             <motion.div
                 ref={heroRef}
@@ -332,8 +324,7 @@ export default function HomeClient({ initialCarouselData }: HomeClientProps) {
                     </motion.div>
                 </div>
 
-                {/* Bottom fade for hero section */}
-                <div className="absolute bottom-0 left-0 right-0 h-24  "></div>
+                <div className="absolute bottom-0 left-0 right-0 h-24"></div>
             </motion.div>
 
             {/* Carousel Section */}
@@ -678,131 +669,6 @@ export default function HomeClient({ initialCarouselData }: HomeClientProps) {
             </motion.section>
 
 
-            {/* Contact CTA */}
-            <motion.div
-                className="py-24 bg-gradient-to-r  relative"
-                initial={{ opacity: 0 }}
-                whileInView={{ opacity: 1 }}
-                transition={{ duration: 1 }}
-                viewport={{ once: true }}
-            >
-                {/* Yellow accent lines */}
-                <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-yellow-500 to-transparent"></div>
-                <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-yellow-500 to-transparent"></div>
-
-                <div className="container mx-auto px-4 text-center">
-                    <h2 className="text-4xl font-bold mb-6">
-                        Uğurlu gələcəyiniz üçün <span className="text-yellow-500">bizə qoşulun</span>
-                    </h2>
-                    <p className="text-xl mb-10 max-w-3xl mx-auto text-gray-200">
-                        İngla School-da sizin üçün ən uyğun təhsil proqramı haqqında məlumat almaq üçün bizimlə əlaqə saxlayın
-                    </p>
-                    <div className="flex flex-col sm:flex-row justify-center gap-4">
-                        <Button size="lg" className="bg-gray-800 text-white hover:bg-gray-700 border border-gray-700 shadow-lg">
-                            Bizə Zəng Edin
-                        </Button>
-                        <Button size="lg" className="bg-yellow-600 hover:bg-yellow-700 text-white shadow-lg shadow-yellow-900/20">
-                            Email Göndərin
-                        </Button>
-                    </div>
-                </div>
-            </motion.div>
-            // Add this section to your HomeClient.tsx file:
-
-            {/* FAQ Section */}
-            <motion.section
-                id="faq"
-                initial="hidden"
-                whileInView="visible"
-                viewport={{ once: true }}
-                variants={sectionVariants}
-                className="py-24"
-            >
-                <div className="container mx-auto px-4">
-                    <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.6 }}
-                        viewport={{ once: true }}
-                        className="text-center mb-12"
-                    >
-                        <h2 className="text-4xl font-bold mb-4">
-                            Tez-tez <span className="text-yellow-500">Verilən Suallar</span>
-                        </h2>
-                        <p className="text-gray-300 text-lg max-w-2xl mx-auto">
-                            İngla School haqqında ən çox soruşulan sualların cavablarını tapın
-                        </p>
-                    </motion.div>
-
-                    {faqLoading ? (
-                        <div className="flex justify-center items-center h-64">
-                            <div className="text-center">
-                                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-yellow-500 mx-auto mb-4"></div>
-                                <p className="text-gray-300">FAQ məlumatları yüklənir...</p>
-                            </div>
-                        </div>
-                    ) : (
-                        <div className="max-w-4xl mx-auto">
-                            {/* FAQ Categories */}
-                            <div className="flex flex-wrap justify-center gap-4 mb-8">
-                                {faqCategories.map((category) => (
-                                    <button
-                                        key={category}
-                                        onClick={() => setActiveFaqCategory(category)}
-                                        className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 ${activeFaqCategory === category
-                                            ? 'bg-yellow-500 text-black'
-                                            : 'bg-gray-800 text-gray-300 hover:bg-gray-700'
-                                            }`}
-                                    >
-                                        {getCategoryDisplayName(category)}
-                                    </button>
-                                ))}
-                            </div>
-
-                            {/* FAQ Items */}
-                            <div className="space-y-4">
-                                {filteredFaqItems.map((item, index) => (
-                                    <motion.div
-                                        key={item.id}
-                                        initial={{ opacity: 0, y: 20 }}
-                                        whileInView={{ opacity: 1, y: 0 }}
-                                        transition={{ delay: 0.1 * index }}
-                                        viewport={{ once: true }}
-                                        className="bg-gray-900/50 border border-gray-800 rounded-lg overflow-hidden"
-                                    >
-                                        <button
-                                            onClick={() => setActiveFaq(activeFaq === item.id ? null : item.id)}
-                                            className="w-full px-6 py-4 text-left flex justify-between items-center hover:bg-gray-800/30 transition-colors"
-                                        >
-                                            <span className="font-medium text-white">{item.question}</span>
-                                            <ChevronRight
-                                                className={`w-5 h-5 text-yellow-500 transition-transform duration-300 ${activeFaq === item.id ? 'rotate-90' : ''
-                                                    }`}
-                                            />
-                                        </button>
-
-                                        <motion.div
-                                            initial={false}
-                                            animate={{
-                                                height: activeFaq === item.id ? 'auto' : 0,
-                                                opacity: activeFaq === item.id ? 1 : 0
-                                            }}
-                                            transition={{ duration: 0.3 }}
-                                            className="overflow-hidden"
-                                        >
-                                            <div className="px-6 pb-4 text-gray-300">
-                                                {item.answer}
-                                            </div>
-                                        </motion.div>
-                                    </motion.div>
-                                ))}
-                            </div>
-                        </div>
-                    )}
-                </div>
-            </motion.section>
-            // Add this section to your HomeClient.tsx file:
-
             {/* Testimonials Section */}
             <motion.section
                 id="testimonials"
@@ -906,6 +772,130 @@ export default function HomeClient({ initialCarouselData }: HomeClientProps) {
                     )}
                 </div>
             </motion.section>
+
+            {/* FAQ Section */}
+            <motion.section
+                id="faq"
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true }}
+                variants={sectionVariants}
+                className="py-24"
+            >
+                <div className="container mx-auto px-4">
+                    <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.6 }}
+                        viewport={{ once: true }}
+                        className="text-center mb-12"
+                    >
+                        <h2 className="text-4xl font-bold mb-4">
+                            Tez-tez <span className="text-yellow-500">Verilən Suallar</span>
+                        </h2>
+                        <p className="text-gray-300 text-lg max-w-2xl mx-auto">
+                            İngla School haqqında ən çox soruşulan sualların cavablarını tapın
+                        </p>
+                    </motion.div>
+
+                    {faqLoading ? (
+                        <div className="flex justify-center items-center h-64">
+                            <div className="text-center">
+                                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-yellow-500 mx-auto mb-4"></div>
+                                <p className="text-gray-300">FAQ məlumatları yüklənir...</p>
+                            </div>
+                        </div>
+                    ) : (
+                        <div className="max-w-4xl mx-auto">
+                            {/* FAQ Categories */}
+                            <div className="flex flex-wrap justify-center gap-4 mb-8">
+                                {faqCategories.map((category) => (
+                                    <button
+                                        key={category}
+                                        onClick={() => setActiveFaqCategory(category)}
+                                        className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 ${activeFaqCategory === category
+                                            ? 'bg-yellow-500 text-black'
+                                            : 'bg-gray-800 text-gray-300 hover:bg-gray-700'
+                                            }`}
+                                    >
+                                        {getCategoryDisplayName(category)}
+                                    </button>
+                                ))}
+                            </div>
+
+                            {/* FAQ Items */}
+                            <div className="space-y-4">
+                                {filteredFaqItems.map((item, index) => (
+                                    <motion.div
+                                        key={item.id}
+                                        initial={{ opacity: 0, y: 20 }}
+                                        whileInView={{ opacity: 1, y: 0 }}
+                                        transition={{ delay: 0.1 * index }}
+                                        viewport={{ once: true }}
+                                        className="bg-gray-900/50 border border-gray-800 rounded-lg overflow-hidden"
+                                    >
+                                        <button
+                                            onClick={() => setActiveFaq(activeFaq === item.id ? null : item.id)}
+                                            className="w-full px-6 py-4 text-left flex justify-between items-center hover:bg-gray-800/30 transition-colors"
+                                        >
+                                            <span className="font-medium text-white">{item.question}</span>
+                                            <ChevronRight
+                                                className={`w-5 h-5 text-yellow-500 transition-transform duration-300 ${activeFaq === item.id ? 'rotate-90' : ''
+                                                    }`}
+                                            />
+                                        </button>
+
+                                        <motion.div
+                                            initial={false}
+                                            animate={{
+                                                height: activeFaq === item.id ? 'auto' : 0,
+                                                opacity: activeFaq === item.id ? 1 : 0
+                                            }}
+                                            transition={{ duration: 0.3 }}
+                                            className="overflow-hidden"
+                                        >
+                                            <div className="px-6 pb-4 text-gray-300">
+                                                {item.answer}
+                                            </div>
+                                        </motion.div>
+                                    </motion.div>
+                                ))}
+                            </div>
+                        </div>
+                    )}
+                </div>
+            </motion.section>
+
+
+            {/* Contact CTA */}
+            <motion.div
+                className="py-24 bg-gradient-to-r  relative"
+                initial={{ opacity: 0 }}
+                whileInView={{ opacity: 1 }}
+                transition={{ duration: 1 }}
+                viewport={{ once: true }}
+            >
+                {/* Yellow accent lines */}
+                <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-yellow-500 to-transparent"></div>
+                <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-yellow-500 to-transparent"></div>
+
+                <div className="container mx-auto px-4 text-center">
+                    <h2 className="text-4xl font-bold mb-6">
+                        Uğurlu gələcəyiniz üçün <span className="text-yellow-500">bizə qoşulun</span>
+                    </h2>
+                    <p className="text-xl mb-10 max-w-3xl mx-auto text-gray-200">
+                        İngla School-da sizin üçün ən uyğun təhsil proqramı haqqında məlumat almaq üçün bizimlə əlaqə saxlayın
+                    </p>
+                    <div className="flex flex-col sm:flex-row justify-center gap-4">
+                        <Button size="lg" className="bg-gray-800 text-white hover:bg-gray-700 border border-gray-700 shadow-lg">
+                            Bizə Zəng Edin
+                        </Button>
+                        <Button size="lg" className="bg-yellow-600 hover:bg-yellow-700 text-white shadow-lg shadow-yellow-900/20">
+                            Email Göndərin
+                        </Button>
+                    </div>
+                </div>
+            </motion.div>
         </div>
     );
 }

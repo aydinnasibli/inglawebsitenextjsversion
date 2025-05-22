@@ -193,17 +193,17 @@ export default function Carousel({
                                     transition={{ delay: 0.2, duration: 0.8 }}
                                     className="max-w-3xl text-white"
                                 >
-                                    <h3 className="text-3xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight">
+                                    <h3 className="text-3xl ml-14 md:text-5xl lg:text-6xl font-bold mb-6 leading-tight">
                                         {items[currentIndex].title}
                                     </h3>
-                                    <p className="text-lg md:text-xl lg:text-2xl mb-8 text-gray-200 leading-relaxed max-w-2xl">
+                                    <p className="text-lg ml-14 md:text-xl lg:text-2xl mb-8 text-gray-200 leading-relaxed max-w-2xl">
                                         {items[currentIndex].description}
                                     </p>
                                     {items[currentIndex].buttonText && (
                                         <Button
                                             onClick={items[currentIndex].buttonAction}
                                             size="lg"
-                                            className="bg-yellow-600 hover:bg-yellow-700 text-white shadow-lg shadow-yellow-900/20 px-8 py-3 text-lg font-semibold transition-all duration-300 hover:scale-105"
+                                            className="bg-yellow-600 ml-14 hover:bg-yellow-700 text-white shadow-lg shadow-yellow-900/20 px-8 py-3 text-lg font-semibold transition-all duration-300 hover:scale-105"
                                         >
                                             {items[currentIndex].buttonText}
                                         </Button>
