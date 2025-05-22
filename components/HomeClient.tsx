@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { motion, useScroll, useTransform } from "framer-motion";
@@ -8,8 +8,13 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { ChevronRight, GraduationCap, Globe, Lightbulb, BookOpen, Users } from "lucide-react";
 import Carousel from "./Carousel";
+import { client } from "@/sanity/lib/client";
+import { urlFor } from "@/sanity/lib/image";
+import { HOMEPAGE_CAROUSEL_QUERY } from "@/sanity/lib/queries";
+import { SanityCarouselItem, CarouselItem } from "@/types/carousel";
 
-const carouselItems = [
+// Fallback carousel items in case Sanity data is not available
+const fallbackCarouselItems: CarouselItem[] = [
     {
         id: "1",
         title: "Dünya Səviyyəsində Təhsil",
@@ -44,9 +49,14 @@ const carouselItems = [
     }
 ];
 
+interface HomeClientProps {
+    initialCarouselData?: SanityCarouselItem[];
+}
 
+export default function HomeClient({ initialCarouselData }: HomeClientProps) {
+    const [carouselItems, setCarouselItems] = useState<CarouselItem[]>(fallbackCarouselItems);
+    const [isLoading, setIsLoading] = useState(!initialCarouselData);
 
-export default function Home() {
     // References for parallax sections
     const containerRef = useRef<HTMLDivElement>(null);
     const heroRef = useRef<HTMLDivElement>(null);
@@ -72,7 +82,54 @@ export default function Home() {
         },
     };
 
+    // Transform Sanity data to CarouselItem format
+    const transformSanityData = (sanityItems: SanityCarouselItem[]): CarouselItem[] => {
+        return sanityItems.map((item) => ({
+            id: item._id,
+            title: item.title,
+            description: item.description,
+            image: urlFor(item.image).url(),
+            buttonText: item.buttonText,
+            buttonAction: item.buttonLink ? () => {
+                if (item.buttonLink?.startsWith('http')) {
+                    window.open(item.buttonLink, '_blank');
+                } else {
+                    window.location.href = item.buttonLink || '#';
+                }
+            } : undefined,
+        }));
+    };
 
+    // Load carousel data from Sanity
+    useEffect(() => {
+        const loadCarouselData = async () => {
+            try {
+                // If we have initial data, use it
+                if (initialCarouselData && initialCarouselData.length > 0) {
+                    setCarouselItems(transformSanityData(initialCarouselData));
+                    setIsLoading(false);
+                    return;
+                }
+
+                // Otherwise, fetch from Sanity
+                const data = await client.fetch<SanityCarouselItem[]>(HOMEPAGE_CAROUSEL_QUERY);
+
+                if (data && data.length > 0) {
+                    setCarouselItems(transformSanityData(data));
+                } else {
+                    // Keep fallback data if no Sanity data is available
+                    console.log('No carousel data found in Sanity, using fallback data');
+                }
+            } catch (error) {
+                console.error('Error fetching carousel data from Sanity:', error);
+                // Keep fallback data on error
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
+        loadCarouselData();
+    }, [initialCarouselData]);
 
     return (
         <div ref={containerRef} className="relative min-h-screen  text-white">
@@ -107,7 +164,6 @@ export default function Home() {
                         <p className="text-2xl mb-8 max-w-2xl mx-auto text-gray-200">
                             Uğurlu gələcəyiniz üçün peşəkar təhsil həlləri
                         </p>
-
                     </motion.div>
                 </div>
 
@@ -139,16 +195,26 @@ export default function Home() {
                         </p>
                     </motion.div>
 
-                    <Carousel
-                        items={carouselItems}
-                        autoPlay={true}
-                        autoPlayInterval={6000}
-                        showControls={true}
-                        showIndicators={true}
-                        className="shadow-2xl shadow-yellow-900/20 border border-gray-800"
-                    />
+                    {isLoading ? (
+                        <div className="flex justify-center items-center h-96">
+                            <div className="text-center">
+                                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-yellow-500 mx-auto mb-4"></div>
+                                <p className="text-gray-300">Məlumatlar yüklənir...</p>
+                            </div>
+                        </div>
+                    ) : (
+                        <Carousel
+                            items={carouselItems}
+                            autoPlay={true}
+                            autoPlayInterval={6000}
+                            showControls={true}
+                            showIndicators={true}
+                            className="shadow-2xl shadow-yellow-900/20 border border-gray-800"
+                        />
+                    )}
                 </div>
             </motion.section>
+
             {/* Xidmətlər Section */}
             <motion.section
                 id="xidmetler"
@@ -207,7 +273,6 @@ export default function Home() {
                     </div>
                 </div>
             </motion.section>
-
 
             {/* Haqqımızda Section */}
             <motion.section
@@ -269,7 +334,6 @@ export default function Home() {
                 </div>
             </motion.section>
 
-
             {/* Xaricdə Təhsil Section */}
             <motion.section
                 id="xaricde-tehsil"
@@ -328,7 +392,6 @@ export default function Home() {
                     </div>
                 </div>
             </motion.section>
-
 
             {/* Preschool Section */}
             <motion.section
