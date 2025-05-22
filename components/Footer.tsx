@@ -88,7 +88,7 @@ export default function Footer() {
                             </h3>
                             <ul className="space-y-3">
                                 {[
-                                    { name: "Xidmətlər", href: "/xidmetler" },
+                                    { name: "Tədris İstiqamətləri", href: "/xidmetler" },
                                     { name: "Haqqımızda", href: "/haqqimizda" },
                                     { name: "Xaricdə Təhsil", href: "/xaricde-tehsil" },
                                     { name: "Preschool", href: "/preschool" },
@@ -169,31 +169,6 @@ export default function Footer() {
                                 </ul>
                             </div>
                         </motion.div>
-                    </div>
-                </motion.div>
-
-                {/* Newsletter Section */}
-                <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.6, delay: 0.3 }}
-                    viewport={{ once: true }}
-                    className="border-t border-gray-800 py-8"
-                >
-                    <div className="text-center">
-                        <h3 className="text-white text-xl font-semibold mb-4">
-                            Xəbərlər və yeniliklər üçün <span className="text-yellow-500">abunə olun</span>
-                        </h3>
-                        <div className="flex flex-col sm:flex-row max-w-md mx-auto gap-3">
-                            <input
-                                type="email"
-                                placeholder="E-mail ünvanınız"
-                                className="flex-1 px-4 py-3 bg-gray-900 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-yellow-500 focus:ring-1 focus:ring-yellow-500 transition-all duration-300"
-                            />
-                            <button className="px-6 py-3 bg-yellow-600 hover:bg-yellow-700 text-white font-medium rounded-lg transition-all duration-300 transform hover:scale-105 shadow-lg shadow-yellow-600/25">
-                                Abunə ol
-                            </button>
-                        </div>
                     </div>
                 </motion.div>
 

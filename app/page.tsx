@@ -4,6 +4,7 @@ import { client } from "@/sanity/lib/client";
 import { HOMEPAGE_CAROUSEL_QUERY } from "@/sanity/lib/queries";
 import { SanityCarouselItem } from "@/types/carousel";
 
+
 async function getCarouselData(): Promise<SanityCarouselItem[]> {
   try {
     const data = await client.fetch<SanityCarouselItem[]>(

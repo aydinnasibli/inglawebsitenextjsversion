@@ -6,15 +6,17 @@ import { SanityServiceItem } from "@/types/services";
 import ServiceDetailClient from './ServiceDetailClient';
 
 interface ServicePageProps {
-    params: {
+    params: Promise<{
         slug: string;
-    };
+    }>;
 }
 
 // Generate metadata for SEO
 export async function generateMetadata({ params }: ServicePageProps): Promise<Metadata> {
     try {
-        const service = await client.fetch<SanityServiceItem>(SERVICE_BY_SLUG_QUERY, { slug: params.slug });
+        // Await params before accessing properties
+        const { slug } = await params;
+        const service = await client.fetch<SanityServiceItem>(SERVICE_BY_SLUG_QUERY, { slug });
 
         if (!service) {
             return {
@@ -42,10 +44,12 @@ export async function generateMetadata({ params }: ServicePageProps): Promise<Me
 }
 
 export default async function ServicePage({ params }: ServicePageProps) {
+    // Await params before accessing properties
+    const { slug } = await params;
     let service: SanityServiceItem | null = null;
 
     try {
-        service = await client.fetch<SanityServiceItem>(SERVICE_BY_SLUG_QUERY, { slug: params.slug });
+        service = await client.fetch<SanityServiceItem>(SERVICE_BY_SLUG_QUERY, { slug });
     } catch (error) {
         console.error('Error fetching service:', error);
     }
@@ -54,5 +58,5 @@ export default async function ServicePage({ params }: ServicePageProps) {
         notFound();
     }
 
-    return <ServiceDetailClient slug={params.slug} initialServiceData={service} />;
+    return <ServiceDetailClient slug={slug} initialServiceData={service} />;
 }

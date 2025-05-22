@@ -36,6 +36,7 @@ const createTransporter = () => {
         throw new Error('Email credentials are not defined in environment variables');
     }
 
+    // Use nodemailer.createTransport instead of createTransporter
     return nodemailer.createTransport({
         service: 'gmail',
         auth: {
@@ -47,7 +48,7 @@ const createTransporter = () => {
 
 export async function submitRegistration(formData: RegistrationFormData): Promise<RegistrationSubmissionResult> {
     'use server';
-    console.log("📩 Received registration data");
+    console.log("📩 Received registration data:", formData);
 
     try {
         const { name, surname, phone, email, message, serviceTitle } = formData;
