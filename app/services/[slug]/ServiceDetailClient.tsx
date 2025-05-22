@@ -24,6 +24,7 @@ import { client } from "@/sanity/lib/client";
 import { urlFor } from "@/sanity/lib/image";
 import { SERVICE_BY_SLUG_QUERY } from "@/sanity/lib/queries";
 import { SanityServiceItem, ServiceItem } from "@/types/services";
+import RegistrationModal from "@/components/RegistrationModal";
 
 interface ServiceDetailClientProps {
     slug: string;
@@ -100,6 +101,7 @@ export default function ServiceDetailClient({ slug, initialServiceData }: Servic
     const [service, setService] = useState<ServiceItem | null>(null);
     const [isLoading, setIsLoading] = useState(!initialServiceData);
     const [activeGalleryIndex, setActiveGalleryIndex] = useState(0);
+    const [isRegistrationModalOpen, setIsRegistrationModalOpen] = useState(false);
 
     const containerRef = useRef<HTMLDivElement>(null);
     const heroRef = useRef<HTMLDivElement>(null);
@@ -450,7 +452,10 @@ export default function ServiceDetailClient({ slug, initialServiceData }: Servic
                                     )}
 
                                     <div className="space-y-3">
-                                        <Button className="w-full bg-yellow-500 hover:bg-yellow-600 text-black">
+                                        <Button
+                                            className="w-full bg-yellow-500 hover:bg-yellow-600 text-black"
+                                            onClick={() => setIsRegistrationModalOpen(true)}
+                                        >
                                             Qeydiyyat
                                         </Button>
                                         <Button className="w-full border border-gray-700 text-gray-300 hover:bg-gray-800">
@@ -505,6 +510,13 @@ export default function ServiceDetailClient({ slug, initialServiceData }: Servic
                     </Link>
                 </div>
             </motion.div>
+
+            {/* Registration Modal */}
+            <RegistrationModal
+                isOpen={isRegistrationModalOpen}
+                onClose={() => setIsRegistrationModalOpen(false)}
+                serviceTitle={service.title}
+            />
         </div>
     );
 }
