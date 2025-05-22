@@ -10,9 +10,9 @@ import {
 import { SanityCountry, SanityUniversity } from '@/types/study-abroad';
 
 interface CountryPageProps {
-    params: {
+    params: Promise<{
         slug: string;
-    };
+    }>;
 }
 
 export async function generateStaticParams() {
@@ -29,7 +29,8 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({ params }: CountryPageProps): Promise<Metadata> {
     try {
-        const country = await client.fetch<SanityCountry>(COUNTRY_BY_SLUG_QUERY, { slug: params.slug });
+        const { slug } = await params;
+        const country = await client.fetch<SanityCountry>(COUNTRY_BY_SLUG_QUERY, { slug });
 
         if (!country) {
             return {
@@ -96,7 +97,8 @@ async function getCountryData(slug: string) {
 }
 
 export default async function CountryPage({ params }: CountryPageProps) {
-    const data = await getCountryData(params.slug);
+    const { slug } = await params;
+    const data = await getCountryData(slug);
 
     if (!data) {
         notFound();

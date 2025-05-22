@@ -135,112 +135,165 @@ export const TESTIMONIALS_QUERY = groq`
   }
 `
 
-// Countries queries
-export const COUNTRIES_QUERY = groq`
-  *[_type == "country" && isActive == true] | order(isFeatured desc, order asc) {
+
+
+
+
+
+
+
+
+
+
+
+// sanity/lib/queries.ts
+
+// Countries Queries
+export const COUNTRIES_QUERY = `*[_type == "country" && isActive == true] | order(isFeatured desc, order asc) {
+  _id,
+  name,
+  nameAz,
+  slug,
+  shortDescription,
+  fullDescription,
+  flagImage,
+  coverImage,
+  gallery,
+  highlights,
+  studyInfo,
+  popularPrograms,
+  order,
+  isActive,
+  isFeatured,
+  seoTitle,
+  seoDescription
+}`;
+
+export const COUNTRY_BY_SLUG_QUERY = `*[_type == "country" && slug.current == $slug && isActive == true][0] {
+  _id,
+  name,
+  nameAz,
+  slug,
+  shortDescription,
+  fullDescription,
+  flagImage,
+  coverImage,
+  gallery,
+  highlights,
+  studyInfo,
+  popularPrograms,
+  order,
+  isActive,
+  isFeatured,
+  seoTitle,
+  seoDescription
+}`;
+
+export const COUNTRY_SLUGS_QUERY = `*[_type == "country" && isActive == true] {
+  "slug": slug.current
+}`;
+
+// Universities Queries
+export const UNIVERSITIES_BY_COUNTRY_QUERY = `*[_type == "university" && country._ref == $countryId && isActive == true] | order(isFeatured desc, order asc) {
+  _id,
+  name,
+  slug,
+  country-> {
     _id,
     name,
     nameAz,
-    slug,
-    shortDescription,
-    flagImage,
-    coverImage,
-    highlights,
-    studyInfo,
-    popularPrograms,
-    order,
-    isActive,
-    isFeatured
-  }
-`
+    slug
+  },
+  shortDescription,
+  fullDescription,
+  logo,
+  coverImage,
+  gallery,
+  ranking,
+  established,
+  studentCount,
+  location,
+  programs,
+  facilities,
+  admissionInfo,
+  scholarships,
+  contactInfo,
+  order,
+  isActive,
+  isFeatured,
+  seoTitle,
+  seoDescription
+}`;
 
-export const COUNTRY_BY_SLUG_QUERY = groq`
-  *[_type == "country" && slug.current == $slug && isActive == true][0] {
+export const UNIVERSITY_BY_SLUG_QUERY = `*[_type == "university" && slug.current == $slug && isActive == true][0] {
+  _id,
+  name,
+  slug,
+  country-> {
     _id,
     name,
     nameAz,
-    slug,
-    shortDescription,
-    fullDescription,
-    flagImage,
-    coverImage,
-    gallery,
-    highlights,
-    studyInfo,
-    popularPrograms,
-    seoTitle,
-    seoDescription
-  }
-`
+    slug
+  },
+  shortDescription,
+  fullDescription,
+  logo,
+  coverImage,
+  gallery,
+  ranking,
+  established,
+  studentCount,
+  location,
+  programs,
+  facilities,
+  admissionInfo,
+  scholarships,
+  contactInfo,
+  order,
+  isActive,
+  isFeatured,
+  seoTitle,
+  seoDescription
+}`;
 
-// Universities queries
-export const UNIVERSITIES_BY_COUNTRY_QUERY = groq`
-  *[_type == "university" && country._ref == $countryId && isActive == true] | order(isFeatured desc, order asc) {
+export const FEATURED_UNIVERSITIES_QUERY = `*[_type == "university" && isFeatured == true && isActive == true] | order(order asc) [0...6] {
+  _id,
+  name,
+  slug,
+  country-> {
     _id,
     name,
-    slug,
-    shortDescription,
-    logo,
-    coverImage,
-    ranking,
-    established,
-    studentCount,
-    location,
-    programs,
-    facilities,
-    admissionInfo,
-    scholarships,
-    contactInfo,
-    order,
-    isActive,
-    isFeatured
-  }
-`
+    nameAz,
+    slug
+  },
+  shortDescription,
+  logo,
+  coverImage,
+  ranking,
+  location,
+  programs[0...3],
+  isFeatured
+}`;
 
-export const UNIVERSITY_BY_SLUG_QUERY = groq`
-  *[_type == "university" && slug.current == $slug && isActive == true][0] {
+export const ALL_UNIVERSITIES_QUERY = `*[_type == "university" && isActive == true] | order(isFeatured desc, order asc) {
+  _id,
+  name,
+  slug,
+  country-> {
     _id,
     name,
-    slug,
-    shortDescription,
-    fullDescription,
-    logo,
-    coverImage,
-    gallery,
-    ranking,
-    established,
-    studentCount,
-    location,
-    programs,
-    facilities,
-    admissionInfo,
-    scholarships,
-    contactInfo,
-    country-> {
-      _id,
-      name,
-      nameAz,
-      slug
-    },
-    seoTitle,
-    seoDescription
-  }
-`
+    nameAz,
+    slug
+  },
+  shortDescription,
+  logo,
+  coverImage,
+  ranking,
+  location,
+  programs[0...3],
+  isFeatured
+}`;
 
-
-
-
-// Get country slugs for static generation
-export const COUNTRY_SLUGS_QUERY = groq`
-  *[_type == "country" && isActive == true] {
-    "slug": slug.current
-  }
-`
-
-// Get university slugs for static generation
-export const UNIVERSITY_SLUGS_QUERY = groq`
-  *[_type == "university" && isActive == true] {
-    "slug": slug.current
-  }
-`
-
+export const UNIVERSITY_SLUGS_QUERY = `*[_type == "university" && isActive == true] {
+  "slug": slug.current
+}`;
