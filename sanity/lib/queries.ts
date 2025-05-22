@@ -1,5 +1,94 @@
 import { groq } from 'next-sanity'
 
+// Get all active services for the services listing page
+export const SERVICES_QUERY = groq`
+  *[_type == "services" && isActive == true] | order(isFeatured desc, order asc) {
+    _id,
+    title,
+    slug,
+    shortDescription,
+    featuredImage,
+    category,
+    duration,
+    priceRange,
+    targetAudience,
+    keyFeatures,
+    order,
+    isFeatured,
+    isActive
+  }
+`
+
+// Get a single service by slug for the detailed service page
+export const SERVICE_BY_SLUG_QUERY = groq`
+  *[_type == "services" && slug.current == $slug && isActive == true][0] {
+    _id,
+    title,
+    slug,
+    shortDescription,
+    fullDescription,
+    featuredImage,
+    gallery,
+    keyFeatures,
+    targetAudience,
+    duration,
+    priceRange,
+    contactInfo,
+    scheduleInfo,
+    requirements,
+    category,
+    seoTitle,
+    seoDescription,
+    isActive
+  }
+`
+
+// Get services by category
+export const SERVICES_BY_CATEGORY_QUERY = groq`
+  *[_type == "services" && category == $category && isActive == true] | order(isFeatured desc, order asc) {
+    _id,
+    title,
+    slug,
+    shortDescription,
+    featuredImage,
+    duration,
+    priceRange,
+    keyFeatures,
+    isFeatured
+  }
+`
+
+// Get featured services for homepage or other pages
+export const FEATURED_SERVICES_QUERY = groq`
+  *[_type == "services" && isFeatured == true && isActive == true] | order(order asc) [0..3] {
+    _id,
+    title,
+    slug,
+    shortDescription,
+    featuredImage,
+    category,
+    duration,
+    priceRange
+  }
+`
+
+// Get all service categories
+export const SERVICE_CATEGORIES_QUERY = groq`
+  *[_type == "services" && isActive == true] {
+    category
+  } | {
+    "categories": category
+  }
+`
+
+// Get service slugs for static generation
+export const SERVICE_SLUGS_QUERY = groq`
+  *[_type == "services" && isActive == true] {
+    "slug": slug.current
+  }
+`
+
+
 export const HOMEPAGE_CAROUSEL_QUERY = groq`
   *[_type == "homepageCarousel" && isActive == true] | order(order asc) {
     _id,
