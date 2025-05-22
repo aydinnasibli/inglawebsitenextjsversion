@@ -3,147 +3,239 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { Facebook, Instagram, Twitter } from "lucide-react";
+import { Facebook, Instagram, Twitter, Phone, Mail, MapPin, Clock } from "lucide-react";
 import { motion } from "framer-motion";
 
 export default function Footer() {
     const currentYear = new Date().getFullYear();
 
+    const containerVariants = {
+        hidden: { opacity: 0 },
+        visible: {
+            opacity: 1,
+            transition: {
+                staggerChildren: 0.1,
+                delayChildren: 0.2,
+            },
+        },
+    };
+
+    const itemVariants = {
+        hidden: { opacity: 0, y: 20 },
+        visible: {
+            opacity: 1,
+            y: 0,
+            transition: { duration: 0.6 },
+        },
+    };
+
     return (
-        <footer className="bg-gray-900 pt-16 pb-8">
+        <footer className="relative bg-black border-t border-gray-800">
+            {/* Top accent line */}
+            <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-yellow-500 to-transparent"></div>
+
             <div className="container mx-auto px-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-                    {/* Company Information */}
-                    <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.5 }}
-                        viewport={{ once: true }}
-                        className="mb-8 md:mb-0"
-                    >
-                        <Link href="/" className="inline-block mb-6">
-                            <div className="flex items-center">
-                                <div className="relative h-10 w-10 mr-3">
-                                    <div className="bg-indigo-600 h-full w-full rounded-full"></div>
-                                    {/* Replace with your actual logo */}
+                {/* Main Footer Content */}
+                <motion.div
+                    variants={containerVariants}
+                    initial="hidden"
+                    whileInView="visible"
+                    viewport={{ once: true }}
+                    className="pt-16 pb-12"
+                >
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12">
+                        {/* Company Information */}
+                        <motion.div variants={itemVariants} className="lg:col-span-1">
+                            <Link href="/" className="inline-block mb-6 group">
+                                <div className="flex items-center">
+                                    <div className="relative h-12 w-12 mr-3">
+                                        <div className="bg-gradient-to-br from-yellow-500 to-yellow-600 h-full w-full rounded-full shadow-lg shadow-yellow-500/25 group-hover:shadow-yellow-500/40 transition-all duration-300"></div>
+                                        <div className="absolute inset-2 bg-black rounded-full flex items-center justify-center">
+                                            <span className="text-yellow-500 font-bold text-sm">İS</span>
+                                        </div>
+                                    </div>
+                                    <span className="text-2xl font-bold text-white group-hover:text-yellow-500 transition-colors duration-300">
+                                        İngla School
+                                    </span>
                                 </div>
-                                <span className="text-xl font-bold text-white">İngla School</span>
-                            </div>
-                        </Link>
-                        <p className="text-gray-400 mb-6">
-                            Uğurlu gələcəyiniz üçün peşəkar təhsil həlləri təqdim edirik.
-                        </p>
-                        <div className="flex space-x-4">
-                            <a href="#" className="text-gray-400 hover:text-white transition-colors">
-                                <Facebook size={20} />
-                                <span className="sr-only">Facebook</span>
-                            </a>
-                            <a href="#" className="text-gray-400 hover:text-white transition-colors">
-                                <Instagram size={20} />
-                                <span className="sr-only">Instagram</span>
-                            </a>
-                            <a href="#" className="text-gray-400 hover:text-white transition-colors">
-                                <Twitter size={20} />
-                                <span className="sr-only">Twitter</span>
-                            </a>
-                        </div>
-                    </motion.div>
-
-                    {/* Quick Links */}
-                    <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.5, delay: 0.1 }}
-                        viewport={{ once: true }}
-                    >
-                        <h3 className="text-white text-lg font-semibold mb-6">Əsas Səhifələr</h3>
-                        <ul className="space-y-3">
-                            {[
-                                { name: "Xidmətlər", href: "/xidmetler" },
-                                { name: "Haqqımızda", href: "/haqqimizda" },
-                                { name: "Xaricdə Təhsil", href: "/xaricde-tehsil" },
-                                { name: "Preschool", href: "/preschool" },
-                                { name: "Təlim Mərkəzi", href: "/telim-merkezi" },
-                            ].map((link) => (
-                                <li key={link.name}>
-                                    <Link
-                                        href={link.href}
-                                        className="text-gray-400 hover:text-white transition-colors"
+                            </Link>
+                            <p className="text-gray-400 mb-6 leading-relaxed">
+                                Uğurlu gələcəyiniz üçün peşəkar təhsil həlləri təqdim edirik.
+                                Beynəlxalq standartlarda keyfiyyətli təhsil xidmətləri.
+                            </p>
+                            <div className="flex space-x-4">
+                                {[
+                                    { icon: Facebook, href: "#", label: "Facebook" },
+                                    { icon: Instagram, href: "#", label: "Instagram" },
+                                    { icon: Twitter, href: "#", label: "Twitter" },
+                                ].map(({ icon: Icon, href, label }) => (
+                                    <a
+                                        key={label}
+                                        href={href}
+                                        className="group p-2 rounded-full bg-gray-800 hover:bg-yellow-600 transition-all duration-300 transform hover:scale-110"
+                                        aria-label={label}
                                     >
-                                        {link.name}
-                                    </Link>
+                                        <Icon size={18} className="text-gray-400 group-hover:text-white transition-colors" />
+                                    </a>
+                                ))}
+                            </div>
+                        </motion.div>
+
+                        {/* Quick Links */}
+                        <motion.div variants={itemVariants}>
+                            <h3 className="text-white text-lg font-semibold mb-6 relative">
+                                Əsas Səhifələr
+                                <div className="absolute bottom-0 left-0 w-12 h-0.5 bg-yellow-500 mt-2"></div>
+                            </h3>
+                            <ul className="space-y-3">
+                                {[
+                                    { name: "Xidmətlər", href: "/xidmetler" },
+                                    { name: "Haqqımızda", href: "/haqqimizda" },
+                                    { name: "Xaricdə Təhsil", href: "/xaricde-tehsil" },
+                                    { name: "Preschool", href: "/preschool" },
+                                    { name: "Təlim Mərkəzi", href: "/telim-merkezi" },
+                                ].map((link) => (
+                                    <li key={link.name}>
+                                        <Link
+                                            href={link.href}
+                                            className="text-gray-400 hover:text-yellow-500 transition-colors duration-300 flex items-center group"
+                                        >
+                                            <span className="w-0 group-hover:w-2 h-0.5 bg-yellow-500 transition-all duration-300 mr-0 group-hover:mr-2"></span>
+                                            {link.name}
+                                        </Link>
+                                    </li>
+                                ))}
+                            </ul>
+                        </motion.div>
+
+                        {/* Contact Information */}
+                        <motion.div variants={itemVariants}>
+                            <h3 className="text-white text-lg font-semibold mb-6 relative">
+                                Əlaqə Məlumatları
+                                <div className="absolute bottom-0 left-0 w-12 h-0.5 bg-yellow-500 mt-2"></div>
+                            </h3>
+                            <ul className="space-y-4">
+                                <li className="flex items-start space-x-3 text-gray-400 group">
+                                    <MapPin size={18} className="text-yellow-500 mt-0.5 flex-shrink-0" />
+                                    <div>
+                                        <span className="block">Bakı ş. Nizami rayonu</span>
+                                        <span className="block">Qara Qarayev pr., 34</span>
+                                    </div>
                                 </li>
-                            ))}
-                        </ul>
-                    </motion.div>
+                                <li className="flex items-center space-x-3">
+                                    <Phone size={18} className="text-yellow-500 flex-shrink-0" />
+                                    <a
+                                        href="tel:+994503001234"
+                                        className="text-gray-400 hover:text-yellow-500 transition-colors duration-300"
+                                    >
+                                        +994 50 300 12 34
+                                    </a>
+                                </li>
+                                <li className="flex items-center space-x-3">
+                                    <Mail size={18} className="text-yellow-500 flex-shrink-0" />
+                                    <a
+                                        href="mailto:info@inglaschool.az"
+                                        className="text-gray-400 hover:text-yellow-500 transition-colors duration-300"
+                                    >
+                                        info@inglaschool.az
+                                    </a>
+                                </li>
+                            </ul>
+                        </motion.div>
 
-                    {/* Contact Information */}
-                    <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.5, delay: 0.2 }}
-                        viewport={{ once: true }}
-                    >
-                        <h3 className="text-white text-lg font-semibold mb-6">Əlaqə</h3>
-                        <ul className="space-y-3">
-                            <li className="text-gray-400">
-                                <span className="block">Bakı ş. Nizami rayonu</span>
-                                <span className="block">Qara Qarayev pr., 34</span>
-                            </li>
-                            <li>
-                                <a href="tel:+994503001234" className="text-gray-400 hover:text-white transition-colors">
-                                    +994 50 300 12 34
-                                </a>
-                            </li>
-                            <li>
-                                <a href="mailto:info@inglaschool.az" className="text-gray-400 hover:text-white transition-colors">
-                                    info@inglaschool.az
-                                </a>
-                            </li>
-                        </ul>
-                    </motion.div>
+                        {/* Working Hours */}
+                        <motion.div variants={itemVariants}>
+                            <h3 className="text-white text-lg font-semibold mb-6 relative">
+                                İş Saatları
+                                <div className="absolute bottom-0 left-0 w-12 h-0.5 bg-yellow-500 mt-2"></div>
+                            </h3>
+                            <div className="space-y-3">
+                                <div className="flex items-center space-x-3 mb-4">
+                                    <Clock size={18} className="text-yellow-500" />
+                                    <span className="text-gray-300 font-medium">Əmək vaxtı</span>
+                                </div>
+                                <ul className="space-y-3 text-gray-400 ml-7">
+                                    <li className="flex justify-between items-center p-2 rounded bg-gray-900/50">
+                                        <span>Həftəiçi:</span>
+                                        <span className="text-yellow-500 font-medium">09:00 - 18:00</span>
+                                    </li>
+                                    <li className="flex justify-between items-center p-2 rounded bg-gray-900/50">
+                                        <span>Şənbə:</span>
+                                        <span className="text-yellow-500 font-medium">10:00 - 16:00</span>
+                                    </li>
+                                    <li className="flex justify-between items-center p-2 rounded bg-gray-900/50">
+                                        <span>Bazar:</span>
+                                        <span className="text-red-400 font-medium">Bağlıdır</span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </motion.div>
+                    </div>
+                </motion.div>
 
-                    {/* Working Hours */}
-                    <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.5, delay: 0.3 }}
-                        viewport={{ once: true }}
-                    >
-                        <h3 className="text-white text-lg font-semibold mb-6">İş saatları</h3>
-                        <ul className="space-y-3 text-gray-400">
-                            <li className="flex justify-between">
-                                <span>Həftəiçi:</span>
-                                <span>09:00 - 18:00</span>
-                            </li>
-                            <li className="flex justify-between">
-                                <span>Şənbə:</span>
-                                <span>10:00 - 16:00</span>
-                            </li>
-                            <li className="flex justify-between">
-                                <span>Bazar:</span>
-                                <span>Bağlıdır</span>
-                            </li>
-                        </ul>
-                    </motion.div>
-                </div>
+                {/* Newsletter Section */}
+                <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.6, delay: 0.3 }}
+                    viewport={{ once: true }}
+                    className="border-t border-gray-800 py-8"
+                >
+                    <div className="text-center">
+                        <h3 className="text-white text-xl font-semibold mb-4">
+                            Xəbərlər və yeniliklər üçün <span className="text-yellow-500">abunə olun</span>
+                        </h3>
+                        <div className="flex flex-col sm:flex-row max-w-md mx-auto gap-3">
+                            <input
+                                type="email"
+                                placeholder="E-mail ünvanınız"
+                                className="flex-1 px-4 py-3 bg-gray-900 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-yellow-500 focus:ring-1 focus:ring-yellow-500 transition-all duration-300"
+                            />
+                            <button className="px-6 py-3 bg-yellow-600 hover:bg-yellow-700 text-white font-medium rounded-lg transition-all duration-300 transform hover:scale-105 shadow-lg shadow-yellow-600/25">
+                                Abunə ol
+                            </button>
+                        </div>
+                    </div>
+                </motion.div>
 
-                <div className="border-t border-gray-800 mt-12 pt-8">
-                    <div className="flex flex-col md:flex-row justify-between items-center">
-                        <p className="text-gray-500 text-sm mb-4 md:mb-0">
+                {/* Bottom Section */}
+                <motion.div
+                    initial={{ opacity: 0 }}
+                    whileInView={{ opacity: 1 }}
+                    transition={{ duration: 0.6, delay: 0.4 }}
+                    viewport={{ once: true }}
+                    className="border-t border-gray-800 py-8"
+                >
+                    <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
+                        <p className="text-gray-500 text-sm">
                             © {currentYear} İngla School. Bütün hüquqlar qorunur.
                         </p>
                         <div className="flex space-x-6">
-                            <Link href="/privacy" className="text-gray-500 hover:text-white text-sm transition-colors">
+                            <Link
+                                href="/privacy"
+                                className="text-gray-500 hover:text-yellow-500 text-sm transition-colors duration-300"
+                            >
                                 Məxfilik siyasəti
                             </Link>
-                            <Link href="/terms" className="text-gray-500 hover:text-white text-sm transition-colors">
+                            <Link
+                                href="/terms"
+                                className="text-gray-500 hover:text-yellow-500 text-sm transition-colors duration-300"
+                            >
                                 İstifadə şərtləri
+                            </Link>
+                            <Link
+                                href="/cookies"
+                                className="text-gray-500 hover:text-yellow-500 text-sm transition-colors duration-300"
+                            >
+                                Cookie siyasəti
                             </Link>
                         </div>
                     </div>
-                </div>
+                </motion.div>
             </div>
+
+            {/* Bottom accent line */}
+            <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-yellow-500 to-transparent"></div>
         </footer>
     );
 }

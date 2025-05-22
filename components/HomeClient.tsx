@@ -7,6 +7,44 @@ import { motion, useScroll, useTransform } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { ChevronRight, GraduationCap, Globe, Lightbulb, BookOpen, Users } from "lucide-react";
+import Carousel from "./Carousel";
+
+const carouselItems = [
+    {
+        id: "1",
+        title: "Dünya Səviyyəsində Təhsil",
+        description: "Beynəlxalq standartlara uyğun təhsil proqramları və müasir tədris metodları ilə gələcəyinizi formalaşdırın.",
+        image: "/assets/bg.webp",
+        buttonText: "Daha Ətraflı",
+        buttonAction: () => console.log("Learn more clicked")
+    },
+    {
+        id: "2",
+        title: "Xaricdə Təhsil İmkanları",
+        description: "Dünyanın ən yaxşı universitetlərində təhsil almaq üçün peşəkar məsləhət və tam dəstək alın.",
+        image: "/assets/bg.webp",
+        buttonText: "Müraciət Et",
+        buttonAction: () => console.log("Apply clicked")
+    },
+    {
+        id: "3",
+        title: "Peşəkar Müəllimlər",
+        description: "Sahəsində mütəxəssis müəllim heyətimiz ilə keyfiyyətli təhsil və fərdi yanaşma təcrübəsi yaşayın.",
+        image: "/assets/bg.webp",
+        buttonText: "Komandamız",
+        buttonAction: () => console.log("Team clicked")
+    },
+    {
+        id: "4",
+        title: "Kiçik Yaşdan Böyük Nailiyyətlər",
+        description: "Preschool proqramımız ilə uşaqlarınızın erkən yaşlardan dil və sosial bacarıqlarını inkişaf etdirin.",
+        image: "/assets/bg.webp",
+        buttonText: "Qeydiyyat",
+        buttonAction: () => console.log("Register clicked")
+    }
+];
+
+
 
 export default function Home() {
     // References for parallax sections
@@ -77,7 +115,40 @@ export default function Home() {
                 <div className="absolute bottom-0 left-0 right-0 h-24  "></div>
             </motion.div>
 
+            {/* Carousel Section */}
+            <motion.section
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true }}
+                variants={sectionVariants}
+                className="py-24"
+            >
+                <div className="container mx-auto px-4">
+                    <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.6 }}
+                        viewport={{ once: true }}
+                        className="text-center mb-12"
+                    >
+                        <h2 className="text-4xl font-bold mb-4">
+                            Bizim <span className="text-yellow-500">Üstünlüklərimiz</span>
+                        </h2>
+                        <p className="text-gray-300 text-lg max-w-2xl mx-auto">
+                            İngla School-da təhsil təcrübənizi daha da zənginləşdirən xüsusiyyətlərimizi kəşf edin
+                        </p>
+                    </motion.div>
 
+                    <Carousel
+                        items={carouselItems}
+                        autoPlay={true}
+                        autoPlayInterval={6000}
+                        showControls={true}
+                        showIndicators={true}
+                        className="shadow-2xl shadow-yellow-900/20 border border-gray-800"
+                    />
+                </div>
+            </motion.section>
             {/* Xidmətlər Section */}
             <motion.section
                 id="xidmetler"
