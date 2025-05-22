@@ -161,7 +161,6 @@ export const services = defineType({
             of: [{ type: 'string' }],
             description: 'Prerequisites or requirements for this service',
         }),
-
         defineField({
             name: 'order',
             title: 'Display Order',
@@ -201,16 +200,15 @@ export const services = defineType({
         select: {
             title: 'title',
             media: 'featuredImage',
-            category: 'category',
             isActive: 'isActive',
             isFeatured: 'isFeatured',
             order: 'order',
         },
         prepare(selection) {
-            const { title, media, category, isActive, isFeatured, order } = selection
+            const { title, media, isActive, isFeatured, order } = selection
             return {
                 title: `${title} ${!isActive ? '(Inactive)' : ''} ${isFeatured ? '⭐' : ''}`,
-                subtitle: `${category} - Order: ${order}`,
+                subtitle: `Order: ${order}`,
                 media,
             }
         },
@@ -220,11 +218,6 @@ export const services = defineType({
             title: 'Display Order',
             name: 'orderAsc',
             by: [{ field: 'order', direction: 'asc' }],
-        },
-        {
-            title: 'Category',
-            name: 'categoryAsc',
-            by: [{ field: 'category', direction: 'asc' }],
         },
         {
             title: 'Featured First',

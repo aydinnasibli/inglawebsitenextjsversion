@@ -5,11 +5,11 @@ import Image from "next/image";
 import Link from "next/link";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { ChevronRight, Clock, Tag, Users, Star, Filter } from "lucide-react";
+import { ChevronRight, Clock, Users, Star } from "lucide-react";
 import { client } from "@/sanity/lib/client";
 import { urlFor } from "@/sanity/lib/image";
 import { SERVICES_QUERY } from "@/sanity/lib/queries";
-import { SanityServiceItem, ServiceItem, SERVICE_CATEGORIES, getCategoryLabel } from "@/types/services";
+import { SanityServiceItem, ServiceItem } from "@/types/services";
 
 interface ServicesPageProps {
     initialServicesData?: SanityServiceItem[];
@@ -37,7 +37,6 @@ const transformSanityData = (sanityItems: SanityServiceItem[]): ServiceItem[] =>
             contactInfo: item.contactInfo,
             scheduleInfo: item.scheduleInfo,
             requirements: item.requirements,
-            category: item.category,
             order: item.order,
             isFeatured: item.isFeatured,
             seoTitle: item.seoTitle,
@@ -48,7 +47,6 @@ const transformSanityData = (sanityItems: SanityServiceItem[]): ServiceItem[] =>
 export default function ServicesPage({ initialServicesData }: ServicesPageProps) {
     const [services, setServices] = useState<ServiceItem[]>([]);
     const [isLoading, setIsLoading] = useState(!initialServicesData);
-    const [activeCategory, setActiveCategory] = useState<string>('all');
 
     const containerRef = useRef<HTMLDivElement>(null);
     const heroRef = useRef<HTMLDivElement>(null);
@@ -111,14 +109,6 @@ export default function ServicesPage({ initialServicesData }: ServicesPageProps)
         };
     }, [initialServicesData]);
 
-    // Filter services by category
-    const filteredServices = activeCategory === 'all'
-        ? services
-        : services.filter(service => service.category === activeCategory);
-
-    // Get unique categories from services
-    const availableCategories = ['all', ...Array.from(new Set(services.map(service => service.category)))];
-
     const sectionVariants = {
         hidden: { opacity: 0, y: 50 },
         visible: {
@@ -167,36 +157,6 @@ export default function ServicesPage({ initialServicesData }: ServicesPageProps)
                 </div>
             </motion.div>
 
-            {/* Filter Section */}
-            <motion.section
-                initial="hidden"
-                whileInView="visible"
-                viewport={{ once: true }}
-                variants={sectionVariants}
-                className="py-12 bg-gray-900/30"
-            >
-                <div className="container mx-auto px-4">
-                    <div className="flex flex-wrap justify-center gap-4 mb-8">
-                        <div className="flex items-center mb-4">
-                            <Filter className="w-5 h-5 text-yellow-500 mr-2" />
-                            <span className="text-gray-300 font-medium">Kateqoriya seçin:</span>
-                        </div>
-                        {availableCategories.map((category) => (
-                            <button
-                                key={category}
-                                onClick={() => setActiveCategory(category)}
-                                className={`px-6 py-3 rounded-full text-sm font-medium transition-all duration-300 ${activeCategory === category
-                                        ? 'bg-yellow-500 text-black shadow-lg shadow-yellow-900/30'
-                                        : 'bg-gray-800 text-gray-300 hover:bg-gray-700 border border-gray-700'
-                                    }`}
-                            >
-                                {category === 'all' ? 'Hamısı' : getCategoryLabel(category)}
-                            </button>
-                        ))}
-                    </div>
-                </div>
-            </motion.section>
-
             {/* Services Grid Section */}
             <motion.section
                 initial="hidden"
@@ -213,21 +173,15 @@ export default function ServicesPage({ initialServicesData }: ServicesPageProps)
                                 <p className="text-gray-300">Xidmətlər yüklənir...</p>
                             </div>
                         </div>
-                    ) : filteredServices.length === 0 ? (
+                    ) : services.length === 0 ? (
                         <div className="text-center py-16">
                             <div className="text-gray-400 text-lg mb-4">
-                                Bu kateqoriyada heç bir xidmət tapılmadı.
+                                Heç bir xidmət tapılmadı.
                             </div>
-                            <Button
-                                onClick={() => setActiveCategory('all')}
-                                className="bg-yellow-500 hover:bg-yellow-600 text-black"
-                            >
-                                Bütün xidmətləri göstər
-                            </Button>
                         </div>
                     ) : (
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                            {filteredServices.map((service, index) => (
+                            {services.map((service, index) => (
                                 <motion.div
                                     key={service.id}
                                     initial={{ opacity: 0, y: 30 }}
@@ -235,8 +189,8 @@ export default function ServicesPage({ initialServicesData }: ServicesPageProps)
                                     transition={{ delay: 0.1 * index }}
                                     viewport={{ once: true }}
                                     className={`bg-gray-900/50 border rounded-lg overflow-hidden hover:shadow-xl hover:shadow-yellow-900/10 transition-all duration-300 group ${service.isFeatured
-                                            ? 'border-yellow-500/50 bg-gradient-to-br from-yellow-500/5 to-transparent'
-                                            : 'border-gray-800'
+                                        ? 'border-yellow-500/50 bg-gradient-to-br from-yellow-500/5 to-transparent'
+                                        : 'border-gray-800'
                                         }`}
                                 >
                                     {/* Service Image */}
@@ -258,14 +212,6 @@ export default function ServicesPage({ initialServicesData }: ServicesPageProps)
 
                                     {/* Service Content */}
                                     <div className="p-6">
-                                        {/* Category Badge */}
-                                        <div className="flex items-center mb-3">
-                                            <Tag className="w-4 h-4 text-yellow-500 mr-2" />
-                                            <span className="text-yellow-500 text-sm font-medium">
-                                                {getCategoryLabel(service.category)}
-                                            </span>
-                                        </div>
-
                                         {/* Title */}
                                         <h3 className="text-xl font-bold mb-3 text-white group-hover:text-yellow-500 transition-colors">
                                             {service.title}
@@ -312,8 +258,8 @@ export default function ServicesPage({ initialServicesData }: ServicesPageProps)
                                         )}
 
                                         {/* Action Button */}
-                                        <Link href={`/tedris-istiqametleri/${service.slug}`}>
-                                            <Button className="w-full border border-yellow-500 text-yellow-500 hover:bg-yellow-500 hover:text-black transition-all duration-300">
+                                        <Link href={`/services/${service.slug}`}>
+                                            <Button className="w-full border cursor-pointer border-yellow-500 text-yellow-500 hover:bg-yellow-500 hover:text-black transition-all duration-300">
                                                 <span>Ətraflı</span>
                                                 <ChevronRight className="ml-2 h-4 w-4" />
                                             </Button>
