@@ -280,7 +280,7 @@ export default function CountryClient({
                             <Button
                                 size="lg"
                                 variant="outline"
-                                className="border-white text-white hover:bg-white hover:text-black"
+                                className="border-white text-black hover:bg-white hover:text-black"
                             >
                                 <Phone className="mr-2 h-5 w-5" />
                                 Məsləhət Al
