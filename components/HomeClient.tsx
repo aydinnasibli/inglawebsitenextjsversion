@@ -854,7 +854,7 @@ export default function HomeClient({ initialCarouselData, initialFaqData, initia
                                             transition={{ duration: 0.3 }}
                                             className="overflow-hidden"
                                         >
-                                            <div className="px-6 pb-4 text-gray-300">
+                                            <div className="px-6 mt-3 pb-4 text-gray-300">
                                                 {item.answer}
                                             </div>
                                         </motion.div>
