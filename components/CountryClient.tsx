@@ -477,7 +477,7 @@ export default function CountryClient({
                                     variants={cardVariants}
                                     className="group cursor-pointer"
                                 >
-                                    <Link href={`/universitet/${university.slug}`}>
+                                    <Link href={`/studyabroad/${country.slug}/${university.slug}`}>
                                         <div className="bg-gray-900/50 border border-gray-800 rounded-lg overflow-hidden hover:shadow-2xl hover:shadow-yellow-900/20 transition-all duration-300 hover:border-yellow-500/50">
                                             {/* University Image */}
                                             <div className="relative h-48 overflow-hidden">

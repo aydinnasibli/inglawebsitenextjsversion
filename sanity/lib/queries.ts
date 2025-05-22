@@ -225,36 +225,6 @@ export const UNIVERSITIES_BY_COUNTRY_QUERY = `*[_type == "university" && country
   seoDescription
 }`;
 
-export const UNIVERSITY_BY_SLUG_QUERY = `*[_type == "university" && slug.current == $slug && isActive == true][0] {
-  _id,
-  name,
-  slug,
-  country-> {
-    _id,
-    name,
-    nameAz,
-    slug
-  },
-  shortDescription,
-  fullDescription,
-  logo,
-  coverImage,
-  gallery,
-  ranking,
-  established,
-  studentCount,
-  location,
-  programs,
-  facilities,
-  admissionInfo,
-  scholarships,
-  contactInfo,
-  order,
-  isActive,
-  isFeatured,
-  seoTitle,
-  seoDescription
-}`;
 
 export const FEATURED_UNIVERSITIES_QUERY = `*[_type == "university" && isFeatured == true && isActive == true] | order(order asc) [0...6] {
   _id,
@@ -296,4 +266,45 @@ export const ALL_UNIVERSITIES_QUERY = `*[_type == "university" && isActive == tr
 
 export const UNIVERSITY_SLUGS_QUERY = `*[_type == "university" && isActive == true] {
   "slug": slug.current
+}`;
+
+
+
+
+export const UNIVERSITY_BY_SLUG_QUERY = `*[_type == "university" && slug.current == $slug && country->slug.current == $countrySlug && isActive == true][0] {
+    _id,
+    name,
+    slug,
+    country-> {
+        _id,
+        name,
+        nameAz,
+        slug
+    },
+    shortDescription,
+    fullDescription,
+    logo,
+    coverImage,
+    gallery,
+    ranking,
+    established,
+    studentCount,
+    location,
+    programs,
+    facilities,
+    admissionInfo,
+    scholarships,
+    contactInfo,
+    isFeatured,
+    seoTitle,
+    seoDescription
+}`;
+
+export const UNIVERSITY_SLUGS_BY_COUNTRY_QUERY = `*[_type == "university" && country._ref == $countryId && isActive == true] {
+    "slug": slug.current
+}`;
+
+export const ALL_UNIVERSITY_SLUGS_QUERY = `*[_type == "university" && isActive == true] {
+    "slug": slug.current,
+    "countrySlug": country->slug.current
 }`;
