@@ -20,6 +20,7 @@ export const structure: StructureResolver = (S) =>
         ),
       S.divider(),
       S.documentTypeListItem('preschoolService').title('Preschool Services (Məktəbəqədər Xidmətlər)'),
+      S.documentTypeListItem('training').title('Training Programs'),
       S.divider(),
       S.documentTypeListItem('faq').title('FAQ'),
       S.documentTypeListItem('testimonials').title('Testimonials'),
@@ -33,7 +34,7 @@ export const structure: StructureResolver = (S) =>
           'country',
           'university',
           'preschoolService',
-          'educationExhibitions'
+          'training'
         ].includes(item.getId()!),
       ),
     ])
