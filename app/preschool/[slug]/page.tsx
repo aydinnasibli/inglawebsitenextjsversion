@@ -24,6 +24,7 @@ import { client } from "@/sanity/lib/client";
 import { urlFor } from "@/sanity/lib/image";
 import { PRESCHOOL_SERVICE_BY_SLUG_QUERY } from "@/sanity/lib/queries";
 import { SanityPreschoolServiceItem, PreschoolServiceItem } from "@/types/preschool";
+import RegistrationModal from "@/components/RegistrationModal";
 
 interface PreschoolServicePageProps {
     initialServiceData?: SanityPreschoolServiceItem;
@@ -67,7 +68,7 @@ export default function PreschoolServicePage({ initialServiceData }: PreschoolSe
     const [service, setService] = useState<PreschoolServiceItem | null>(null);
     const [isLoading, setIsLoading] = useState(!initialServiceData);
     const [activeGalleryIndex, setActiveGalleryIndex] = useState(0);
-
+    const [isRegistrationModalOpen, setIsRegistrationModalOpen] = useState(false);
     const containerRef = useRef<HTMLDivElement>(null);
     const heroRef = useRef<HTMLDivElement>(null);
 
@@ -245,7 +246,7 @@ export default function PreschoolServicePage({ initialServiceData }: PreschoolSe
             </motion.div>
 
             {/* Main Content */}
-            <div className="relative -mt-32 z-30">
+            <div className="relative mt-3 z-30">
                 <div className="container mx-auto px-4">
                     <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
                         {/* Main Content Column */}
@@ -375,7 +376,7 @@ export default function PreschoolServicePage({ initialServiceData }: PreschoolSe
                                     whileInView="visible"
                                     viewport={{ once: true }}
                                     variants={sectionVariants}
-                                    className="bg-gray-900/50 backdrop-blur-sm border border-gray-800 rounded-lg p-8"
+                                    className="bg-gray-900/50 backdrop-blur-sm border border-gray-800 mb-6 rounded-lg p-8"
                                 >
                                     <h2 className="text-3xl font-bold mb-6 text-yellow-500">Qalereya</h2>
                                     <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
@@ -411,7 +412,7 @@ export default function PreschoolServicePage({ initialServiceData }: PreschoolSe
                                 whileInView="visible"
                                 viewport={{ once: true }}
                                 variants={sectionVariants}
-                                className="bg-gray-900/80 backdrop-blur-sm border border-gray-800 rounded-lg p-6 sticky top-8"
+                                className="bg-gray-900/80 backdrop-blur-sm border border-gray-800 rounded-lg p-6  top-8"
                             >
                                 <h3 className="text-2xl font-bold mb-6 text-yellow-500">Əlaqə</h3>
 
@@ -448,13 +449,15 @@ export default function PreschoolServicePage({ initialServiceData }: PreschoolSe
                                     </div>
                                 )}
 
+
                                 <div className="space-y-3">
-                                    <Button className="w-full bg-yellow-500 hover:bg-yellow-600 text-black font-semibold">
+                                    <Button
+                                        className="w-full bg-yellow-500 hover:bg-yellow-600 text-black font-semibold"
+                                        onClick={() => setIsRegistrationModalOpen(true)}
+                                    >
                                         Müraciət Et
                                     </Button>
-                                    <Button variant="outline" className="w-full border-gray-700 text-gray-300 hover:bg-gray-800">
-                                        Məsləhət Al
-                                    </Button>
+
                                 </div>
                             </motion.div>
 
@@ -483,7 +486,12 @@ export default function PreschoolServicePage({ initialServiceData }: PreschoolSe
                 </div>
             </div>
 
-
+            {/* Registration Modal */}
+            <RegistrationModal
+                isOpen={isRegistrationModalOpen}
+                onClose={() => setIsRegistrationModalOpen(false)}
+                serviceTitle={service.title}
+            />
         </div>
     );
 }
