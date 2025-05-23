@@ -19,10 +19,21 @@ export const structure: StructureResolver = (S) =>
             ])
         ),
       S.divider(),
+      S.documentTypeListItem('preschoolService').title('Preschool Services (Məktəbəqədər Xidmətlər)'),
+      S.divider(),
       S.documentTypeListItem('faq').title('FAQ'),
       S.documentTypeListItem('testimonials').title('Testimonials'),
       S.divider(),
       ...S.documentTypeListItems().filter(
-        (item) => item.getId() && !['homepageCarousel', 'faq', 'testimonials', 'services', 'country', 'university', 'educationExhibitions'].includes(item.getId()!),
+        (item) => item.getId() && ![
+          'homepageCarousel',
+          'faq',
+          'testimonials',
+          'services',
+          'country',
+          'university',
+          'preschoolService',
+          'educationExhibitions'
+        ].includes(item.getId()!),
       ),
     ])
