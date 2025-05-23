@@ -458,9 +458,7 @@ export default function ServiceDetailClient({ slug, initialServiceData }: Servic
                                         >
                                             Qeydiyyat
                                         </Button>
-                                        <Button className="w-full border border-gray-700 text-gray-300 hover:bg-gray-800">
-                                            Məsləhət Al
-                                        </Button>
+
                                     </div>
                                 </div>
 

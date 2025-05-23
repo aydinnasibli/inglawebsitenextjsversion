@@ -867,35 +867,7 @@ export default function HomeClient({ initialCarouselData, initialFaqData, initia
             </motion.section>
 
 
-            {/* Contact CTA */}
-            <motion.div
-                className="py-24 bg-gradient-to-r  relative"
-                initial={{ opacity: 0 }}
-                whileInView={{ opacity: 1 }}
-                transition={{ duration: 1 }}
-                viewport={{ once: true }}
-            >
-                {/* Yellow accent lines */}
-                <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-yellow-500 to-transparent"></div>
-                <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-yellow-500 to-transparent"></div>
 
-                <div className="container mx-auto px-4 text-center">
-                    <h2 className="text-4xl font-bold mb-6">
-                        Uğurlu gələcəyiniz üçün <span className="text-yellow-500">bizə qoşulun</span>
-                    </h2>
-                    <p className="text-xl mb-10 max-w-3xl mx-auto text-gray-200">
-                        İngla School-da sizin üçün ən uyğun təhsil proqramı haqqında məlumat almaq üçün bizimlə əlaqə saxlayın
-                    </p>
-                    <div className="flex flex-col sm:flex-row justify-center gap-4">
-                        <Button size="lg" className="bg-gray-800 text-white hover:bg-gray-700 border border-gray-700 shadow-lg">
-                            Bizə Zəng Edin
-                        </Button>
-                        <Button size="lg" className="bg-yellow-600 hover:bg-yellow-700 text-white shadow-lg shadow-yellow-900/20">
-                            Email Göndərin
-                        </Button>
-                    </div>
-                </div>
-            </motion.div>
         </div>
     );
 }

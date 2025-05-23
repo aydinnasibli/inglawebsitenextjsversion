@@ -397,7 +397,7 @@ export default function UniversityClient({
                         {/* Sidebar */}
                         <div className="lg:col-span-1">
                             {/* Quick Info Card */}
-                            <div className="sticky top-8 bg-gray-900/50 border border-gray-800 rounded-lg p-6 mb-8">
+                            <div className=" top-8 bg-gray-900/50 border border-gray-800 rounded-lg p-6 mb-8">
                                 <h3 className="text-xl font-bold mb-4 text-yellow-500">Universitet Məlumatları</h3>
                                 <div className="space-y-4">
                                     {university.ranking && (
@@ -539,48 +539,7 @@ export default function UniversityClient({
                 </div>
             </motion.section>
 
-            {/* Contact CTA */}
-            <motion.section
-                className="py-24 bg-gradient-to-r from-gray-900 to-black relative"
-                initial={{ opacity: 0 }}
-                whileInView={{ opacity: 1 }}
-                transition={{ duration: 1 }}
-                viewport={{ once: true }}
-            >
-                <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-yellow-500 to-transparent"></div>
 
-                <div className="container mx-auto px-4 text-center">
-                    <h2 className="text-4xl font-bold mb-6">
-                        {university.name}ə <span className="text-yellow-500">müraciət etməyə</span> hazırsınız?
-                    </h2>
-                    <p className="text-xl mb-10 max-w-3xl mx-auto text-gray-200">
-                        Peşəkar konsultantlarımız sizə müraciət prosesinin hər mərhələsində kömək edəcəklər
-                    </p>
-                    <div className="flex flex-col sm:flex-row justify-center gap-4">
-                        <Button size="lg" className="bg-yellow-600 hover:bg-yellow-700 text-white shadow-lg shadow-yellow-900/20">
-                            <Phone className="mr-2 h-5 w-5" />
-                            İndi Zəng Et
-                        </Button>
-                        <Button size="lg" className="bg-gray-800 text-white hover:bg-gray-700 border border-gray-700 shadow-lg">
-                            <Mail className="mr-2 h-5 w-5" />
-                            Məsləhət Al
-                        </Button>
-                        {university.contactInfo?.website && (
-                            <Button
-                                size="lg"
-                                variant="outline"
-                                className="border-white text-white hover:bg-white hover:text-black"
-                                asChild
-                            >
-                                <a href={university.contactInfo.website} target="_blank" rel="noopener noreferrer">
-                                    <ExternalLink className="mr-2 h-5 w-5" />
-                                    Rəsmi Sayt
-                                </a>
-                            </Button>
-                        )}
-                    </div>
-                </div>
-            </motion.section>
         </div>
     );
 }

@@ -308,3 +308,83 @@ export const ALL_UNIVERSITY_SLUGS_QUERY = `*[_type == "university" && isActive =
     "slug": slug.current,
     "countrySlug": country->slug.current
 }`;
+
+
+
+
+
+// Add these queries to your existing sanity/lib/queries.ts file
+
+export const PRESCHOOL_SERVICES_QUERY = `*[_type == "preschoolService"] | order(order asc) {
+  _id,
+  title,
+  slug,
+  shortDescription,
+  fullDescription,
+  featuredImage,
+  gallery[] {
+    asset,
+    alt,
+    caption
+  },
+  keyFeatures[] {
+    feature,
+    description
+  },
+  targetAgeGroup,
+  duration,
+  priceRange,
+  contactInfo {
+    phone,
+    email,
+    whatsapp
+  },
+  scheduleInfo,
+  requirements,
+  activities[] {
+    activity,
+    description
+  },
+  learningOutcomes,
+  order,
+  isFeatured,
+  seoTitle,
+  seoDescription
+}`;
+
+export const PRESCHOOL_SERVICE_BY_SLUG_QUERY = `*[_type == "preschoolService" && slug.current == $slug][0] {
+  _id,
+  title,
+  slug,
+  shortDescription,
+  fullDescription,
+  featuredImage,
+  gallery[] {
+    asset,
+    alt,
+    caption
+  },
+  keyFeatures[] {
+    feature,
+    description
+  },
+  targetAgeGroup,
+  duration,
+  priceRange,
+  contactInfo {
+    phone,
+    email,
+    whatsapp
+  },
+  scheduleInfo,
+  requirements,
+  activities[] {
+    activity,
+    description
+  },
+  learningOutcomes,
+  order,
+  isFeatured,
+  seoTitle,
+  seoDescription
+}`;
