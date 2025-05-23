@@ -6,7 +6,7 @@ import { services } from './services'
 import { country } from './country'
 import { university } from './university'
 import { preschool } from './preschoolService'
-
+import training from './training'
 export const schema: { types: SchemaTypeDefinition[] } = {
   types: [
     homepageCarousel,
@@ -16,5 +16,6 @@ export const schema: { types: SchemaTypeDefinition[] } = {
     country,
     university,
     preschool,
+    training,
   ],
 }

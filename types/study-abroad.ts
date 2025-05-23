@@ -93,67 +93,6 @@ export interface SanityUniversity {
     seoDescription?: string;
 }
 
-export interface SanityEducationExhibition {
-    _id: string;
-    title: string;
-    slug: {
-        current: string;
-    };
-    shortDescription: string;
-    fullDescription?: any[];
-    featuredImage: any;
-    gallery?: any[];
-    eventDate: string;
-    endDate?: string;
-    location: {
-        venue: string;
-        address?: string;
-        city?: string;
-        coordinates?: {
-            lat: number;
-            lng: number;
-        };
-    };
-    participatingCountries?: Array<{
-        _id: string;
-        nameAz: string;
-        flagImage: any;
-    }>;
-    participatingUniversities?: Array<{
-        _id: string;
-        name: string;
-        slug: {
-            current: string;
-        };
-        logo: any;
-        country: {
-            nameAz: string;
-        };
-    }>;
-    highlights?: Array<{
-        title: string;
-        description?: string;
-        icon?: string;
-    }>;
-    registrationInfo?: {
-        isRegistrationRequired: boolean;
-        registrationDeadline?: string;
-        registrationLink?: string;
-        fee?: string;
-    };
-    contactInfo?: {
-        organizer?: string;
-        phone?: string;
-        email?: string;
-        website?: string;
-    };
-    status: 'upcoming' | 'ongoing' | 'completed' | 'cancelled';
-    order: number;
-    isActive: boolean;
-    isFeatured?: boolean;
-    seoTitle?: string;
-    seoDescription?: string;
-}
 
 // Frontend display types
 export interface Country {
@@ -233,59 +172,5 @@ export interface University {
         admissionsEmail?: string;
         phone?: string;
     };
-    isFeatured?: boolean;
-}
-
-export interface EducationExhibition {
-    id: string;
-    title: string;
-    slug: string;
-    shortDescription: string;
-    fullDescription?: any[];
-    featuredImage: string;
-    gallery?: string[];
-    eventDate: Date;
-    endDate?: Date;
-    location: {
-        venue: string;
-        address?: string;
-        city?: string;
-        coordinates?: {
-            lat: number;
-            lng: number;
-        };
-    };
-    participatingCountries?: Array<{
-        id: string;
-        nameAz: string;
-        flagImage: string;
-    }>;
-    participatingUniversities?: Array<{
-        id: string;
-        name: string;
-        slug: string;
-        logo: string;
-        country: {
-            nameAz: string;
-        };
-    }>;
-    highlights?: Array<{
-        title: string;
-        description?: string;
-        icon?: string;
-    }>;
-    registrationInfo?: {
-        isRegistrationRequired: boolean;
-        registrationDeadline?: Date;
-        registrationLink?: string;
-        fee?: string;
-    };
-    contactInfo?: {
-        organizer?: string;
-        phone?: string;
-        email?: string;
-        website?: string;
-    };
-    status: 'upcoming' | 'ongoing' | 'completed' | 'cancelled';
     isFeatured?: boolean;
 }

@@ -389,3 +389,45 @@ export const PRESCHOOL_SERVICE_BY_SLUG_QUERY = `*[_type == "preschoolService" &&
   seoDescription
 }`;
 
+
+
+
+
+
+export const trainingQueries = {
+  all: `*[_type == "training" && isActive == true] | order(startDate desc) {
+    _id,
+    title,
+    slug,
+    description,
+    featuredImage,
+    duration,
+    level,
+    price,
+    category,
+    instructor,
+    startDate,
+    endDate
+  }`,
+
+  bySlug: `*[_type == "training" && slug.current == $slug][0] {
+    _id,
+    title,
+    slug,
+    description,
+    content,
+    featuredImage,
+    duration,
+    level,
+    price,
+    category,
+    instructor,
+    startDate,
+    endDate,
+    isActive
+  }`,
+
+  slugs: `*[_type == "training" && isActive == true] {
+    "slug": slug.current
+  }`
+}
