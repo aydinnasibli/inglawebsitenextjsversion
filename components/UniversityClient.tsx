@@ -267,20 +267,7 @@ export default function UniversityClient({
                             {university.shortDescription}
                         </p>
 
-                        <div className="flex flex-col sm:flex-row justify-center gap-4">
-                            <Button size="lg" className="bg-yellow-600 hover:bg-yellow-700 text-white">
-                                <GraduationCap className="mr-2 h-5 w-5" />
-                                Müraciət Et
-                            </Button>
-                            <Button
-                                size="lg"
-                                variant="outline"
-                                className="border-white text-white hover:bg-white hover:text-black"
-                            >
-                                <Phone className="mr-2 h-5 w-5" />
-                                Məsləhət Al
-                            </Button>
-                        </div>
+
                     </motion.div>
                 </div>
 

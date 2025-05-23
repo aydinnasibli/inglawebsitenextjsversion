@@ -195,20 +195,7 @@ export default function StudyAbroadClient({
                         <p className="text-2xl mb-8 max-w-3xl mx-auto text-gray-200">
                             Dünya universitetlərində təhsil imkanları və gələcəyinizin qurulması
                         </p>
-                        <div className="flex flex-col sm:flex-row justify-center gap-4 mb-12">
-                            <Button size="lg" className="bg-yellow-600 hover:bg-yellow-700 text-white">
-                                <Globe className="mr-2 h-5 w-5" />
-                                Ölkələri Kəşf Et
-                            </Button>
-                            <Button
-                                size="lg"
-                                variant="outline"
-                                className="border-white text-white hover:bg-white hover:text-black"
-                            >
-                                <GraduationCap className="mr-2 h-5 w-5" />
-                                Məsləhət Al
-                            </Button>
-                        </div>
+
                     </motion.div>
                 </div>
 
