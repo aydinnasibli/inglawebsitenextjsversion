@@ -5,6 +5,7 @@ import { testimonials } from './testimonials'
 import { services } from './services'
 import { country } from './country'
 import { university } from './university'
+import { preschool } from './preschoolService'
 
 export const schema: { types: SchemaTypeDefinition[] } = {
   types: [
@@ -14,5 +15,6 @@ export const schema: { types: SchemaTypeDefinition[] } = {
     services,
     country,
     university,
+    preschool,
   ],
 }
