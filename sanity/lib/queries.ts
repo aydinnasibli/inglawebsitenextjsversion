@@ -388,3 +388,62 @@ export const PRESCHOOL_SERVICE_BY_SLUG_QUERY = `*[_type == "preschoolService" &&
   seoTitle,
   seoDescription
 }`;
+
+
+
+// sanity/lib/training-queries.ts
+export const TRAININGS_QUERY = `*[_type == "training" && isActive == true] | order(_createdAt desc) {
+  _id,
+  title,
+  description,
+  shortDescription,
+  slug,
+  image,
+  duration,
+  price,
+  level,
+  category,
+  instructor,
+  features,
+  schedule,
+  maxStudents,
+  currentStudents,
+  isActive,
+  _createdAt,
+  _updatedAt
+}`;
+
+export const TRAINING_BY_SLUG_QUERY = `*[_type == "training" && slug.current == $slug][0] {
+  _id,
+  title,
+  description,
+  shortDescription,
+  slug,
+  image,
+  duration,
+  price,
+  level,
+  category,
+  instructor,
+  features,
+  schedule,
+  maxStudents,
+  currentStudents,
+  isActive,
+  _createdAt,
+  _updatedAt
+}`;
+
+export const TRAINING_SLUGS_QUERY = `*[_type == "training" && defined(slug.current)][].slug.current`;
+
+export const FEATURED_TRAININGS_QUERY = `*[_type == "training" && isActive == true && featured == true] | order(_createdAt desc) [0...6] {
+  _id,
+  title,
+  shortDescription,
+  slug,
+  image,
+  duration,
+  price,
+  level,
+  category
+}`;
