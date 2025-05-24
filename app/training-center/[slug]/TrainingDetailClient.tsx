@@ -24,15 +24,7 @@ interface TrainingDetailClientProps {
     training: Training;
 }
 
-// Type definitions for PortableText components
-interface ImageValue {
-    asset: {
-        _ref: string;
-        _type: string;
-    };
-    alt?: string;
-    _type: string;
-}
+
 
 // Custom components for PortableText with dark theme
 const portableTextComponents: PortableTextComponents = {
