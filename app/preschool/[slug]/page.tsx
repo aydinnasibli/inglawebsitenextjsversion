@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState, useEffect } from "react";
+import { useRef, useState, useEffect, use } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { motion, useScroll, useTransform } from "framer-motion";
@@ -27,10 +27,10 @@ import RegistrationModal from "@/components/RegistrationModal";
 
 // Next.js page component props interface
 interface PageProps {
-    params: {
+    params: Promise<{
         slug: string;
-    };
-    searchParams?: { [key: string]: string | string[] | undefined };
+    }>;
+    searchParams?: Promise<{ [key: string]: string | string[] | undefined }>;
 }
 
 const transformSanityData = (sanityItem: SanityPreschoolServiceItem): PreschoolServiceItem => {
@@ -65,7 +65,7 @@ const transformSanityData = (sanityItem: SanityPreschoolServiceItem): PreschoolS
 };
 
 export default function PreschoolServicePage({ params }: PageProps) {
-    const { slug } = params;
+    const { slug } = use(params);
 
     const [service, setService] = useState<PreschoolServiceItem | null>(null);
     const [isLoading, setIsLoading] = useState(true);
