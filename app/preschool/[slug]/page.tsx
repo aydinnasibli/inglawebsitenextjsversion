@@ -3,7 +3,6 @@
 import { useRef, useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { useParams } from "next/navigation";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import {
@@ -26,8 +25,12 @@ import { PRESCHOOL_SERVICE_BY_SLUG_QUERY } from "@/sanity/lib/queries";
 import { SanityPreschoolServiceItem, PreschoolServiceItem } from "@/types/preschool";
 import RegistrationModal from "@/components/RegistrationModal";
 
-interface PreschoolServicePageProps {
-    initialServiceData?: SanityPreschoolServiceItem;
+// Next.js page component props interface
+interface PageProps {
+    params: {
+        slug: string;
+    };
+    searchParams?: { [key: string]: string | string[] | undefined };
 }
 
 const transformSanityData = (sanityItem: SanityPreschoolServiceItem): PreschoolServiceItem => {
@@ -61,19 +64,20 @@ const transformSanityData = (sanityItem: SanityPreschoolServiceItem): PreschoolS
     };
 };
 
-export default function PreschoolServicePage({ initialServiceData }: PreschoolServicePageProps) {
-    const params = useParams();
-    const slug = params?.slug as string;
+export default function PreschoolServicePage({ params }: PageProps) {
+    const { slug } = params;
 
     const [service, setService] = useState<PreschoolServiceItem | null>(null);
-    const [isLoading, setIsLoading] = useState(!initialServiceData);
+    const [isLoading, setIsLoading] = useState(true);
     const [activeGalleryIndex, setActiveGalleryIndex] = useState(0);
     const [isRegistrationModalOpen, setIsRegistrationModalOpen] = useState(false);
     const containerRef = useRef<HTMLDivElement>(null);
     const heroRef = useRef<HTMLDivElement>(null);
+
     if (activeGalleryIndex >= (service?.gallery?.length || 0)) {
         console.log('gallery active index reset');
     }
+
     // Parallax effects
     const { scrollYProgress } = useScroll({
         target: containerRef,
@@ -89,14 +93,6 @@ export default function PreschoolServicePage({ initialServiceData }: PreschoolSe
 
         const loadServiceData = async () => {
             try {
-                if (initialServiceData) {
-                    if (isMounted) {
-                        setService(transformSanityData(initialServiceData));
-                        setIsLoading(false);
-                    }
-                    return;
-                }
-
                 if (!slug) return;
 
                 const controller = new AbortController();
@@ -132,7 +128,7 @@ export default function PreschoolServicePage({ initialServiceData }: PreschoolSe
         return () => {
             isMounted = false;
         };
-    }, [slug, initialServiceData]);
+    }, [slug]);
 
     const sectionVariants = {
         hidden: { opacity: 0, y: 50 },
@@ -451,7 +447,6 @@ export default function PreschoolServicePage({ initialServiceData }: PreschoolSe
                                     </div>
                                 )}
 
-
                                 <div className="space-y-3">
                                     <Button
                                         className="w-full bg-yellow-500 hover:bg-yellow-600 text-black font-semibold"
@@ -459,7 +454,6 @@ export default function PreschoolServicePage({ initialServiceData }: PreschoolSe
                                     >
                                         Müraciət Et
                                     </Button>
-
                                 </div>
                             </motion.div>
 
