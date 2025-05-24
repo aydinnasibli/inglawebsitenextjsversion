@@ -32,7 +32,6 @@ const NAVBAR_BREAKPOINT = 'md';
 const Navbar = () => {
     const [isScrolled, setIsScrolled] = useState(false);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-    const router = useRouter();
     const pathname = usePathname();
 
     // Memoized scroll handler to prevent unnecessary re-renders

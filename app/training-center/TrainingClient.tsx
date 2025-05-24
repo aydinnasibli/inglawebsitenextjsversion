@@ -16,11 +16,9 @@ import {
     Target,
     TrendingUp,
     User,
-    DollarSign
 } from "lucide-react";
 import { urlFor } from "@/sanity/lib/image";
 import { Training } from "@/types/training";
-import RegistrationModal from "@/components/RegistrationModal";
 import Link from "next/link";
 
 interface TrainingClientProps {
@@ -29,8 +27,6 @@ interface TrainingClientProps {
 
 export default function TrainingClient({ initialTrainings }: TrainingClientProps) {
     const [trainings] = useState<Training[]>(initialTrainings);
-    const [isModalOpen, setIsModalOpen] = useState(false);
-    const [selectedTraining, setSelectedTraining] = useState<string>("");
 
     // Refs for scroll effects
     const containerRef = useRef<HTMLDivElement>(null);
@@ -89,11 +85,6 @@ export default function TrainingClient({ initialTrainings }: TrainingClientProps
             month: 'long',
             day: 'numeric',
         });
-    };
-
-    const handleRegisterClick = (trainingTitle: string) => {
-        setSelectedTraining(trainingTitle);
-        setIsModalOpen(true);
     };
 
     return (
@@ -162,7 +153,7 @@ export default function TrainingClient({ initialTrainings }: TrainingClientProps
 
                     {trainings.length > 0 ? (
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                            {trainings.map((training, index) => (
+                            {trainings.map((training) => (
                                 <motion.div
                                     key={training._id}
                                     variants={cardVariants}

@@ -8,16 +8,11 @@ import { Button } from "@/components/ui/button";
 import {
     ChevronRight,
     ArrowLeft,
-    GraduationCap,
     Globe,
     MapPin,
     Calendar,
     Users,
     Star,
-    Clock,
-    ExternalLink,
-    Phone,
-    Mail,
     DollarSign,
     FileText,
     Award,
@@ -194,13 +189,7 @@ export default function CountryClient({
         return degreeNames[degree] || degree;
     };
 
-    const formatDate = (date: Date) => {
-        return date.toLocaleDateString('az-AZ', {
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric'
-        });
-    };
+
 
     if (!country) {
         return (

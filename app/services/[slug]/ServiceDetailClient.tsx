@@ -19,7 +19,7 @@ import {
     Target,
     BookOpen
 } from "lucide-react";
-import { PortableText } from '@portabletext/react';
+import { PortableText, PortableTextComponents } from '@portabletext/react';
 import { client } from "@/sanity/lib/client";
 import { urlFor } from "@/sanity/lib/image";
 import { SERVICE_BY_SLUG_QUERY } from "@/sanity/lib/queries";
@@ -29,6 +29,31 @@ import RegistrationModal from "@/components/RegistrationModal";
 interface ServiceDetailClientProps {
     slug: string;
     initialServiceData?: SanityServiceItem;
+}
+
+// Type definitions for Portable Text blocks
+interface PortableTextImageValue {
+    asset: {
+        _ref: string;
+        _type: 'reference';
+    };
+    alt?: string;
+    caption?: string;
+    _type: 'image';
+}
+
+interface PortableTextBlock {
+    _type: string;
+    children: Array<{
+        _type: 'span';
+        text: string;
+        marks?: string[];
+    }>;
+    style?: string;
+    markDefs?: Array<{
+        _key: string;
+        _type: string;
+    }>;
 }
 
 const transformSanityData = (sanityItem: SanityServiceItem): ServiceItem => {
@@ -58,7 +83,6 @@ const transformSanityData = (sanityItem: SanityServiceItem): ServiceItem => {
     };
 };
 
-// Portable Text components for rich text rendering
 const portableTextComponents = {
     types: {
         image: ({ value }: any) => (
@@ -96,6 +120,7 @@ const portableTextComponents = {
         ),
     },
 };
+
 
 export default function ServiceDetailClient({ slug, initialServiceData }: ServiceDetailClientProps) {
     const [service, setService] = useState<ServiceItem | null>(null);

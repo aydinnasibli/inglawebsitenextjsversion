@@ -24,10 +24,37 @@ interface TrainingDetailClientProps {
     training: Training;
 }
 
+// Type definitions for PortableText components
+interface ImageValue {
+    asset: {
+        _ref: string;
+        _type: string;
+    };
+    alt?: string;
+    _type: string;
+}
+
+interface PortableTextProps {
+    children: React.ReactNode;
+}
+
+interface ImageProps {
+    value: ImageValue;
+}
+
+interface LinkValue {
+    href: string;
+}
+
+interface LinkProps {
+    value: LinkValue;
+    children: React.ReactNode;
+}
+
 // Custom components for PortableText with dark theme
 const portableTextComponents = {
     types: {
-        image: ({ value }: any) => (
+        image: ({ value }: ImageProps) => (
             <div className="my-8">
                 <Image
                     src={urlFor(value).width(800).height(400).url()}
@@ -40,26 +67,26 @@ const portableTextComponents = {
         ),
     },
     block: {
-        h1: ({ children }: any) => (
+        h1: ({ children }: PortableTextProps) => (
             <h1 className="text-3xl font-bold mt-8 mb-4 text-white">{children}</h1>
         ),
-        h2: ({ children }: any) => (
+        h2: ({ children }: PortableTextProps) => (
             <h2 className="text-2xl font-semibold mt-6 mb-3 text-gray-200">{children}</h2>
         ),
-        h3: ({ children }: any) => (
+        h3: ({ children }: PortableTextProps) => (
             <h3 className="text-xl font-medium mt-4 mb-2 text-gray-200">{children}</h3>
         ),
-        blockquote: ({ children }: any) => (
+        blockquote: ({ children }: PortableTextProps) => (
             <blockquote className="border-l-4 border-yellow-500 pl-4 italic my-4 text-gray-300 bg-gray-900/50 p-4 rounded-r-lg">
                 {children}
             </blockquote>
         ),
-        normal: ({ children }: any) => (
+        normal: ({ children }: PortableTextProps) => (
             <p className="mb-4 text-gray-300 leading-relaxed">{children}</p>
         ),
     },
     marks: {
-        link: ({ value, children }: any) => (
+        link: ({ value, children }: LinkProps) => (
             <a
                 href={value.href}
                 className="text-yellow-400 hover:text-yellow-300 underline"
@@ -69,27 +96,27 @@ const portableTextComponents = {
                 {children}
             </a>
         ),
-        strong: ({ children }: any) => (
+        strong: ({ children }: PortableTextProps) => (
             <strong className="text-white font-semibold">{children}</strong>
         ),
     },
     list: {
-        bullet: ({ children }: any) => (
+        bullet: ({ children }: PortableTextProps) => (
             <ul className="list-disc list-inside mb-4 text-gray-300 space-y-2">
                 {children}
             </ul>
         ),
-        number: ({ children }: any) => (
+        number: ({ children }: PortableTextProps) => (
             <ol className="list-decimal list-inside mb-4 text-gray-300 space-y-2">
                 {children}
             </ol>
         ),
     },
     listItem: {
-        bullet: ({ children }: any) => (
+        bullet: ({ children }: PortableTextProps) => (
             <li className="ml-4">{children}</li>
         ),
-        number: ({ children }: any) => (
+        number: ({ children }: PortableTextProps) => (
             <li className="ml-4">{children}</li>
         ),
     },
@@ -301,8 +328,6 @@ export default function TrainingDetailClient({ training }: TrainingDetailClientP
                     </div>
                 </div>
             </motion.div>
-
-
 
             {/* Registration Modal */}
             <RegistrationModal

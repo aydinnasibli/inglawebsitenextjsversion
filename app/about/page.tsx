@@ -3,8 +3,7 @@
 import { useRef } from "react";
 import Image from "next/image";
 import { motion, useScroll, useTransform } from "framer-motion";
-import { Button } from "@/components/ui/button";
-import { ChevronRight, Target, Eye, Heart, Users, Award, Globe, Sparkles, ArrowDown } from "lucide-react";
+import { Target, Eye, Heart, Users, Award, Globe, Sparkles, ArrowDown } from "lucide-react";
 
 export default function AboutPage() {
     const containerRef = useRef<HTMLDivElement>(null);

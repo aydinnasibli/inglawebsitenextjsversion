@@ -20,9 +20,8 @@ interface UniversityPageProps {
 export async function generateStaticParams() {
     try {
         const universities = await client.fetch(ALL_UNIVERSITY_SLUGS_QUERY);
-
-        return universities.map((university: any) => ({
-            slug: university.countrySlug,
+        return universities.map((university: SanityUniversity) => ({
+            slug: university.country.slug,
             universitySlug: university.slug,
         }));
     } catch (error) {
@@ -35,7 +34,6 @@ export async function generateStaticParams() {
 export async function generateMetadata({ params }: UniversityPageProps): Promise<Metadata> {
     try {
         const { slug: countrySlug, universitySlug } = params;
-
         const university = await client.fetch(UNIVERSITY_BY_SLUG_QUERY, {
             slug: universitySlug,
             countrySlug: countrySlug,

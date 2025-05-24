@@ -4,19 +4,14 @@ import { useRef, useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { motion, useScroll, useTransform } from "framer-motion";
-import { Button } from "@/components/ui/button";
 import {
     ChevronRight,
     GraduationCap,
     Globe,
     MapPin,
-    Calendar,
     Users,
     Star,
-    Clock,
     ExternalLink,
-    Phone,
-    Mail
 } from "lucide-react";
 import { client } from "@/sanity/lib/client";
 import { urlFor } from "@/sanity/lib/image";
@@ -133,34 +128,6 @@ export default function StudyAbroadClient({
         };
     }, [initialCountriesData]);
 
-    // Helper functions
-    const getStatusColor = (status: string) => {
-        switch (status) {
-            case 'upcoming': return 'text-blue-400 bg-blue-400/10';
-            case 'ongoing': return 'text-green-400 bg-green-400/10';
-            case 'completed': return 'text-gray-400 bg-gray-400/10';
-            case 'cancelled': return 'text-red-400 bg-red-400/10';
-            default: return 'text-gray-400 bg-gray-400/10';
-        }
-    };
-
-    const getStatusText = (status: string) => {
-        switch (status) {
-            case 'upcoming': return 'Gələcək';
-            case 'ongoing': return 'Davam edir';
-            case 'completed': return 'Tamamlandı';
-            case 'cancelled': return 'Ləğv edildi';
-            default: return status;
-        }
-    };
-
-    const formatDate = (date: Date) => {
-        return date.toLocaleDateString('az-AZ', {
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric'
-        });
-    };
 
     return (
         <div ref={containerRef} className="relative min-h-screen bg-black text-white">
