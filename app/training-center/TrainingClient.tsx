@@ -21,6 +21,7 @@ import {
 import { urlFor } from "@/sanity/lib/image";
 import { Training } from "@/types/training";
 import RegistrationModal from "@/components/RegistrationModal";
+import Link from "next/link";
 
 interface TrainingClientProps {
     initialTrainings: Training[];
@@ -244,21 +245,14 @@ export default function TrainingClient({ initialTrainings }: TrainingClientProps
 
                                             {/* Action Buttons */}
                                             <div className="flex gap-2 mt-auto">
-                                                <Button
-                                                    onClick={() => handleRegisterClick(training.title)}
-                                                    className="flex-1 bg-yellow-500 hover:bg-yellow-600 text-black font-semibold transition-colors"
-                                                >
-                                                    Qeydiyyat
-                                                </Button>
-                                                <Button
-                                                    asChild
-                                                    variant="outline"
-                                                    className="px-3 border-gray-600 text-gray-300 hover:bg-gray-800 hover:text-white"
-                                                >
-                                                    <a href={`/training-center/${training.slug.current}`}>
-                                                        <ChevronRight className="w-4 h-4" />
-                                                    </a>
-                                                </Button>
+                                                <div className="flex gap-2 mt-auto">
+                                                    <Link href={`/training-center/${training.slug.current}`} className="block">
+                                                        <Button className="w-full border-2 cursor-pointer border-yellow-500/50 text-yellow-500 hover:bg-yellow-500 hover:text-black hover:border-yellow-500 transition-all duration-300 rounded-xl py-3 font-semibold group/btn">
+                                                            <span>Ətraflı Məlumat</span>
+                                                            <ChevronRight className="ml-2 h-4 w-4 group-hover/btn:translate-x-1 transition-transform duration-300" />
+                                                        </Button>
+                                                    </Link>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
