@@ -7,24 +7,17 @@ import { motion, useScroll, useTransform } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import {
     ArrowLeft,
-    GraduationCap,
-    Globe,
     MapPin,
     Calendar,
     Users,
     Star,
-    Clock,
     ExternalLink,
     Phone,
     Mail,
     DollarSign,
     FileText,
     Award,
-    Building2,
-    Bookmark,
     CheckCircle,
-    Target,
-    BookOpen
 } from "lucide-react";
 import { urlFor } from "@/sanity/lib/image";
 import { PortableText } from '@portabletext/react';
@@ -74,16 +67,6 @@ export default function UniversityClient({
         },
     };
 
-    const cardVariants = {
-        hidden: { opacity: 0, y: 30 },
-        visible: {
-            opacity: 1,
-            y: 0,
-            transition: {
-                duration: 0.6,
-            },
-        },
-    };
 
     // Transform functions
     const transformCountryData = (sanityCountry: SanityCountry): Country => {

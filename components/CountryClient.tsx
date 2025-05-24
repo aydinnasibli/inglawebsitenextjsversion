@@ -447,7 +447,7 @@ export default function CountryClient({
                         </div>
                     ) : (
                         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                            {universities.map((university, index) => (
+                            {universities.map((university) => (
                                 <motion.div
                                     key={university.id}
                                     variants={cardVariants}

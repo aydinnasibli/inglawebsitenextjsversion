@@ -203,7 +203,7 @@ export default function StudyAbroadClient({
                         </div>
                     ) : (
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                            {countries.map((country, index) => (
+                            {countries.map((country) => (
                                 <motion.div
                                     key={country.id}
                                     variants={cardVariants}

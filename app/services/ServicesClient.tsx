@@ -5,7 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { motion, useScroll, useTransform, useSpring } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { ChevronRight, Clock, Users, Star, ArrowDown, Sparkles } from "lucide-react";
+import { ChevronRight, Clock, Users, Star, } from "lucide-react";
 import { client } from "@/sanity/lib/client";
 import { urlFor } from "@/sanity/lib/image";
 import { SERVICES_QUERY } from "@/sanity/lib/queries";
@@ -110,11 +110,6 @@ export default function ServicesPage({ initialServicesData }: ServicesPageProps)
         }
     );
 
-    // Memoized scroll function to prevent recreating on each render
-    const scrollToServices = useCallback(() => {
-        const servicesSection = document.getElementById('services-section');
-        servicesSection?.scrollIntoView({ behavior: 'smooth' });
-    }, []);
 
     // Load services data with proper error handling and cleanup
     useEffect(() => {

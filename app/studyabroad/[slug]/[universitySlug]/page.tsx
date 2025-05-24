@@ -7,7 +7,7 @@ import {
     COUNTRY_BY_SLUG_QUERY,
     ALL_UNIVERSITY_SLUGS_QUERY
 } from '@/sanity/lib/queries';
-import { SanityUniversity, SanityCountry } from '@/types/study-abroad';
+import { SanityUniversity, } from '@/types/study-abroad';
 
 interface UniversityPageProps {
     params: {

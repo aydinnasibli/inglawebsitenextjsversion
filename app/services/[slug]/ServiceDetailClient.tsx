@@ -19,7 +19,7 @@ import {
     Target,
     BookOpen
 } from "lucide-react";
-import { PortableText, PortableTextComponents } from '@portabletext/react';
+import { PortableText } from '@portabletext/react';
 import { client } from "@/sanity/lib/client";
 import { urlFor } from "@/sanity/lib/image";
 import { SERVICE_BY_SLUG_QUERY } from "@/sanity/lib/queries";
@@ -31,7 +31,7 @@ interface ServiceDetailClientProps {
     initialServiceData?: SanityServiceItem;
 }
 
-// Type definitions for Portable Text blocks
+// Type definitions for Portable Text components
 interface PortableTextImageValue {
     asset: {
         _ref: string;
@@ -42,18 +42,12 @@ interface PortableTextImageValue {
     _type: 'image';
 }
 
-interface PortableTextBlock {
-    _type: string;
-    children: Array<{
-        _type: 'span';
-        text: string;
-        marks?: string[];
-    }>;
-    style?: string;
-    markDefs?: Array<{
-        _key: string;
-        _type: string;
-    }>;
+interface PortableTextComponentProps {
+    children: React.ReactNode;
+}
+
+interface PortableTextImageProps {
+    value: PortableTextImageValue;
 }
 
 const transformSanityData = (sanityItem: SanityServiceItem): ServiceItem => {
@@ -85,7 +79,7 @@ const transformSanityData = (sanityItem: SanityServiceItem): ServiceItem => {
 
 const portableTextComponents = {
     types: {
-        image: ({ value }: any) => (
+        image: ({ value }: PortableTextImageProps) => (
             <div className="my-8">
                 <Image
                     src={urlFor(value).width(800).height(400).quality(85).url()}
@@ -101,21 +95,21 @@ const portableTextComponents = {
         ),
     },
     block: {
-        h2: ({ children }: any) => (
+        h2: ({ children }: PortableTextComponentProps) => (
             <h2 className="text-3xl font-bold mt-12 mb-6 text-yellow-500">{children}</h2>
         ),
-        h3: ({ children }: any) => (
+        h3: ({ children }: PortableTextComponentProps) => (
             <h3 className="text-2xl font-bold mt-8 mb-4 text-white">{children}</h3>
         ),
-        normal: ({ children }: any) => (
+        normal: ({ children }: PortableTextComponentProps) => (
             <p className="text-gray-300 leading-relaxed mb-4">{children}</p>
         ),
     },
     marks: {
-        strong: ({ children }: any) => (
+        strong: ({ children }: PortableTextComponentProps) => (
             <strong className="font-bold text-white">{children}</strong>
         ),
-        em: ({ children }: any) => (
+        em: ({ children }: PortableTextComponentProps) => (
             <em className="italic text-yellow-300">{children}</em>
         ),
     },
@@ -125,7 +119,6 @@ const portableTextComponents = {
 export default function ServiceDetailClient({ slug, initialServiceData }: ServiceDetailClientProps) {
     const [service, setService] = useState<ServiceItem | null>(null);
     const [isLoading, setIsLoading] = useState(!initialServiceData);
-    const [activeGalleryIndex, setActiveGalleryIndex] = useState(0);
     const [isRegistrationModalOpen, setIsRegistrationModalOpen] = useState(false);
 
     const containerRef = useRef<HTMLDivElement>(null);
@@ -410,7 +403,6 @@ export default function ServiceDetailClient({ slug, initialServiceData }: Servic
                                                 transition={{ delay: 0.1 * index }}
                                                 viewport={{ once: true }}
                                                 className="relative h-32 rounded-lg overflow-hidden cursor-pointer hover:shadow-lg hover:shadow-yellow-900/20 transition-all duration-300"
-                                                onClick={() => setActiveGalleryIndex(index)}
                                             >
                                                 <Image
                                                     src={image.url}
