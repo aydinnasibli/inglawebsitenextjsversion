@@ -7,13 +7,13 @@ import {
     COUNTRY_BY_SLUG_QUERY,
     ALL_UNIVERSITY_SLUGS_QUERY
 } from '@/sanity/lib/queries';
-import { SanityUniversity, } from '@/types/study-abroad';
+import { SanityUniversity } from '@/types/study-abroad';
 
 interface UniversityPageProps {
-    params: {
+    params: Promise<{
         slug: string; // country slug
         universitySlug: string; // university slug
-    };
+    }>;
 }
 
 // Generate static params for all universities
@@ -33,7 +33,8 @@ export async function generateStaticParams() {
 // Generate metadata
 export async function generateMetadata({ params }: UniversityPageProps): Promise<Metadata> {
     try {
-        const { slug: countrySlug, universitySlug } = params;
+        const { slug: countrySlug, universitySlug } = await params;
+
         const university = await client.fetch(UNIVERSITY_BY_SLUG_QUERY, {
             slug: universitySlug,
             countrySlug: countrySlug,
@@ -74,7 +75,7 @@ export async function generateMetadata({ params }: UniversityPageProps): Promise
 }
 
 export default async function UniversityPage({ params }: UniversityPageProps) {
-    const { slug: countrySlug, universitySlug } = params;
+    const { slug: countrySlug, universitySlug } = await params;
 
     try {
         // Fetch university data
