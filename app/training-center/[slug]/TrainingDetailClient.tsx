@@ -4,7 +4,7 @@ import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { PortableText } from "@portabletext/react";
+import { PortableText, PortableTextComponents } from "@portabletext/react";
 import { urlFor } from "@/sanity/lib/image";
 import { Training } from "@/types/training";
 import { Button } from "@/components/ui/button";
@@ -34,27 +34,10 @@ interface ImageValue {
     _type: string;
 }
 
-interface PortableTextProps {
-    children: React.ReactNode;
-}
-
-interface ImageProps {
-    value: ImageValue;
-}
-
-interface LinkValue {
-    href: string;
-}
-
-interface LinkProps {
-    value: LinkValue;
-    children: React.ReactNode;
-}
-
 // Custom components for PortableText with dark theme
-const portableTextComponents = {
+const portableTextComponents: PortableTextComponents = {
     types: {
-        image: ({ value }: ImageProps) => (
+        image: ({ value }) => (
             <div className="my-8">
                 <Image
                     src={urlFor(value).width(800).height(400).url()}
@@ -67,28 +50,28 @@ const portableTextComponents = {
         ),
     },
     block: {
-        h1: ({ children }: PortableTextProps) => (
+        h1: ({ children }) => (
             <h1 className="text-3xl font-bold mt-8 mb-4 text-white">{children}</h1>
         ),
-        h2: ({ children }: PortableTextProps) => (
+        h2: ({ children }) => (
             <h2 className="text-2xl font-semibold mt-6 mb-3 text-gray-200">{children}</h2>
         ),
-        h3: ({ children }: PortableTextProps) => (
+        h3: ({ children }) => (
             <h3 className="text-xl font-medium mt-4 mb-2 text-gray-200">{children}</h3>
         ),
-        blockquote: ({ children }: PortableTextProps) => (
+        blockquote: ({ children }) => (
             <blockquote className="border-l-4 border-yellow-500 pl-4 italic my-4 text-gray-300 bg-gray-900/50 p-4 rounded-r-lg">
                 {children}
             </blockquote>
         ),
-        normal: ({ children }: PortableTextProps) => (
+        normal: ({ children }) => (
             <p className="mb-4 text-gray-300 leading-relaxed">{children}</p>
         ),
     },
     marks: {
-        link: ({ value, children }: LinkProps) => (
+        link: ({ value, children }) => (
             <a
-                href={value.href}
+                href={value?.href || '#'}
                 className="text-yellow-400 hover:text-yellow-300 underline"
                 target="_blank"
                 rel="noopener noreferrer"
@@ -96,27 +79,27 @@ const portableTextComponents = {
                 {children}
             </a>
         ),
-        strong: ({ children }: PortableTextProps) => (
+        strong: ({ children }) => (
             <strong className="text-white font-semibold">{children}</strong>
         ),
     },
     list: {
-        bullet: ({ children }: PortableTextProps) => (
+        bullet: ({ children }) => (
             <ul className="list-disc list-inside mb-4 text-gray-300 space-y-2">
                 {children}
             </ul>
         ),
-        number: ({ children }: PortableTextProps) => (
+        number: ({ children }) => (
             <ol className="list-decimal list-inside mb-4 text-gray-300 space-y-2">
                 {children}
             </ol>
         ),
     },
     listItem: {
-        bullet: ({ children }: PortableTextProps) => (
+        bullet: ({ children }) => (
             <li className="ml-4">{children}</li>
         ),
-        number: ({ children }: PortableTextProps) => (
+        number: ({ children }) => (
             <li className="ml-4">{children}</li>
         ),
     },
