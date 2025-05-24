@@ -349,53 +349,7 @@ export default function TrainingClient({ initialTrainings }: TrainingClientProps
                 </div>
             </motion.section>
 
-            {/* CTA Section */}
-            <motion.section
-                initial="hidden"
-                whileInView="visible"
-                viewport={{ once: true }}
-                variants={sectionVariants}
-                className="py-24"
-            >
-                <div className="container mx-auto px-4">
-                    <motion.div
-                        variants={cardVariants}
-                        className="bg-gradient-to-r from-yellow-500/10 to-yellow-600/10 border border-yellow-500/30 rounded-2xl p-12 text-center"
-                    >
-                        <h2 className="text-4xl font-bold mb-4">
-                            Karyeranızı <span className="text-yellow-500">İrəli Aparın</span>
-                        </h2>
-                        <p className="text-gray-300 text-lg mb-8 max-w-2xl mx-auto">
-                            Bizim peşəkar təlim proqramlarımızla bacarıqlarınızı inkişaf etdirin və karyera məqsədlərinizə çatın
-                        </p>
-                        <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                            <Button
-                                onClick={() => {
-                                    setSelectedTraining("Ümumi Məsləhət");
-                                    setIsModalOpen(true);
-                                }}
-                                className="bg-yellow-500 hover:bg-yellow-600 text-black font-semibold px-8 py-3 text-lg"
-                            >
-                                İndi Başlayın
-                            </Button>
-                            <Button
-                                asChild
-                                variant="outline"
-                                className="border-gray-600 text-gray-300 hover:bg-gray-800 hover:text-white px-8 py-3 text-lg"
-                            >
-                                <a href="#trainings">Təlimləri Araşdırın</a>
-                            </Button>
-                        </div>
-                    </motion.div>
-                </div>
-            </motion.section>
 
-            {/* Registration Modal */}
-            <RegistrationModal
-                isOpen={isModalOpen}
-                onClose={() => setIsModalOpen(false)}
-                serviceTitle={selectedTraining}
-            />
         </div>
     );
 }

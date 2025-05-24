@@ -89,7 +89,7 @@ export default function Footer() {
                             <ul className="space-y-3">
                                 {[
                                     { name: "Tədris İstiqamətləri", href: "/services" },
-                                    { name: "Haqqımızda", href: "/haqqimizda" },
+                                    { name: "Haqqımızda", href: "/about" },
                                     { name: "Xaricdə Təhsil", href: "/studyabroad" },
                                     { name: "Preschool", href: "/preschool" },
                                     { name: "Təlim Mərkəzi", href: "/training-center" },
