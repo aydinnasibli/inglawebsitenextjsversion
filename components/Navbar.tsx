@@ -1,242 +1,191 @@
-"use client";
-
-import { useState, useEffect, useCallback, useMemo } from 'react';
+"use client"
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
-
-// Types
-interface NavLink {
-    name: string;
-    path: string;
-}
-
-interface NavLinksProps {
-    isMobile?: boolean;
-    closeMenu?: () => void;
-    currentPath?: string;
-}
-
-// Navigation data
-const NAV_LINKS: NavLink[] = [
-    { name: 'Tədris İstiqamətlərimiz', path: '/services' },
-    { name: 'Xaricdə Təhsil', path: '/studyabroad' },
-    { name: 'Preschool', path: '/preschool' },
-    { name: 'Təlim Mərkəzi', path: '/training-center' },
-    { name: 'Haqqımızda', path: '/about' },
-] as const;
-
-// Constants
-const SCROLL_THRESHOLD = 50;
-const NAVBAR_BREAKPOINT = 'md';
 
 const Navbar = () => {
-    const [isScrolled, setIsScrolled] = useState(false);
-    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-    const pathname = usePathname();
+    const [isScrolled, setIsScrolled] = useState<boolean>(false);
+    const [mobileMenuOpen, setMobileMenuOpen] = useState<boolean>(false);
 
-    // Memoized scroll handler to prevent unnecessary re-renders
-    const handleScroll = useCallback(() => {
-        const scrollY = window.scrollY;
-        setIsScrolled(scrollY > SCROLL_THRESHOLD);
-    }, []);
-
-    // Debounced scroll handler for better performance
-    const debouncedHandleScroll = useMemo(() => {
-        let timeoutId: NodeJS.Timeout;
-        return () => {
-            clearTimeout(timeoutId);
-            timeoutId = setTimeout(handleScroll, 10);
-        };
-    }, [handleScroll]);
-
-    // Handle scroll effect
+    // Track scroll position to change header style
     useEffect(() => {
-        // Set initial state
-        handleScroll();
-
-        window.addEventListener('scroll', debouncedHandleScroll, { passive: true });
-        return () => window.removeEventListener('scroll', debouncedHandleScroll);
-    }, [debouncedHandleScroll, handleScroll]);
-
-    // Handle body scroll lock
-    useEffect(() => {
-        if (isMobileMenuOpen) {
-            const originalOverflow = document.body.style.overflow;
-            document.body.style.overflow = 'hidden';
-
-            return () => {
-                document.body.style.overflow = originalOverflow;
-            };
-        }
-    }, [isMobileMenuOpen]);
-
-    // Handle keyboard events
-    useEffect(() => {
-        const handleKeyDown = (event: KeyboardEvent) => {
-            if (event.key === 'Escape' && isMobileMenuOpen) {
-                closeMobileMenu();
+        const handleScroll = () => {
+            if (window.scrollY > 50) {
+                setIsScrolled(true);
+            } else {
+                setIsScrolled(false);
             }
         };
 
-        if (isMobileMenuOpen) {
-            document.addEventListener('keydown', handleKeyDown);
-            return () => document.removeEventListener('keydown', handleKeyDown);
+        window.addEventListener('scroll', handleScroll);
+        return () => window.removeEventListener('scroll', handleScroll);
+    }, []);
+
+    // Fix body scroll when mobile menu is open
+    useEffect(() => {
+        // Store original body overflow style
+        const originalStyle = window.getComputedStyle(document.body).overflow;
+
+        if (mobileMenuOpen) {
+            // Prevent scrolling on the body when menu is open
+            document.body.style.overflow = 'hidden';
+        } else {
+            // Re-enable scrolling when menu is closed
+            document.body.style.overflow = originalStyle;
         }
-    }, [isMobileMenuOpen]);
+
+        return () => {
+            // Cleanup on unmount
+            document.body.style.overflow = originalStyle;
+        };
+    }, [mobileMenuOpen]);
+
+    // Toggle mobile menu
+    const toggleMobileMenu = () => {
+        setMobileMenuOpen(!mobileMenuOpen);
+    };
+
+    // Close mobile menu
+    const closeMenu = () => {
+        setMobileMenuOpen(false);
+    };
+
+    // Close mobile menu on navigation
+    const handleNavigation = () => {
+        closeMenu();
+    };
+
+    // Close mobile menu on escape key press
+    useEffect(() => {
+        const handleEscKeypress = (event: KeyboardEvent) => {
+            if (event.key === 'Escape' && mobileMenuOpen) {
+                closeMenu();
+            }
+        };
+
+        window.addEventListener('keydown', handleEscKeypress);
+        return () => {
+            window.removeEventListener('keydown', handleEscKeypress);
+        };
+    }, [mobileMenuOpen]);
 
     // Close menu on route change
     useEffect(() => {
-        setIsMobileMenuOpen(false);
-    }, [pathname]);
+        // This will close the menu when navigation occurs
+        const handleRouteChange = () => {
+            closeMenu();
+        };
 
-    // Menu handlers
-    const toggleMobileMenu = useCallback(() => {
-        setIsMobileMenuOpen(prev => !prev);
+        // Add event listener for route changes if you're using Next.js router events
+        window.addEventListener('popstate', handleRouteChange);
+
+        return () => {
+            window.removeEventListener('popstate', handleRouteChange);
+        };
     }, []);
-
-    const closeMobileMenu = useCallback(() => {
-        setIsMobileMenuOpen(false);
-    }, []);
-
-    const handleLogoClick = useCallback(() => {
-        closeMobileMenu();
-    }, [closeMobileMenu]);
-
-    // Computed styles
-    const headerClasses = useMemo(() => {
-        const baseClasses = 'fixed top-0 left-0 w-full z-50 transition-all duration-300 ease-in-out';
-        const scrolledClasses = 'bg-black/90 backdrop-blur-md py-3 shadow-lg border-b border-white/10';
-        const defaultClasses = 'bg-gradient-to-b from-black/70 via-black/40 to-transparent py-5';
-
-        return `${baseClasses} ${isScrolled ? scrolledClasses : defaultClasses}`;
-    }, [isScrolled]);
 
     return (
         <>
-            {/* Main Header */}
-            <header className={headerClasses}>
-                <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="flex justify-between items-center">
-                        {/* Logo */}
-                        <Link
-                            href="/"
-                            className={`
-                text-white font-bold tracking-wider transition-all duration-200
-                hover:scale-105 focus:outline-none focus:ring-2 focus:ring-yellow-500 
-                focus:ring-offset-2 focus:ring-offset-transparent rounded-md
-                ${isScrolled ? 'text-2xl sm:text-3xl' : 'text-3xl sm:text-4xl'}
-              `}
-                            onClick={handleLogoClick}
-                            aria-label="İngla - Ana səhifə"
-                        >
-                            <span className="text-yellow-500">İngla</span>
-                        </Link>
+            {/* Fixed header that changes style on scroll */}
+            <header
+                className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 ${isScrolled
+                    ? 'bg-black/80 backdrop-blur-md py-4 shadow-md'
+                    : 'bg-gradient-to-b from-black/70 to-transparent py-6'
+                    }`}
+            >
+                <div className="container mx-auto px-4 flex justify-between items-center">
+                    {/* Logo - Added onClick to close menu when logo is clicked */}
+                    <Link
+                        href="/"
+                        className="text-white font-bold text-3xl tracking-wider"
+                        onClick={handleNavigation}
+                    >
+                        <span className="text-yellow-500">İngla</span>
+                    </Link>
 
-                        {/* Desktop Navigation */}
-                        <nav className={`hidden ${NAVBAR_BREAKPOINT}:flex items-center space-x-6 lg:space-x-8`}>
-                            <NavLinks currentPath={pathname} />
-                        </nav>
+                    {/* Desktop Navigation */}
+                    <nav className="hidden md:flex items-center space-x-8">
+                        <NavLinks />
 
-                        {/* Mobile Menu Button */}
-                        <button
-                            onClick={toggleMobileMenu}
-                            className={`
-                ${NAVBAR_BREAKPOINT}:hidden text-white p-2 rounded-md transition-colors
-                hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-yellow-500
-                focus:ring-offset-2 focus:ring-offset-transparent
-              `}
-                            aria-label={isMobileMenuOpen ? "Menyunu bağla" : "Menyunu aç"}
-                            aria-expanded={isMobileMenuOpen}
-                            aria-controls="mobile-menu"
+
+                    </nav>
+
+                    {/* Mobile Menu Button */}
+                    <button
+                        onClick={toggleMobileMenu}
+                        className="md:hidden text-white p-2 focus:outline-none focus:ring-2 focus:ring-yellow-500 rounded-md"
+                        aria-label={mobileMenuOpen ? "Close mobile menu" : "Open mobile menu"}
+                        aria-expanded={mobileMenuOpen}
+                    >
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            strokeWidth={1.5}
+                            stroke="currentColor"
+                            className="w-6 h-6"
+                            aria-hidden="true"
                         >
-                            <MenuIcon isOpen={isMobileMenuOpen} />
-                        </button>
-                    </div>
+                            {mobileMenuOpen ? (
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                            ) : (
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+                            )}
+                        </svg>
+                    </button>
                 </div>
             </header>
 
-            {/* Mobile Menu Overlay */}
-            {isMobileMenuOpen && (
-                <>
-                    {/* Backdrop */}
-                    <div
-                        className="fixed inset-0 bg-black/80 backdrop-blur-sm z-40"
-                        onClick={closeMobileMenu}
-                        aria-hidden="true"
-                    />
+            {/* Mobile Navigation Overlay */}
+            {/* Using conditional rendering for complete accessibility */}
+            {mobileMenuOpen && (
+                <div
+                    className="fixed inset-0 bg-black/95 backdrop-blur-sm z-40 transition-all duration-300"
+                    aria-hidden="false"
+                    role="dialog"
+                    aria-modal="true"
+                    aria-labelledby="mobile-menu-heading"
+                >
+                    <div className="h-full flex flex-col justify-center items-center p-6">
+                        <h2 id="mobile-menu-heading" className="sr-only">Mobile navigation menu</h2>
 
-                    {/* Menu Panel */}
-                    <div
-                        id="mobile-menu"
-                        className="fixed inset-y-0 right-0 w-full max-w-sm bg-black/95 backdrop-blur-lg z-50 shadow-2xl"
-                        role="dialog"
-                        aria-modal="true"
-                        aria-labelledby="mobile-menu-title"
-                    >
-                        <div className="flex flex-col h-full">
-                            {/* Menu Header */}
-                            <div className="flex justify-between items-center p-6 border-b border-white/10">
-                                <h2 id="mobile-menu-title" className="text-white text-xl font-semibold">
-                                    Menyu
-                                </h2>
-                                <button
-                                    onClick={closeMobileMenu}
-                                    className="text-white p-2 rounded-md hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-yellow-500"
-                                    aria-label="Menyunu bağla"
-                                >
-                                    <CloseIcon />
-                                </button>
-                            </div>
+                        <nav className="flex flex-col items-center space-y-8">
+                            <NavLinks isMobile={true} closeMenu={closeMenu} />
 
-                            {/* Menu Content */}
-                            <nav className="flex-1 px-6 py-8">
-                                <div className="space-y-6">
-                                    <NavLinks
-                                        isMobile={true}
-                                        closeMenu={closeMobileMenu}
-                                        currentPath={pathname}
-                                    />
-                                </div>
-                            </nav>
-                        </div>
+
+                        </nav>
                     </div>
-                </>
+                </div>
             )}
         </>
     );
 };
 
-// Navigation Links Component
-const NavLinks = ({ isMobile = false, closeMenu, currentPath }: NavLinksProps) => {
-    const linkClasses = useMemo(() => {
-        const baseClasses = `
-      text-white font-medium tracking-wide transition-all duration-200
-      hover:text-yellow-500 focus:outline-none focus:ring-2 focus:ring-yellow-500
-      focus:ring-offset-2 focus:ring-offset-transparent rounded-md
-    `;
+// Shared navigation links component
+interface NavLinksProps {
+    isMobile?: boolean;
+    closeMenu?: () => void;
+}
 
-        const desktopClasses = 'text-sm uppercase px-3 py-2 hover:bg-white/5';
-        const mobileClasses = 'text-lg normal-case px-4 py-3 hover:bg-white/10 block w-full text-left';
+const NavLinks = ({ isMobile = false, closeMenu = () => { } }: NavLinksProps) => {
+    const linkClasses = `text-white uppercase tracking-wider font-medium hover:text-yellow-500 transition-colors ${isMobile ? 'text-3xl' : 'text-sm'
+        }`;
 
-        return `${baseClasses} ${isMobile ? mobileClasses : desktopClasses}`;
-    }, [isMobile]);
-
-    const getActiveLinkClasses = useCallback((path: string) => {
-        const isActive = currentPath === path;
-        return isActive
-            ? `${linkClasses} text-yellow-500 ${isMobile ? 'bg-white/10' : 'bg-white/5'}`
-            : linkClasses;
-    }, [currentPath, linkClasses]);
+    const links = [
+        { name: 'Tədris İstiqamətlərimiz', path: '/services' },
+        { name: 'Xaricdə Təhsil', path: '/studyabroad' },
+        { name: 'Preschool', path: '/preschool' },
+        { name: 'Təlim Mərkəzi', path: '/training-center' },
+        { name: 'Haqqımızda', path: '/about' },
+    ];
 
     return (
         <>
-            {NAV_LINKS.map((link) => (
+            {links.map((link) => (
                 <Link
-                    key={link.path}
+                    key={link.name}
                     href={link.path}
-                    className={getActiveLinkClasses(link.path)}
+                    className={linkClasses}
                     onClick={isMobile ? closeMenu : undefined}
-                    aria-current={currentPath === link.path ? 'page' : undefined}
                 >
                     {link.name}
                 </Link>
@@ -244,35 +193,5 @@ const NavLinks = ({ isMobile = false, closeMenu, currentPath }: NavLinksProps) =
         </>
     );
 };
-
-// Menu Icon Component
-const MenuIcon = ({ isOpen }: { isOpen: boolean }) => (
-    <svg
-        className="w-6 h-6 transition-transform duration-200"
-        fill="none"
-        stroke="currentColor"
-        viewBox="0 0 24 24"
-        aria-hidden="true"
-    >
-        {isOpen ? (
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-        ) : (
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-        )}
-    </svg>
-);
-
-// Close Icon Component
-const CloseIcon = () => (
-    <svg
-        className="w-5 h-5"
-        fill="none"
-        stroke="currentColor"
-        viewBox="0 0 24 24"
-        aria-hidden="true"
-    >
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-    </svg>
-);
 
 export default Navbar;

@@ -19,7 +19,7 @@ import {
     Target,
     BookOpen
 } from "lucide-react";
-import { PortableText } from '@portabletext/react';
+import { PortableText, PortableTextComponents } from '@portabletext/react';
 import { client } from "@/sanity/lib/client";
 import { urlFor } from "@/sanity/lib/image";
 import { SERVICE_BY_SLUG_QUERY } from "@/sanity/lib/queries";
@@ -40,14 +40,6 @@ interface PortableTextImageValue {
     alt?: string;
     caption?: string;
     _type: 'image';
-}
-
-interface PortableTextComponentProps {
-    children: React.ReactNode;
-}
-
-interface PortableTextImageProps {
-    value: PortableTextImageValue;
 }
 
 const transformSanityData = (sanityItem: SanityServiceItem): ServiceItem => {
@@ -77,9 +69,9 @@ const transformSanityData = (sanityItem: SanityServiceItem): ServiceItem => {
     };
 };
 
-const portableTextComponents = {
+const portableTextComponents: PortableTextComponents = {
     types: {
-        image: ({ value }: PortableTextImageProps) => (
+        image: ({ value }: { value: PortableTextImageValue }) => (
             <div className="my-8">
                 <Image
                     src={urlFor(value).width(800).height(400).quality(85).url()}
@@ -95,21 +87,21 @@ const portableTextComponents = {
         ),
     },
     block: {
-        h2: ({ children }: PortableTextComponentProps) => (
+        h2: ({ children }) => (
             <h2 className="text-3xl font-bold mt-12 mb-6 text-yellow-500">{children}</h2>
         ),
-        h3: ({ children }: PortableTextComponentProps) => (
+        h3: ({ children }) => (
             <h3 className="text-2xl font-bold mt-8 mb-4 text-white">{children}</h3>
         ),
-        normal: ({ children }: PortableTextComponentProps) => (
+        normal: ({ children }) => (
             <p className="text-gray-300 leading-relaxed mb-4">{children}</p>
         ),
     },
     marks: {
-        strong: ({ children }: PortableTextComponentProps) => (
+        strong: ({ children }) => (
             <strong className="font-bold text-white">{children}</strong>
         ),
-        em: ({ children }: PortableTextComponentProps) => (
+        em: ({ children }) => (
             <em className="italic text-yellow-300">{children}</em>
         ),
     },
