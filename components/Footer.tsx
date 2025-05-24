@@ -92,7 +92,7 @@ export default function Footer() {
                                     { name: "Haqqımızda", href: "/haqqimizda" },
                                     { name: "Xaricdə Təhsil", href: "/studyabroad" },
                                     { name: "Preschool", href: "/preschool" },
-                                    { name: "Təlim Mərkəzi", href: "/telim-merkezi" },
+                                    { name: "Təlim Mərkəzi", href: "/training-center" },
                                 ].map((link) => (
                                     <li key={link.name}>
                                         <Link

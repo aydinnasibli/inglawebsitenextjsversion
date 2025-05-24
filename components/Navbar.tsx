@@ -174,7 +174,7 @@ const NavLinks = ({ isMobile = false, closeMenu = () => { } }: NavLinksProps) =>
         { name: 'Tədris İstiqamətlərimiz', path: '/services' },
         { name: 'Xaricdə Təhsil', path: '/studyabroad' },
         { name: 'Preschool', path: '/preschool' },
-        { name: 'Təlim Mərkəzi', path: '/about' },
+        { name: 'Təlim Mərkəzi', path: '/training-center' },
     ];
 
     return (
