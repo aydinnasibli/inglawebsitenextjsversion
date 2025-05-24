@@ -11,10 +11,6 @@ import { urlFor } from "@/sanity/lib/image";
 import { PRESCHOOL_SERVICES_QUERY } from "@/sanity/lib/queries";
 import { SanityPreschoolServiceItem, PreschoolServiceItem } from "@/types/preschool";
 
-interface PreschoolServicesPageProps {
-    initialServicesData?: SanityPreschoolServiceItem[];
-}
-
 const transformSanityData = (sanityItems: SanityPreschoolServiceItem[]): PreschoolServiceItem[] => {
     return sanityItems
         .filter(item => item && item._id && item.title && item.shortDescription)
@@ -91,9 +87,10 @@ const heroStats = [
     { icon: Shield, value: "95%", label: "Məmnuniyyət" },
 ];
 
-export default function PreschoolServicesPage({ initialServicesData }: PreschoolServicesPageProps) {
+// Remove the props interface and make this a standard Next.js page component
+export default function PreschoolServicesPage() {
     const [services, setServices] = useState<PreschoolServiceItem[]>([]);
-    const [isLoading, setIsLoading] = useState(!initialServicesData);
+    const [isLoading, setIsLoading] = useState(true);
 
     const containerRef = useRef<HTMLDivElement>(null);
     const heroRef = useRef<HTMLDivElement>(null);
@@ -117,14 +114,6 @@ export default function PreschoolServicesPage({ initialServicesData }: Preschool
 
         const loadServicesData = async () => {
             try {
-                if (initialServicesData && initialServicesData.length > 0) {
-                    if (isMounted) {
-                        setServices(transformSanityData(initialServicesData));
-                        setIsLoading(false);
-                    }
-                    return;
-                }
-
                 const controller = new AbortController();
                 const timeoutId = setTimeout(() => controller.abort(), 10000);
 
@@ -158,7 +147,7 @@ export default function PreschoolServicesPage({ initialServicesData }: Preschool
         return () => {
             isMounted = false;
         };
-    }, [initialServicesData]);
+    }, []);
 
     const sectionVariants = {
         hidden: { opacity: 0, y: 60 },
@@ -318,8 +307,6 @@ export default function PreschoolServicesPage({ initialServicesData }: Preschool
                                 </motion.div>
                             ))}
                         </motion.div>
-
-
 
                         {/* Scroll Indicator */}
                         <motion.div
