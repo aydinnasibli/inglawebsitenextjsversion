@@ -376,7 +376,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                         </div>
                     </div>
 
-                    {/* Author Bio Section */}
+                    {/* Author Bio Section - FIXED */}
                     {post.author && (
                         <div className="mt-16 pt-12 border-t border-gray-800">
                             <div className="flex items-start space-x-6 p-8 bg-gray-900/50 rounded-2xl border border-gray-800">
@@ -394,16 +394,9 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                                     <h4 className="text-xl font-bold text-yellow-400 mb-2">
                                         {post.author.name}
                                     </h4>
-                                    {post.author.bio && Array.isArray(post.author.bio) && (
+                                    {post.author.bio && (
                                         <div className="text-gray-300 leading-relaxed">
-                                            <PortableText
-                                                value={post.author.bio}
-                                                components={{
-                                                    block: {
-                                                        normal: ({ children }) => <p className="mb-2">{children}</p>
-                                                    }
-                                                }}
-                                            />
+                                            <p className="mb-2">{post.author.bio}</p>
                                         </div>
                                     )}
                                 </div>
