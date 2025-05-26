@@ -20,6 +20,7 @@ export const author = defineType({
                 source: 'name',
                 maxLength: 96,
             },
+            validation: (Rule) => Rule.required(),
         }),
         defineField({
             name: 'image',
@@ -28,19 +29,20 @@ export const author = defineType({
             options: {
                 hotspot: true,
             },
+            fields: [
+                {
+                    name: 'alt',
+                    type: 'string',
+                    title: 'Alternative Text',
+                }
+            ]
         }),
         defineField({
             name: 'bio',
             title: 'Bio',
-            type: 'array',
-            of: [
-                {
-                    title: 'Block',
-                    type: 'block',
-                    styles: [{ title: 'Normal', value: 'normal' }],
-                    lists: [],
-                },
-            ],
+            type: 'text',
+            rows: 4,
+            description: 'Short bio of the author',
         }),
         defineField({
             name: 'socialLinks',

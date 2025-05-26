@@ -30,11 +30,12 @@ export interface Author {
         current: string
     }
     image?: {
+        alt?: string
         asset: {
             _ref: string
         }
     }
-    bio?: any[] // Portable Text content
+    bio?: string // Changed from any[] to string for simple text bio
     socialLinks?: {
         twitter?: string
         linkedin?: string

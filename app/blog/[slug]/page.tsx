@@ -84,6 +84,22 @@ const portableTextComponents = {
                 )}
             </div>
         ),
+        codeBlock: ({ value }: any) => (
+            <div className="my-8">
+                <div className="bg-gray-900 rounded-lg overflow-hidden border border-gray-700">
+                    {value.language && (
+                        <div className="px-4 py-2 bg-gray-800 text-gray-300 text-sm font-medium border-b border-gray-700">
+                            {value.language}
+                        </div>
+                    )}
+                    <pre className="p-4 overflow-x-auto">
+                        <code className="text-gray-300 text-sm leading-relaxed">
+                            {value.code}
+                        </code>
+                    </pre>
+                </div>
+            </div>
+        ),
     },
     block: {
         h1: ({ children }: any) => (
@@ -100,6 +116,11 @@ const portableTextComponents = {
             <h3 className="text-2xl font-medium mt-8 mb-4 text-yellow-300 leading-tight">
                 {children}
             </h3>
+        ),
+        h4: ({ children }: any) => (
+            <h4 className="text-xl font-medium mt-6 mb-3 text-yellow-200 leading-tight">
+                {children}
+            </h4>
         ),
         normal: ({ children }: any) => (
             <p className="mb-6 text-gray-300 leading-loose text-lg">
@@ -129,6 +150,11 @@ const portableTextComponents = {
         em: ({ children }: any) => (
             <em className="italic text-yellow-200">{children}</em>
         ),
+        code: ({ children }: any) => (
+            <code className="bg-gray-800 text-yellow-300 px-2 py-1 rounded text-sm font-mono">
+                {children}
+            </code>
+        ),
     },
     list: {
         bullet: ({ children }: any) => (
@@ -156,6 +182,25 @@ function formatDate(dateString: string): string {
     })
 }
 
+// Estimate reading time based on content
+function estimateReadingTime(content: any[]): number {
+    if (!content || !Array.isArray(content)) return 5
+
+    const text = content
+        .filter(block => block._type === 'block' && block.children)
+        .map(block =>
+            block.children
+                .filter((child: any) => child._type === 'span')
+                .map((child: any) => child.text)
+                .join(' ')
+        )
+        .join(' ')
+
+    const wordsPerMinute = 200
+    const words = text.split(/\s+/).length
+    return Math.max(1, Math.ceil(words / wordsPerMinute))
+}
+
 export default async function BlogPostPage({ params }: BlogPostPageProps) {
     const { slug } = await params
     const post = await getBlogPost(slug)
@@ -163,6 +208,9 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
     if (!post) {
         notFound()
     }
+
+    const readingTime = estimateReadingTime(post.content)
+    const currentUrl = `${process.env.NEXT_PUBLIC_SITE_URL || 'https://yoursite.com'}/blog/${post.slug.current}`
 
     return (
         <div className="min-h-screen bg-black">
@@ -239,7 +287,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                             <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                             </svg>
-                            <span>~5 dəqiqə oxuma</span>
+                            <span>~{readingTime} dəqiqə oxuma</span>
                         </div>
                     </div>
 
@@ -284,7 +332,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                         </h3>
                         <div className="flex flex-wrap gap-4">
                             <a
-                                href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(post.title)}&url=${encodeURIComponent(`${process.env.NEXT_PUBLIC_SITE_URL}/blog/${post.slug.current}`)}`}
+                                href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(post.title)}&url=${encodeURIComponent(currentUrl)}`}
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="flex items-center px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-lg hover:from-blue-700 hover:to-blue-800 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1"
@@ -295,7 +343,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                                 Twitter
                             </a>
                             <a
-                                href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(`${process.env.NEXT_PUBLIC_SITE_URL}/blog/${post.slug.current}`)}`}
+                                href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(currentUrl)}`}
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="flex items-center px-6 py-3 bg-gradient-to-r from-blue-700 to-blue-800 text-white rounded-lg hover:from-blue-800 hover:to-blue-900 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1"
@@ -306,7 +354,18 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                                 LinkedIn
                             </a>
                             <button
-                                onClick={() => navigator.clipboard.writeText(window.location.href)}
+                                onClick={() => {
+                                    if (typeof window !== 'undefined' && navigator.clipboard) {
+                                        navigator.clipboard.writeText(window.location.href)
+                                            .then(() => {
+                                                // You could add a toast notification here
+                                                console.log('Link copied to clipboard')
+                                            })
+                                            .catch(err => {
+                                                console.error('Failed to copy link:', err)
+                                            })
+                                    }
+                                }}
                                 className="flex items-center px-6 py-3 bg-gradient-to-r from-gray-700 to-gray-800 text-white rounded-lg hover:from-gray-800 hover:to-gray-900 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1"
                             >
                                 <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -335,10 +394,17 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                                     <h4 className="text-xl font-bold text-yellow-400 mb-2">
                                         {post.author.name}
                                     </h4>
-                                    {post.author.bio && (
-                                        <p className="text-gray-300 leading-relaxed">
-                                            {post.author.bio}
-                                        </p>
+                                    {post.author.bio && Array.isArray(post.author.bio) && (
+                                        <div className="text-gray-300 leading-relaxed">
+                                            <PortableText
+                                                value={post.author.bio}
+                                                components={{
+                                                    block: {
+                                                        normal: ({ children }) => <p className="mb-2">{children}</p>
+                                                    }
+                                                }}
+                                            />
+                                        </div>
                                     )}
                                 </div>
                             </div>
