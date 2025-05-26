@@ -431,3 +431,59 @@ export const trainingQueries = {
     "slug": slug.current
   }`
 }
+
+
+// lib/queries.ts
+export const BLOG_POSTS_QUERY = `*[_type == "post"] | order(publishedAt desc) {
+  _id,
+  title,
+  slug,
+  excerpt,
+  mainImage {
+    asset,
+    alt
+  },
+  author-> {
+    name,
+    image {
+      asset
+    }
+  },
+  publishedAt,
+  categories[]-> {
+    title,
+    slug
+  },
+  _createdAt,
+  _updatedAt
+}`
+
+export const BLOG_POST_BY_SLUG_QUERY = `*[_type == "post" && slug.current == $slug][0] {
+  _id,
+  title,
+  slug,
+  excerpt,
+  content,
+  mainImage {
+    asset,
+    alt
+  },
+  author-> {
+    name,
+    image {
+      asset
+    }
+  },
+  publishedAt,
+  categories[]-> {
+    title,
+    slug
+  },
+  _createdAt,
+  _updatedAt
+}`
+
+export const BLOG_POSTS_SITEMAP_QUERY = `*[_type == "post"] {
+  slug,
+  _updatedAt
+}`
