@@ -9,7 +9,7 @@ import Footer from '@/components/Footer';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'İngla School | Azerbaijan',
+  title: 'İngla School | Azərbaycan',
   description: 'İngla School - Təhsil mərkəzi, Preschool, Xaricdə təhsil',
 };
 
