@@ -3,15 +3,30 @@ import { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import Image from 'next/image'
-import { PortableText } from '@portabletext/react'
+import { PortableText, PortableTextComponents } from '@portabletext/react'
 import { client } from '@/sanity/lib/client'
 import { postQuery, relatedPostsQuery, postSlugsQuery } from '@/sanity/lib/queries'
 import { BlogPost } from '@/types/sanity'
 import { urlFor } from '@/sanity/lib/image'
-import { ChevronLeft, ChevronRight, Calendar, User, ExternalLink } from 'lucide-react'
+import { ChevronLeft, Calendar, User, ExternalLink } from 'lucide-react'
 
 interface PageProps {
     params: Promise<{ slug: string }>
+}
+
+// Type definitions for Portable Text components
+interface ImageValue {
+    _type: 'image'
+    asset: {
+        _ref: string
+        _type: 'reference'
+    }
+    alt?: string
+}
+
+interface LinkValue {
+    _type: 'link'
+    href: string
 }
 
 // Generate static params for all blog posts
@@ -101,9 +116,9 @@ function getCategoryColor(color?: string) {
 }
 
 // Portable Text components for rich text rendering
-const portableTextComponents = {
+const portableTextComponents: PortableTextComponents = {
     types: {
-        image: ({ value }: any) => (
+        image: ({ value }) => (
             <div className="my-8">
                 <Image
                     src={urlFor(value).width(800).url()}
@@ -121,9 +136,9 @@ const portableTextComponents = {
         ),
     },
     marks: {
-        link: ({ children, value }: any) => (
+        link: ({ children, value }) => (
             <a
-                href={value.href}
+                href={value?.href}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-yellow-500 hover:text-yellow-400 underline inline-flex items-center gap-1 transition-colors"
@@ -134,32 +149,32 @@ const portableTextComponents = {
         ),
     },
     block: {
-        h1: ({ children }: any) => (
+        h1: ({ children }) => (
             <h1 className="text-3xl font-bold text-white mt-8 mb-4">{children}</h1>
         ),
-        h2: ({ children }: any) => (
+        h2: ({ children }) => (
             <h2 className="text-2xl font-bold text-white mt-6 mb-3">{children}</h2>
         ),
-        h3: ({ children }: any) => (
+        h3: ({ children }) => (
             <h3 className="text-xl font-bold text-white mt-4 mb-2">{children}</h3>
         ),
-        h4: ({ children }: any) => (
+        h4: ({ children }) => (
             <h4 className="text-lg font-bold text-white mt-4 mb-2">{children}</h4>
         ),
-        blockquote: ({ children }: any) => (
+        blockquote: ({ children }) => (
             <blockquote className="border-l-4 border-yellow-500 pl-6 italic text-gray-300 my-6 bg-gray-900/30 py-4 rounded-r-lg">
                 {children}
             </blockquote>
         ),
-        normal: ({ children }: any) => (
+        normal: ({ children }) => (
             <p className="text-gray-300 leading-relaxed mb-4 text-lg">{children}</p>
         ),
     },
     list: {
-        bullet: ({ children }: any) => (
+        bullet: ({ children }) => (
             <ul className="list-disc list-inside mb-4 text-gray-300 space-y-1">{children}</ul>
         ),
-        number: ({ children }: any) => (
+        number: ({ children }) => (
             <ol className="list-decimal list-inside mb-4 text-gray-300 space-y-1">{children}</ol>
         ),
     },
@@ -177,8 +192,6 @@ export default async function BlogPostPage({ params }: PageProps) {
 
     return (
         <div className="min-h-screen bg-black text-white max-w-5xl mx-auto mt-20">
-
-
             <article className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
                 {/* Article Header */}
                 <header className="mb-12">
