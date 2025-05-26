@@ -1,18 +1,16 @@
-// sanity/schemaTypes/category.ts
-import { defineField, defineType } from 'sanity'
-
-export const category = defineType({
+// schemas/category.ts
+export const category = {
     name: 'category',
     title: 'Category',
     type: 'document',
     fields: [
-        defineField({
+        {
             name: 'title',
             title: 'Title',
             type: 'string',
-            validation: (Rule) => Rule.required(),
-        }),
-        defineField({
+            validation: (Rule: any) => Rule.required(),
+        },
+        {
             name: 'slug',
             title: 'Slug',
             type: 'slug',
@@ -20,14 +18,14 @@ export const category = defineType({
                 source: 'title',
                 maxLength: 96,
             },
-            validation: (Rule) => Rule.required(),
-        }),
-        defineField({
+            validation: (Rule: any) => Rule.required(),
+        },
+        {
             name: 'description',
             title: 'Description',
             type: 'text',
-        }),
-        defineField({
+        },
+        {
             name: 'color',
             title: 'Color',
             type: 'string',
@@ -35,16 +33,13 @@ export const category = defineType({
                 list: [
                     { title: 'Blue', value: 'blue' },
                     { title: 'Green', value: 'green' },
-                    { title: 'Purple', value: 'purple' },
                     { title: 'Red', value: 'red' },
+                    { title: 'Purple', value: 'purple' },
                     { title: 'Yellow', value: 'yellow' },
-                    { title: 'Pink', value: 'pink' },
-                    { title: 'Indigo', value: 'indigo' },
                     { title: 'Gray', value: 'gray' },
                 ],
             },
-            initialValue: 'blue',
-        }),
+        },
     ],
     preview: {
         select: {
@@ -52,4 +47,4 @@ export const category = defineType({
             subtitle: 'description',
         },
     },
-})
+}

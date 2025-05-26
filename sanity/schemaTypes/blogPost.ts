@@ -1,18 +1,16 @@
-// sanity/schemaTypes/blogPost.ts
-import { defineField, defineType } from 'sanity'
-
-export const blogPost = defineType({
+// schemas/blogPost.ts
+export const blogPost = {
     name: 'post',
     title: 'Blog Post',
     type: 'document',
     fields: [
-        defineField({
+        {
             name: 'title',
             title: 'Title',
             type: 'string',
-            validation: (Rule) => Rule.required(),
-        }),
-        defineField({
+            validation: (Rule: any) => Rule.required(),
+        },
+        {
             name: 'slug',
             title: 'Slug',
             type: 'slug',
@@ -20,15 +18,16 @@ export const blogPost = defineType({
                 source: 'title',
                 maxLength: 96,
             },
-            validation: (Rule) => Rule.required(),
-        }),
-        defineField({
+            validation: (Rule: any) => Rule.required(),
+        },
+        {
             name: 'author',
             title: 'Author',
             type: 'reference',
-            to: [{ type: 'author' }],
-        }),
-        defineField({
+            to: { type: 'author' },
+            validation: (Rule: any) => Rule.required(),
+        },
+        {
             name: 'mainImage',
             title: 'Main image',
             type: 'image',
@@ -42,77 +41,82 @@ export const blogPost = defineType({
                     title: 'Alternative Text',
                 }
             ]
-        }),
-        defineField({
+        },
+        {
             name: 'categories',
             title: 'Categories',
             type: 'array',
             of: [{ type: 'reference', to: { type: 'category' } }],
-        }),
-        defineField({
+        },
+        {
             name: 'publishedAt',
             title: 'Published at',
             type: 'datetime',
-            initialValue: () => new Date().toISOString(),
-        }),
-        defineField({
+            validation: (Rule: any) => Rule.required(),
+        },
+        {
             name: 'excerpt',
             title: 'Excerpt',
             type: 'text',
             rows: 4,
-            description: 'Short description of the post for previews and SEO',
-        }),
-        defineField({
-            name: 'content',
-            title: 'Content',
+        },
+        {
+            name: 'body',
+            title: 'Body',
             type: 'blockContent',
-        }),
-        defineField({
+        },
+        {
             name: 'featured',
-            title: 'Featured Post',
+            title: 'Featured',
             type: 'boolean',
-            description: 'Mark this post as featured to highlight it',
-            initialValue: false,
-        }),
-        defineField({
+            description: 'Mark this post as featured',
+        },
+        {
             name: 'seo',
-            title: 'SEO Settings',
+            title: 'SEO',
             type: 'object',
             fields: [
                 {
-                    name: 'metaTitle',
-                    title: 'Meta Title',
+                    name: 'title',
+                    title: 'SEO Title',
                     type: 'string',
-                    description: 'Title for search engines (leave empty to use post title)',
                 },
                 {
-                    name: 'metaDescription',
-                    title: 'Meta Description',
+                    name: 'description',
+                    title: 'SEO Description',
                     type: 'text',
                     rows: 3,
-                    description: 'Description for search engines (leave empty to use excerpt)',
+                },
+                {
+                    name: 'keywords',
+                    title: 'Keywords',
+                    type: 'array',
+                    of: [{ type: 'string' }],
                 },
             ],
-            options: {
-                collapsible: true,
-                collapsed: true,
-            },
-        }),
+        },
+    ],
+    orderings: [
+        {
+            title: 'Published Date, New',
+            name: 'publishedAtDesc',
+            by: [{ field: 'publishedAt', direction: 'desc' }],
+        },
+        {
+            title: 'Published Date, Old',
+            name: 'publishedAtAsc',
+            by: [{ field: 'publishedAt', direction: 'asc' }],
+        },
     ],
     preview: {
         select: {
             title: 'title',
             author: 'author.name',
             media: 'mainImage',
-            publishedAt: 'publishedAt',
         },
-        prepare(selection) {
-            const { author, publishedAt } = selection
-            const date = publishedAt ? new Date(publishedAt).toLocaleDateString() : 'No date'
-            return {
-                ...selection,
-                subtitle: author ? `by ${author} • ${date}` : date,
-            }
+        prepare(selection: any) {
+            const { author } = selection
+            return { ...selection, subtitle: author && `by ${author}` }
         },
     },
-})
+}

@@ -1,18 +1,16 @@
-// sanity/schemaTypes/author.ts
-import { defineField, defineType } from 'sanity'
-
-export const author = defineType({
+// schemas/author.ts
+export const author = {
     name: 'author',
     title: 'Author',
     type: 'document',
     fields: [
-        defineField({
+        {
             name: 'name',
             title: 'Name',
             type: 'string',
-            validation: (Rule) => Rule.required(),
-        }),
-        defineField({
+            validation: (Rule: any) => Rule.required(),
+        },
+        {
             name: 'slug',
             title: 'Slug',
             type: 'slug',
@@ -20,31 +18,35 @@ export const author = defineType({
                 source: 'name',
                 maxLength: 96,
             },
-            validation: (Rule) => Rule.required(),
-        }),
-        defineField({
+            validation: (Rule: any) => Rule.required(),
+        },
+        {
             name: 'image',
             title: 'Image',
             type: 'image',
             options: {
                 hotspot: true,
             },
-            fields: [
-                {
-                    name: 'alt',
-                    type: 'string',
-                    title: 'Alternative Text',
-                }
-            ]
-        }),
-        defineField({
+        },
+        {
             name: 'bio',
             title: 'Bio',
-            type: 'text',
-            rows: 4,
-            description: 'Short bio of the author',
-        }),
-        defineField({
+            type: 'array',
+            of: [
+                {
+                    title: 'Block',
+                    type: 'block',
+                    styles: [{ title: 'Normal', value: 'normal' }],
+                    lists: [],
+                },
+            ],
+        },
+        {
+            name: 'email',
+            title: 'Email',
+            type: 'string',
+        },
+        {
             name: 'socialLinks',
             title: 'Social Links',
             type: 'object',
@@ -60,21 +62,12 @@ export const author = defineType({
                     type: 'url',
                 },
                 {
-                    name: 'instagram',
-                    title: 'Instagram',
-                    type: 'url',
-                },
-                {
                     name: 'website',
                     title: 'Website',
                     type: 'url',
                 },
             ],
-            options: {
-                collapsible: true,
-                collapsed: true,
-            },
-        }),
+        },
     ],
     preview: {
         select: {
@@ -82,4 +75,4 @@ export const author = defineType({
             media: 'image',
         },
     },
-})
+}

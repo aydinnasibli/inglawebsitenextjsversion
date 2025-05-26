@@ -432,61 +432,227 @@ export const trainingQueries = {
   }`
 }
 
-// Updated queries for sanity/lib/queries.ts
 
-// lib/queries.ts
-export const BLOG_POSTS_QUERY = `*[_type == "post"] | order(publishedAt desc) {
-  _id,
-  title,
-  slug,
-  excerpt,
-  mainImage {
-    asset,
-    alt
-  },
-  author-> {
+
+// Author queries
+export const authorQuery = groq`
+  *[_type == "author" && slug.current == $slug][0] {
+    _id,
     name,
+    slug,
+    image,
     bio,
-    image {
-      asset
-    }
-  },
-  publishedAt,
-  categories[]-> {
-    title,
-    slug
-  },
-  _createdAt,
-  _updatedAt
-}`
+    email,
+    socialLinks
+  }
+`
 
-export const BLOG_POST_BY_SLUG_QUERY = `*[_type == "post" && slug.current == $slug][0] {
-  _id,
-  title,
-  slug,
-  excerpt,
-  content,
-  mainImage {
-    asset,
-    alt
-  },
-  author-> {
+export const authorsQuery = groq`
+  *[_type == "author"] | order(name asc) {
+    _id,
     name,
-    bio,
-    image {
-      asset
-    }
-  },
-  publishedAt,
-  categories[]-> {
-    title,
-    slug
-  },
-  _createdAt,
-  _updatedAt
-}`
+    slug,
+    image,
+    bio
+  }
+`
 
-export const BLOG_POSTS_SITEMAP_QUERY = `*[_type == "post"] {
-  slug,
-  _updatedAt
-}`
+// Category queries
+export const categoryQuery = groq`
+  *[_type == "category" && slug.current == $slug][0] {
+    _id,
+    title,
+    slug,
+    description,
+    color
+  }
+`
+
+export const categoriesQuery = groq`
+  *[_type == "category"] | order(title asc) {
+    _id,
+    title,
+    slug,
+    description,
+    color
+  }
+`
+
+// Blog post queries
+export const postQuery = groq`
+  *[_type == "post" && slug.current == $slug][0] {
+    _id,
+    title,
+    slug,
+    author->{
+      _id,
+      name,
+      slug,
+      image,
+      bio
+    },
+    mainImage,
+    categories[]->{
+      _id,
+      title,
+      slug,
+      color
+    },
+    publishedAt,
+    excerpt,
+    body,
+    featured,
+    seo
+  }
+`
+
+export const postsQuery = groq`
+  *[_type == "post"] | order(publishedAt desc) {
+    _id,
+    title,
+    slug,
+    author->{
+      _id,
+      name,
+      slug,
+      image
+    },
+    mainImage,
+    categories[]->{
+      _id,
+      title,
+      slug,
+      color
+    },
+    publishedAt,
+    excerpt,
+    featured
+  }
+`
+
+export const featuredPostsQuery = groq`
+  *[_type == "post" && featured == true] | order(publishedAt desc) [0...3] {
+    _id,
+    title,
+    slug,
+    author->{
+      _id,
+      name,
+      slug,
+      image
+    },
+    mainImage,
+    categories[]->{
+      _id,
+      title,
+      slug,
+      color
+    },
+    publishedAt,
+    excerpt
+  }
+`
+
+export const recentPostsQuery = groq`
+  *[_type == "post"] | order(publishedAt desc) [0...$limit] {
+    _id,
+    title,
+    slug,
+    author->{
+      _id,
+      name,
+      slug,
+      image
+    },
+    mainImage,
+    categories[]->{
+      _id,
+      title,
+      slug,
+      color
+    },
+    publishedAt,
+    excerpt
+  }
+`
+
+export const postsByCategoryQuery = groq`
+  *[_type == "post" && $categoryId in categories[]._ref] | order(publishedAt desc) {
+    _id,
+    title,
+    slug,
+    author->{
+      _id,
+      name,
+      slug,
+      image
+    },
+    mainImage,
+    categories[]->{
+      _id,
+      title,
+      slug,
+      color
+    },
+    publishedAt,
+    excerpt
+  }
+`
+
+export const postsByAuthorQuery = groq`
+  *[_type == "post" && author._ref == $authorId] | order(publishedAt desc) {
+    _id,
+    title,
+    slug,
+    author->{
+      _id,
+      name,
+      slug,
+      image
+    },
+    mainImage,
+    categories[]->{
+      _id,
+      title,
+      slug,
+      color
+    },
+    publishedAt,
+    excerpt
+  }
+`
+
+export const relatedPostsQuery = groq`
+  *[_type == "post" && _id != $postId && count((categories[]._ref)[@ in $categoryIds]) > 0] | order(publishedAt desc) [0...3] {
+    _id,
+    title,
+    slug,
+    author->{
+      _id,
+      name,
+      slug,
+      image
+    },
+    mainImage,
+    categories[]->{
+      _id,
+      title,
+      slug,
+      color
+    },
+    publishedAt,
+    excerpt
+  }
+`
+
+export const postSlugsQuery = groq`
+  *[_type == "post" && defined(slug.current)][].slug.current
+`
+
+export const authorSlugsQuery = groq`
+  *[_type == "author" && defined(slug.current)][].slug.current
+`
+
+export const categorySlugsQuery = groq`
+  *[_type == "category" && defined(slug.current)][].slug.current
+`
