@@ -11,6 +11,7 @@ import { urlFor } from "@/sanity/lib/image";
 import { HOMEPAGE_CAROUSEL_QUERY, FAQ_QUERY, TESTIMONIALS_QUERY } from "@/sanity/lib/queries";
 import { SanityCarouselItem, CarouselItem } from "@/types/carousel";
 import { SanityFAQItem, SanityTestimonialItem, FAQItem, TestimonialItem } from "@/types/faq-testimonials";
+import { useRouter } from "next/navigation";
 
 // Updated interface to include all props
 interface HomeClientProps {
@@ -117,7 +118,7 @@ export default function HomeClient({ initialCarouselData, initialFaqData, initia
     const [faqLoading, setFaqLoading] = useState(!initialFaqData);
     const [activeFaq, setActiveFaq] = useState<string | null>(null);
     const [activeFaqCategory, setActiveFaqCategory] = useState<string>('all');
-
+    const router = useRouter();
     // Testimonials state
     const [testimonialItems, setTestimonialItems] = useState<TestimonialItem[]>([]);
     const [testimonialsLoading, setTestimonialsLoading] = useState(!initialTestimonialsData);
@@ -421,7 +422,10 @@ export default function HomeClient({ initialCarouselData, initialFaqData, initia
                                     </motion.div>
                                 ))}
                             </div>
-                            <Button className="border-2 border-white hover:bg-white hover:text-black cursor-pointer transition duration-300  text-white">
+                            <Button
+                                className="border-2 border-white hover:bg-white hover:text-black cursor-pointer transition duration-300 text-white"
+                                onClick={() => router.push('/services')}
+                            >
                                 <span>Ətraflı</span>
                                 <ChevronRight className="ml-1 h-4 w-4" />
                             </Button>
@@ -457,9 +461,7 @@ export default function HomeClient({ initialCarouselData, initialFaqData, initia
                                 <span className="text-yellow-500">Haqqımızda</span>
                             </h2>
                             <p className="text-gray-300 mb-8 text-lg">
-                                İngla School komandası, missiyamız və təhsil fəlsəfəmiz haqqında məlumat. 2010-cu ildən bəri
-                                Azərbaycanda keyfiyyətli təhsil xidmətləri təqdim edirik. Peşəkar müəllim heyətimiz və
-                                innovativ tədris metodologiyamızla tələbələrimizin akademik və şəxsi inkişafını təmin edirik.
+                                Biz gələcəyin innovativ və dayanıqlı inkişafına töhfə verən lider şirkət olmaq istəyirik. Texnologiya və təhsili birləşdirərək, müştərilərimizə və cəmiyyətə dəyər qatan həllər təqdim etməyi hədəfləyirik.
                             </p>
                             <div className="space-y-4 mb-8">
                                 {[
@@ -481,7 +483,10 @@ export default function HomeClient({ initialCarouselData, initialFaqData, initia
                                     </motion.div>
                                 ))}
                             </div>
-                            <Button className="border-2 border-white hover:bg-white hover:text-black cursor-pointer transition duration-300  text-white">
+                            <Button
+                                className="border-2 border-white hover:bg-white hover:text-black cursor-pointer transition duration-300 text-white"
+                                onClick={() => router.push('/about')}
+                            >
                                 <span>Ətraflı</span>
                                 <ChevronRight className="ml-1 h-4 w-4" />
                             </Button>
@@ -540,7 +545,10 @@ export default function HomeClient({ initialCarouselData, initialFaqData, initia
                                     </motion.div>
                                 ))}
                             </div>
-                            <Button className="border-2 border-white hover:bg-white hover:text-black cursor-pointer transition duration-300  text-white">
+                            <Button
+                                className="border-2 border-white hover:bg-white hover:text-black cursor-pointer transition duration-300 text-white"
+                                onClick={() => router.push('/studyabroad')}
+                            >
                                 <span>Ətraflı</span>
                                 <ChevronRight className="ml-1 h-4 w-4" />
                             </Button>
@@ -599,7 +607,10 @@ export default function HomeClient({ initialCarouselData, initialFaqData, initia
                                     </motion.div>
                                 ))}
                             </div>
-                            <Button className="border-2 border-white hover:bg-white hover:text-black cursor-pointer transition duration-300  text-white">
+                            <Button
+                                className="border-2 border-white hover:bg-white hover:text-black cursor-pointer transition duration-300 text-white"
+                                onClick={() => router.push('/preschool')}
+                            >
                                 <span>Ətraflı</span>
                                 <ChevronRight className="ml-1 h-4 w-4" />
                             </Button>
@@ -659,7 +670,10 @@ export default function HomeClient({ initialCarouselData, initialFaqData, initia
                                     </motion.div>
                                 ))}
                             </div>
-                            <Button className="border-2 border-white hover:bg-white hover:text-black cursor-pointer transition duration-300  text-white">
+                            <Button
+                                className="border-2 border-white hover:bg-white hover:text-black cursor-pointer transition duration-300 text-white"
+                                onClick={() => router.push('/training-center')}
+                            >
                                 <span>Ətraflı</span>
                                 <ChevronRight className="ml-1 h-4 w-4" />
                             </Button>

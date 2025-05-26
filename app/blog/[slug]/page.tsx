@@ -8,6 +8,7 @@ import { client } from '@/sanity/lib/client'
 import { postQuery, relatedPostsQuery, postSlugsQuery } from '@/sanity/lib/queries'
 import { BlogPost } from '@/types/sanity'
 import { urlFor } from '@/sanity/lib/image'
+import { ChevronLeft, ChevronRight, Calendar, User, ExternalLink } from 'lucide-react'
 
 interface PageProps {
     params: Promise<{ slug: string }>
@@ -89,12 +90,12 @@ function formatDate(dateString: string) {
 
 function getCategoryColor(color?: string) {
     const colors = {
-        blue: 'bg-blue-100 text-blue-800',
-        green: 'bg-green-100 text-green-800',
-        red: 'bg-red-100 text-red-800',
-        purple: 'bg-purple-100 text-purple-800',
-        yellow: 'bg-yellow-100 text-yellow-800',
-        gray: 'bg-gray-100 text-gray-800',
+        blue: 'bg-blue-500/20 text-blue-300 border-blue-500/30',
+        green: 'bg-green-500/20 text-green-300 border-green-500/30',
+        red: 'bg-red-500/20 text-red-300 border-red-500/30',
+        purple: 'bg-purple-500/20 text-purple-300 border-purple-500/30',
+        yellow: 'bg-yellow-500/20 text-yellow-300 border-yellow-500/30',
+        gray: 'bg-gray-500/20 text-gray-300 border-gray-500/30',
     }
     return colors[color as keyof typeof colors] || colors.gray
 }
@@ -109,10 +110,10 @@ const portableTextComponents = {
                     alt={value.alt || ''}
                     width={800}
                     height={400}
-                    className="rounded-lg w-full h-auto"
+                    className="rounded-lg w-full h-auto border border-gray-800"
                 />
                 {value.alt && (
-                    <p className="text-sm text-gray-600 text-center mt-2 italic">
+                    <p className="text-sm text-gray-400 text-center mt-3 italic">
                         {value.alt}
                     </p>
                 )}
@@ -125,40 +126,41 @@ const portableTextComponents = {
                 href={value.href}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-blue-600 hover:text-blue-800 underline"
+                className="text-yellow-500 hover:text-yellow-400 underline inline-flex items-center gap-1 transition-colors"
             >
                 {children}
+                <ExternalLink className="w-3 h-3" />
             </a>
         ),
     },
     block: {
         h1: ({ children }: any) => (
-            <h1 className="text-3xl font-bold text-gray-900 mt-8 mb-4">{children}</h1>
+            <h1 className="text-3xl font-bold text-white mt-8 mb-4">{children}</h1>
         ),
         h2: ({ children }: any) => (
-            <h2 className="text-2xl font-bold text-gray-900 mt-6 mb-3">{children}</h2>
+            <h2 className="text-2xl font-bold text-white mt-6 mb-3">{children}</h2>
         ),
         h3: ({ children }: any) => (
-            <h3 className="text-xl font-bold text-gray-900 mt-4 mb-2">{children}</h3>
+            <h3 className="text-xl font-bold text-white mt-4 mb-2">{children}</h3>
         ),
         h4: ({ children }: any) => (
-            <h4 className="text-lg font-bold text-gray-900 mt-4 mb-2">{children}</h4>
+            <h4 className="text-lg font-bold text-white mt-4 mb-2">{children}</h4>
         ),
         blockquote: ({ children }: any) => (
-            <blockquote className="border-l-4 border-gray-300 pl-4 italic text-gray-700 my-4">
+            <blockquote className="border-l-4 border-yellow-500 pl-6 italic text-gray-300 my-6 bg-gray-900/30 py-4 rounded-r-lg">
                 {children}
             </blockquote>
         ),
         normal: ({ children }: any) => (
-            <p className="text-gray-700 leading-relaxed mb-4">{children}</p>
+            <p className="text-gray-300 leading-relaxed mb-4 text-lg">{children}</p>
         ),
     },
     list: {
         bullet: ({ children }: any) => (
-            <ul className="list-disc list-inside mb-4 text-gray-700">{children}</ul>
+            <ul className="list-disc list-inside mb-4 text-gray-300 space-y-1">{children}</ul>
         ),
         number: ({ children }: any) => (
-            <ol className="list-decimal list-inside mb-4 text-gray-700">{children}</ol>
+            <ol className="list-decimal list-inside mb-4 text-gray-300 space-y-1">{children}</ol>
         ),
     },
 }
@@ -174,87 +176,75 @@ export default async function BlogPostPage({ params }: PageProps) {
     const { post, relatedPosts } = data
 
     return (
-        <div className="min-h-screen bg-white">
-            {/* Breadcrumb Navigation */}
-            <nav className="bg-gray-50 border-b">
-                <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-                    <div className="flex items-center space-x-2 text-sm text-gray-600">
-                        <Link href="/" className="hover:text-gray-900">
-                            Home
-                        </Link>
-                        <span>/</span>
-                        <Link href="/blog" className="hover:text-gray-900">
-                            Blog
-                        </Link>
-                        <span>/</span>
-                        <span className="text-gray-900">{post.title}</span>
-                    </div>
-                </div>
-            </nav>
+        <div className="min-h-screen bg-black text-white max-w-5xl mx-auto mt-20">
 
-            <article className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+
+            <article className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
                 {/* Article Header */}
-                <header className="mb-8">
+                <header className="mb-12">
                     {/* Categories */}
                     {post.categories && post.categories.length > 0 && (
-                        <div className="flex flex-wrap gap-2 mb-4">
+                        <div className="flex flex-wrap gap-3 mb-6">
                             {post.categories.map((category) => (
-                                <Link
+                                <span
                                     key={category._id}
-                                    href={`/blog/category/${category.slug.current}`}
-                                    className={`px-3 py-1 rounded-full text-sm font-medium transition-colors hover:opacity-80 ${getCategoryColor(category.color)}`}
+                                    className={`px-4 py-2 rounded-full text-sm font-medium border transition-all duration-300 hover:scale-105 ${getCategoryColor(category.color)}`}
                                 >
                                     {category.title}
-                                </Link>
+                                </span>
                             ))}
                         </div>
                     )}
 
                     {/* Title */}
-                    <h1 className="text-4xl font-bold text-gray-900 mb-4 leading-tight">
+                    <h1 className="text-4xl md:text-5xl font-bold text-white mb-6 leading-tight">
                         {post.title}
                     </h1>
 
                     {/* Excerpt */}
                     {post.excerpt && (
-                        <p className="text-xl text-gray-600 mb-6 leading-relaxed">
+                        <p className="text-xl text-gray-300 mb-8 leading-relaxed max-w-4xl">
                             {post.excerpt}
                         </p>
                     )}
 
                     {/* Author and Meta */}
-                    <div className="flex items-center justify-between border-b border-gray-200 pb-6">
+                    <div className="flex items-center justify-between border-b border-gray-800 pb-8">
                         <div className="flex items-center space-x-4">
                             {post.author?.image && (
-                                <div className="relative w-12 h-12">
+                                <div className="relative w-16 h-16">
                                     <Image
-                                        src={urlFor(post.author.image).width(48).height(48).url()}
+                                        src={urlFor(post.author.image).width(64).height(64).url()}
                                         alt={post.author.name}
                                         fill
-                                        className="rounded-full object-cover"
+                                        className="rounded-full object-cover border-2 border-gray-700"
                                     />
                                 </div>
                             )}
                             <div>
-                                <p className="font-semibold text-gray-900">
-                                    {post.author?.name || 'Anonymous'}
-                                </p>
-                                <p className="text-sm text-gray-600">
-                                    <time dateTime={post.publishedAt}>
-                                        {formatDate(post.publishedAt)}
-                                    </time>
-                                </p>
+                                <div className="flex items-center gap-2 mb-1">
+                                    <User className="w-4 h-4 text-gray-400" />
+                                    <p className="font-semibold text-white text-lg">
+                                        {post.author?.name || 'Anonymous'}
+                                    </p>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                    <Calendar className="w-4 h-4 text-gray-400" />
+                                    <p className="text-gray-400">
+                                        <time dateTime={post.publishedAt}>
+                                            {formatDate(post.publishedAt)}
+                                        </time>
+                                    </p>
+                                </div>
                             </div>
                         </div>
-
-                        {/* Share buttons could go here */}
                     </div>
                 </header>
 
                 {/* Featured Image */}
                 {post.mainImage && (
-                    <div className="mb-8">
-                        <div className="relative aspect-video w-full overflow-hidden rounded-lg">
+                    <div className="mb-12">
+                        <div className="relative aspect-video w-full overflow-hidden rounded-lg border border-gray-800">
                             <Image
                                 src={urlFor(post.mainImage).width(1200).height(675).url()}
                                 alt={post.mainImage.alt || post.title}
@@ -264,7 +254,7 @@ export default async function BlogPostPage({ params }: PageProps) {
                             />
                         </div>
                         {post.mainImage.alt && (
-                            <p className="text-sm text-gray-600 text-center mt-2 italic">
+                            <p className="text-sm text-gray-400 text-center mt-3 italic">
                                 {post.mainImage.alt}
                             </p>
                         )}
@@ -272,7 +262,7 @@ export default async function BlogPostPage({ params }: PageProps) {
                 )}
 
                 {/* Article Content */}
-                <div className="prose prose-lg max-w-none">
+                <div className="prose prose-lg prose-invert max-w-none">
                     {post.body && (
                         <PortableText
                             value={post.body}
@@ -283,35 +273,35 @@ export default async function BlogPostPage({ params }: PageProps) {
 
                 {/* Author Bio - Only show if author exists */}
                 {post.author && (
-                    <div className="mt-12 bg-gray-50 rounded-lg p-6">
-                        <div className="flex items-start space-x-4">
+                    <div className="mt-16 bg-gray-900/50 border border-gray-800 rounded-lg p-8">
+                        <div className="flex items-start space-x-6">
                             {post.author.image && (
-                                <div className="relative w-16 h-16 flex-shrink-0">
+                                <div className="relative w-20 h-20 flex-shrink-0">
                                     <Image
-                                        src={urlFor(post.author.image).width(64).height(64).url()}
+                                        src={urlFor(post.author.image).width(80).height(80).url()}
                                         alt={post.author.name}
                                         fill
-                                        className="rounded-full object-cover"
+                                        className="rounded-full object-cover border-2 border-gray-700"
                                     />
                                 </div>
                             )}
                             <div className="flex-1">
-                                <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                                    About {post.author.name}
+                                <h3 className="text-xl font-bold text-white mb-3">
+                                    {post.author.name} haqqında
                                 </h3>
                                 {post.author.bio && (
-                                    <div className="text-gray-600 mb-3">
+                                    <div className="text-gray-300 mb-4 leading-relaxed">
                                         <PortableText value={post.author.bio} />
                                     </div>
                                 )}
                                 {post.author.socialLinks && (
-                                    <div className="flex space-x-4">
+                                    <div className="flex space-x-6">
                                         {post.author.socialLinks.twitter && (
                                             <a
                                                 href={post.author.socialLinks.twitter}
                                                 target="_blank"
                                                 rel="noopener noreferrer"
-                                                className="text-blue-500 hover:text-blue-700"
+                                                className="text-blue-400 hover:text-blue-300 transition-colors"
                                             >
                                                 Twitter
                                             </a>
@@ -321,7 +311,7 @@ export default async function BlogPostPage({ params }: PageProps) {
                                                 href={post.author.socialLinks.linkedin}
                                                 target="_blank"
                                                 rel="noopener noreferrer"
-                                                className="text-blue-600 hover:text-blue-800"
+                                                className="text-blue-400 hover:text-blue-300 transition-colors"
                                             >
                                                 LinkedIn
                                             </a>
@@ -331,7 +321,7 @@ export default async function BlogPostPage({ params }: PageProps) {
                                                 href={post.author.socialLinks.website}
                                                 target="_blank"
                                                 rel="noopener noreferrer"
-                                                className="text-gray-600 hover:text-gray-800"
+                                                className="text-yellow-500 hover:text-yellow-400 transition-colors"
                                             >
                                                 Website
                                             </a>
@@ -342,58 +332,68 @@ export default async function BlogPostPage({ params }: PageProps) {
                         </div>
                     </div>
                 )}
+
+                {/* Back to Blog */}
+                <div className="mt-12 text-center">
+                    <Link
+                        href="/blog"
+                        className="inline-flex items-center gap-2 bg-yellow-500 text-black px-6 py-3 rounded-full font-medium hover:bg-yellow-400 transition-colors"
+                    >
+                        <ChevronLeft className="w-4 h-4" />
+                        Bloga Qayıt
+                    </Link>
+                </div>
             </article>
 
             {/* Related Posts */}
             {relatedPosts.length > 0 && (
-                <section className="bg-gray-50 py-12">
+                <section className="bg-gray-900/30 border-t border-gray-800 py-16">
                     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                        <h2 className="text-2xl font-bold text-gray-900 mb-8 text-center">
-                            Related Posts
+                        <h2 className="text-3xl font-bold text-white mb-12 text-center">
+                            Oxşar <span className="text-yellow-500">Məqalələr</span>
                         </h2>
-                        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                        <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
                             {relatedPosts.map((relatedPost) => (
                                 <article
                                     key={relatedPost._id}
-                                    className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow"
+                                    className="group cursor-pointer"
                                 >
-                                    {relatedPost.mainImage && (
-                                        <Link href={`/blog/${relatedPost.slug.current}`}>
-                                            <div className="relative h-48 w-full">
-                                                <Image
-                                                    src={urlFor(relatedPost.mainImage).width(400).height(200).url()}
-                                                    alt={relatedPost.mainImage.alt || relatedPost.title}
-                                                    fill
-                                                    className="object-cover hover:scale-105 transition-transform duration-300"
-                                                />
+                                    <Link href={`/blog/${relatedPost.slug.current}`}>
+                                        <div className="bg-gray-900/50 border border-gray-800 rounded-lg overflow-hidden hover:shadow-2xl hover:shadow-yellow-900/20 transition-all duration-300 hover:border-yellow-500/50">
+                                            {relatedPost.mainImage && (
+                                                <div className="relative h-48 w-full overflow-hidden">
+                                                    <Image
+                                                        src={urlFor(relatedPost.mainImage).width(400).height(200).url()}
+                                                        alt={relatedPost.mainImage.alt || relatedPost.title}
+                                                        fill
+                                                        className="object-cover group-hover:scale-105 transition-transform duration-300"
+                                                    />
+                                                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                                                </div>
+                                            )}
+
+                                            <div className="p-6">
+                                                <h3 className="text-lg font-bold text-white mb-3 group-hover:text-yellow-400 transition-colors">
+                                                    {relatedPost.title}
+                                                </h3>
+
+                                                {relatedPost.excerpt && (
+                                                    <p className="text-gray-300 text-sm mb-4 line-clamp-2 leading-relaxed">
+                                                        {relatedPost.excerpt}
+                                                    </p>
+                                                )}
+
+                                                <div className="flex items-center justify-between text-sm text-gray-400">
+                                                    <span className="text-gray-300">
+                                                        {relatedPost.author?.name || 'Anonymous'}
+                                                    </span>
+                                                    <time dateTime={relatedPost.publishedAt} className="text-yellow-500">
+                                                        {formatDate(relatedPost.publishedAt)}
+                                                    </time>
+                                                </div>
                                             </div>
-                                        </Link>
-                                    )}
-
-                                    <div className="p-6">
-                                        <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                                            <Link
-                                                href={`/blog/${relatedPost.slug.current}`}
-                                                className="hover:text-blue-600 transition-colors"
-                                            >
-                                                {relatedPost.title}
-                                            </Link>
-                                        </h3>
-
-                                        {relatedPost.excerpt && (
-                                            <p className="text-gray-600 text-sm mb-4 line-clamp-2">
-                                                {relatedPost.excerpt}
-                                            </p>
-                                        )}
-
-                                        <div className="flex items-center text-sm text-gray-500">
-                                            <span>{relatedPost.author?.name || 'Anonymous'}</span>
-                                            <span className="mx-2">•</span>
-                                            <time dateTime={relatedPost.publishedAt}>
-                                                {formatDate(relatedPost.publishedAt)}
-                                            </time>
                                         </div>
-                                    </div>
+                                    </Link>
                                 </article>
                             ))}
                         </div>

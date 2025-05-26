@@ -31,12 +31,12 @@ function formatDate(dateString: string) {
 
 function getCategoryColor(color?: string) {
     const colors = {
-        blue: 'bg-blue-100 text-blue-800',
-        green: 'bg-green-100 text-green-800',
-        red: 'bg-red-100 text-red-800',
-        purple: 'bg-purple-100 text-purple-800',
-        yellow: 'bg-yellow-100 text-yellow-800',
-        gray: 'bg-gray-100 text-gray-800',
+        blue: 'bg-blue-500/20 text-blue-300 border-blue-500/30',
+        green: 'bg-green-500/20 text-green-300 border-green-500/30',
+        red: 'bg-red-500/20 text-red-300 border-red-500/30',
+        purple: 'bg-purple-500/20 text-purple-300 border-purple-500/30',
+        yellow: 'bg-yellow-500/20 text-yellow-300 border-yellow-500/30',
+        gray: 'bg-gray-500/20 text-gray-300 border-gray-500/30',
     }
     return colors[color as keyof typeof colors] || colors.gray
 }
@@ -45,33 +45,51 @@ export default async function BlogPage() {
     const { posts, categories } = await getBlogData()
 
     return (
-        <div className="min-h-screen bg-gray-50">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-                {/* Header */}
-                <div className="text-center mb-12">
-                    <h1 className="text-4xl font-bold text-gray-900 mb-4">
-                        Our Blog
-                    </h1>
-                    <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-                        Discover insights, tutorials, and stories from our team
-                    </p>
+        <div className="min-h-screen bg-black text-white">
+            {/* Hero Section */}
+            <div className="relative h-96 flex items-center justify-center overflow-hidden">
+                <div className="absolute inset-0 z-0">
+                    <div className="absolute inset-0 bg-black/60 z-10" />
+                    <Image
+                        src="/assets/bg.webp"
+                        alt="Blog"
+                        fill
+                        priority
+                        quality={100}
+                        className="object-cover"
+                    />
                 </div>
 
+                <div className="container mx-auto px-4 relative z-20">
+                    <div className="text-center">
+                        <h1 className="text-5xl font-bold mb-6 text-white">
+                            Bizim <span className="text-yellow-500">Blog</span>
+                        </h1>
+                        <p className="text-xl mb-8 max-w-2xl mx-auto text-gray-200">
+                            Komandasından məqalələr, təlimatlar və hekayələr
+                        </p>
+                    </div>
+                </div>
+
+                <div className="absolute bottom-0 left-0 right-0 h-12 bg-gradient-to-t from-black to-transparent"></div>
+            </div>
+
+            <div className="container mx-auto px-4 py-12">
                 {/* Categories Filter */}
                 {categories.length > 0 && (
-                    <div className="mb-8">
-                        <div className="flex flex-wrap gap-2 justify-center">
+                    <div className="mb-12">
+                        <div className="flex flex-wrap gap-3 justify-center">
                             <Link
                                 href="/blog"
-                                className="px-4 py-2 bg-gray-900 text-white rounded-full text-sm font-medium hover:bg-gray-800 transition-colors"
+                                className="px-6 py-3 bg-yellow-500 text-black rounded-full text-sm font-medium hover:bg-yellow-400 transition-colors"
                             >
-                                All Posts
+                                Bütün Məqalələr
                             </Link>
                             {categories.map((category) => (
                                 <Link
                                     key={category._id}
                                     href={`/blog/category/${category.slug.current}`}
-                                    className={`px-4 py-2 rounded-full text-sm font-medium transition-colors hover:opacity-80 ${getCategoryColor(category.color)}`}
+                                    className={`px-6 py-3 rounded-full text-sm font-medium border transition-all duration-300 hover:scale-105 ${getCategoryColor(category.color)}`}
                                 >
                                     {category.title}
                                 </Link>
@@ -83,87 +101,89 @@ export default async function BlogPage() {
                 {/* Blog Posts Grid */}
                 {posts.length > 0 ? (
                     <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-                        {posts.map((post) => (
+                        {posts.map((post, index) => (
                             <article
                                 key={post._id}
-                                className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow"
+                                className={`group cursor-pointer ${index === 0 ? 'md:col-span-2 lg:col-span-2' : ''}`}
                             >
-                                {post.mainImage && (
-                                    <Link href={`/blog/${post.slug.current}`}>
-                                        <div className="relative h-48 w-full">
-                                            <Image
-                                                src={urlFor(post.mainImage).width(400).height(200).url()}
-                                                alt={post.mainImage.alt || post.title}
-                                                fill
-                                                className="object-cover hover:scale-105 transition-transform duration-300"
-                                            />
-                                        </div>
-                                    </Link>
-                                )}
+                                <Link href={`/blog/${post.slug.current}`}>
+                                    <div className="bg-gray-900/50 border border-gray-800 rounded-lg overflow-hidden hover:shadow-2xl hover:shadow-yellow-900/20 transition-all duration-300 hover:border-yellow-500/50 h-full">
+                                        {post.mainImage && (
+                                            <div className={`relative overflow-hidden ${index === 0 ? 'h-64' : 'h-48'}`}>
+                                                <Image
+                                                    src={urlFor(post.mainImage).width(800).height(400).url()}
+                                                    alt={post.mainImage.alt || post.title}
+                                                    fill
+                                                    className="object-cover group-hover:scale-105 transition-transform duration-300"
+                                                />
+                                                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                                            </div>
+                                        )}
 
-                                <div className="p-6">
-                                    {/* Categories */}
-                                    {post.categories && post.categories.length > 0 && (
-                                        <div className="flex flex-wrap gap-2 mb-3">
-                                            {post.categories.map((category) => (
-                                                <span
-                                                    key={category._id}
-                                                    className={`px-2 py-1 rounded-full text-xs font-medium ${getCategoryColor(category.color)}`}
-                                                >
-                                                    {category.title}
-                                                </span>
-                                            ))}
-                                        </div>
-                                    )}
-
-                                    {/* Title */}
-                                    <h2 className="text-xl font-bold text-gray-900 mb-2">
-                                        <Link
-                                            href={`/blog/${post.slug.current}`}
-                                            className="hover:text-blue-600 transition-colors"
-                                        >
-                                            {post.title}
-                                        </Link>
-                                    </h2>
-
-                                    {/* Excerpt */}
-                                    {post.excerpt && (
-                                        <p className="text-gray-600 mb-4 line-clamp-3">
-                                            {post.excerpt}
-                                        </p>
-                                    )}
-
-                                    {/* Author and Date */}
-                                    <div className="flex items-center justify-between text-sm text-gray-500">
-                                        <div className="flex items-center space-x-2">
-                                            {post.author?.image && (
-                                                <div className="relative w-6 h-6">
-                                                    <Image
-                                                        src={urlFor(post.author.image).width(24).height(24).url()}
-                                                        alt={post.author.name}
-                                                        fill
-                                                        className="rounded-full object-cover"
-                                                    />
+                                        <div className="p-6">
+                                            {/* Categories */}
+                                            {post.categories && post.categories.length > 0 && (
+                                                <div className="flex flex-wrap gap-2 mb-4">
+                                                    {post.categories.map((category) => (
+                                                        <span
+                                                            key={category._id}
+                                                            className={`px-3 py-1 rounded-full text-xs font-medium border ${getCategoryColor(category.color)}`}
+                                                        >
+                                                            {category.title}
+                                                        </span>
+                                                    ))}
                                                 </div>
                                             )}
-                                            <span>{post.author?.name || 'Anonymous'}</span>
+
+                                            {/* Title */}
+                                            <h2 className={`font-bold text-white mb-3 group-hover:text-yellow-400 transition-colors ${index === 0 ? 'text-2xl' : 'text-xl'}`}>
+                                                {post.title}
+                                            </h2>
+
+                                            {/* Excerpt */}
+                                            {post.excerpt && (
+                                                <p className={`text-gray-300 mb-4 leading-relaxed ${index === 0 ? 'text-base' : 'text-sm'} line-clamp-3`}>
+                                                    {post.excerpt}
+                                                </p>
+                                            )}
+
+                                            {/* Author and Date */}
+                                            <div className="flex items-center justify-between text-sm text-gray-400 mt-auto">
+                                                <div className="flex items-center space-x-3">
+                                                    {post.author?.image && (
+                                                        <div className="relative w-8 h-8">
+                                                            <Image
+                                                                src={urlFor(post.author.image).width(32).height(32).url()}
+                                                                alt={post.author.name}
+                                                                fill
+                                                                className="rounded-full object-cover border border-gray-700"
+                                                            />
+                                                        </div>
+                                                    )}
+                                                    <span className="text-gray-300 font-medium">
+                                                        {post.author?.name || 'Anonymous'}
+                                                    </span>
+                                                </div>
+                                                <time dateTime={post.publishedAt} className="text-yellow-500">
+                                                    {formatDate(post.publishedAt)}
+                                                </time>
+                                            </div>
                                         </div>
-                                        <time dateTime={post.publishedAt}>
-                                            {formatDate(post.publishedAt)}
-                                        </time>
                                     </div>
-                                </div>
+                                </Link>
                             </article>
                         ))}
                     </div>
                 ) : (
-                    <div className="text-center py-12">
-                        <h3 className="text-lg font-medium text-gray-900 mb-2">
-                            No blog posts found
-                        </h3>
-                        <p className="text-gray-600">
-                            Check back later for new content!
-                        </p>
+                    <div className="text-center py-16">
+                        <div className="max-w-md mx-auto">
+                            <h3 className="text-2xl font-bold text-white mb-4">
+                                Heç bir blog məqaləsi tapılmadı
+                            </h3>
+                            <p className="text-gray-400">
+                                Yeni məzmun üçün daha sonra yoxlayın!
+                            </p>
+                        </div>
                     </div>
                 )}
             </div>
