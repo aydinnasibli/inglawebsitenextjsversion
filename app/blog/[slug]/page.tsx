@@ -15,19 +15,6 @@ interface PageProps {
 }
 
 // Type definitions for Portable Text components
-interface ImageValue {
-    _type: 'image'
-    asset: {
-        _ref: string
-        _type: 'reference'
-    }
-    alt?: string
-}
-
-interface LinkValue {
-    _type: 'link'
-    href: string
-}
 
 // Generate static params for all blog posts
 export async function generateStaticParams() {
