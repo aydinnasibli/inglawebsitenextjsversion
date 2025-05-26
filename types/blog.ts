@@ -35,7 +35,7 @@ export interface Author {
             _ref: string
         }
     }
-    bio?: string // Changed from any[] to string for simple text bio
+    bio?: any[] | string // Support both Portable Text array and simple string
     socialLinks?: {
         twitter?: string
         linkedin?: string

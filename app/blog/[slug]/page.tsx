@@ -396,7 +396,25 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                                     </h4>
                                     {post.author.bio && (
                                         <div className="text-gray-300 leading-relaxed">
-                                            <p className="mb-2">{post.author.bio}</p>
+                                            {typeof post.author.bio === 'string' ? (
+                                                <p className="mb-2">{post.author.bio}</p>
+                                            ) : Array.isArray(post.author.bio) ? (
+                                                <PortableText
+                                                    value={post.author.bio}
+                                                    components={{
+                                                        block: {
+                                                            normal: ({ children }: any) => (
+                                                                <p className="mb-2 text-gray-300">{children}</p>
+                                                            ),
+                                                        },
+                                                        marks: {
+                                                            strong: ({ children }: any) => (
+                                                                <strong className="font-bold text-yellow-100">{children}</strong>
+                                                            ),
+                                                        },
+                                                    }}
+                                                />
+                                            ) : null}
                                         </div>
                                     )}
                                 </div>
