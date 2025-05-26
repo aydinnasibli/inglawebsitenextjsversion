@@ -93,6 +93,7 @@ export default function Footer() {
                                     { name: "Xaricdə Təhsil", href: "/studyabroad" },
                                     { name: "Preschool", href: "/preschool" },
                                     { name: "Təlim Mərkəzi", href: "/training-center" },
+                                    { name: "Blog", href: "/blog" },
                                 ].map((link) => (
                                     <li key={link.name}>
                                         <Link
@@ -117,8 +118,8 @@ export default function Footer() {
                                 <li className="flex items-start space-x-3 text-gray-400 group">
                                     <MapPin size={18} className="text-yellow-500 mt-0.5 flex-shrink-0" />
                                     <div>
-                                        <span className="block">Bakı ş. Nizami rayonu</span>
-                                        <span className="block">Qara Qarayev pr., 34</span>
+                                        <span className="block">Grand Hayat Yaşayış Kompleksi </span>
+                                        <span className="block">9-cu bina, 4-cü mərtəbə</span>
                                     </div>
                                 </li>
                                 <li className="flex items-center space-x-3">
@@ -127,7 +128,7 @@ export default function Footer() {
                                         href="tel:+994503001234"
                                         className="text-gray-400 hover:text-yellow-500 transition-colors duration-300"
                                     >
-                                        +994 50 300 12 34
+                                        +994 10 310 71 17
                                     </a>
                                 </li>
                                 <li className="flex items-center space-x-3">

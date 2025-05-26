@@ -5,29 +5,66 @@ export interface BlogPost {
     slug: {
         current: string
     }
-    excerpt?: string
-    content: any[]
+    author?: Author
     mainImage?: {
+        alt?: string
         asset: {
             _ref: string
         }
-        alt?: string
     }
-    author?: {
-        name: string
-        image?: {
-            asset: {
-                _ref: string
-            }
-        }
-    }
+    categories?: Category[]
     publishedAt: string
-    categories?: Array<{
-        title: string
-        slug: {
-            current: string
+    excerpt?: string
+    content: any[] // Portable Text content
+    featured?: boolean
+    seo?: {
+        metaTitle?: string
+        metaDescription?: string
+    }
+}
+
+export interface Author {
+    _id: string
+    name: string
+    slug?: {
+        current: string
+    }
+    image?: {
+        asset: {
+            _ref: string
         }
-    }>
-    _createdAt: string
-    _updatedAt: string
+    }
+    bio?: any[] // Portable Text content
+    socialLinks?: {
+        twitter?: string
+        linkedin?: string
+        instagram?: string
+        website?: string
+    }
+    postCount?: number
+}
+
+export interface Category {
+    _id: string
+    title: string
+    slug: {
+        current: string
+    }
+    description?: string
+    color?: 'blue' | 'green' | 'purple' | 'red' | 'yellow' | 'pink' | 'indigo' | 'gray'
+    postCount?: number
+}
+
+export interface BlogPostSummary {
+    _id: string
+    title: string
+    slug: {
+        current: string
+    }
+    author?: Pick<Author, '_id' | 'name' | 'image'>
+    mainImage?: BlogPost['mainImage']
+    categories?: Pick<Category, 'title' | 'slug'>[]
+    publishedAt: string
+    excerpt?: string
+    featured?: boolean
 }

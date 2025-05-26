@@ -1,3 +1,4 @@
+// sanity/structure.ts
 import type { StructureResolver } from 'sanity/structure'
 
 // https://www.sanity.io/docs/structure-builder-cheat-sheet
@@ -8,6 +9,28 @@ export const structure: StructureResolver = (S) =>
       S.documentTypeListItem('homepageCarousel').title('Homepage Carousel'),
       S.documentTypeListItem('services').title('Services (Tədris İstiqamətləri)'),
       S.divider(),
+
+      // Blog Section
+      S.listItem()
+        .title('Blog')
+        .child(
+          S.list()
+            .title('Blog Management')
+            .items([
+              S.documentTypeListItem('post')
+                .title('Blog Posts')
+                .child(
+                  S.documentTypeList('post')
+                    .title('Blog Posts')
+                    .filter('_type == "post"')
+                    .defaultOrdering([{ field: 'publishedAt', direction: 'desc' }])
+                ),
+              S.documentTypeListItem('author').title('Authors'),
+              S.documentTypeListItem('category').title('Categories'),
+            ])
+        ),
+      S.divider(),
+
       S.listItem()
         .title('Study Abroad (Xaricdə Təhsil)')
         .child(
@@ -34,7 +57,11 @@ export const structure: StructureResolver = (S) =>
           'country',
           'university',
           'preschoolService',
-          'training'
+          'training',
+          'post',
+          'author',
+          'category',
+          'blockContent'
         ].includes(item.getId()!),
       ),
     ])
