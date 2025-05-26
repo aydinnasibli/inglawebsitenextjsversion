@@ -136,7 +136,7 @@ export default async function BlogPage() {
                                     {/* Author and Date */}
                                     <div className="flex items-center justify-between text-sm text-gray-500">
                                         <div className="flex items-center space-x-2">
-                                            {post.author.image && (
+                                            {post.author?.image && (
                                                 <div className="relative w-6 h-6">
                                                     <Image
                                                         src={urlFor(post.author.image).width(24).height(24).url()}
@@ -146,7 +146,7 @@ export default async function BlogPage() {
                                                     />
                                                 </div>
                                             )}
-                                            <span>{post.author.name}</span>
+                                            <span>{post.author?.name || 'Anonymous'}</span>
                                         </div>
                                         <time dateTime={post.publishedAt}>
                                             {formatDate(post.publishedAt)}
@@ -170,4 +170,3 @@ export default async function BlogPage() {
         </div>
     )
 }
-

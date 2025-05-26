@@ -39,7 +39,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
             description: post.excerpt || '',
             type: 'article',
             publishedTime: post.publishedAt,
-            authors: [post.author.name],
+            authors: post.author ? [post.author.name] : [],
             images: post.mainImage
                 ? [
                     {
@@ -225,7 +225,7 @@ export default async function BlogPostPage({ params }: PageProps) {
                     {/* Author and Meta */}
                     <div className="flex items-center justify-between border-b border-gray-200 pb-6">
                         <div className="flex items-center space-x-4">
-                            {post.author.image && (
+                            {post.author?.image && (
                                 <div className="relative w-12 h-12">
                                     <Image
                                         src={urlFor(post.author.image).width(48).height(48).url()}
@@ -236,7 +236,9 @@ export default async function BlogPostPage({ params }: PageProps) {
                                 </div>
                             )}
                             <div>
-                                <p className="font-semibold text-gray-900">{post.author.name}</p>
+                                <p className="font-semibold text-gray-900">
+                                    {post.author?.name || 'Anonymous'}
+                                </p>
                                 <p className="text-sm text-gray-600">
                                     <time dateTime={post.publishedAt}>
                                         {formatDate(post.publishedAt)}
@@ -279,65 +281,67 @@ export default async function BlogPostPage({ params }: PageProps) {
                     )}
                 </div>
 
-                {/* Author Bio */}
-                <div className="mt-12 bg-gray-50 rounded-lg p-6">
-                    <div className="flex items-start space-x-4">
-                        {post.author.image && (
-                            <div className="relative w-16 h-16 flex-shrink-0">
-                                <Image
-                                    src={urlFor(post.author.image).width(64).height(64).url()}
-                                    alt={post.author.name}
-                                    fill
-                                    className="rounded-full object-cover"
-                                />
+                {/* Author Bio - Only show if author exists */}
+                {post.author && (
+                    <div className="mt-12 bg-gray-50 rounded-lg p-6">
+                        <div className="flex items-start space-x-4">
+                            {post.author.image && (
+                                <div className="relative w-16 h-16 flex-shrink-0">
+                                    <Image
+                                        src={urlFor(post.author.image).width(64).height(64).url()}
+                                        alt={post.author.name}
+                                        fill
+                                        className="rounded-full object-cover"
+                                    />
+                                </div>
+                            )}
+                            <div className="flex-1">
+                                <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                                    About {post.author.name}
+                                </h3>
+                                {post.author.bio && (
+                                    <div className="text-gray-600 mb-3">
+                                        <PortableText value={post.author.bio} />
+                                    </div>
+                                )}
+                                {post.author.socialLinks && (
+                                    <div className="flex space-x-4">
+                                        {post.author.socialLinks.twitter && (
+                                            <a
+                                                href={post.author.socialLinks.twitter}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="text-blue-500 hover:text-blue-700"
+                                            >
+                                                Twitter
+                                            </a>
+                                        )}
+                                        {post.author.socialLinks.linkedin && (
+                                            <a
+                                                href={post.author.socialLinks.linkedin}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="text-blue-600 hover:text-blue-800"
+                                            >
+                                                LinkedIn
+                                            </a>
+                                        )}
+                                        {post.author.socialLinks.website && (
+                                            <a
+                                                href={post.author.socialLinks.website}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="text-gray-600 hover:text-gray-800"
+                                            >
+                                                Website
+                                            </a>
+                                        )}
+                                    </div>
+                                )}
                             </div>
-                        )}
-                        <div className="flex-1">
-                            <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                                About {post.author.name}
-                            </h3>
-                            {post.author.bio && (
-                                <div className="text-gray-600 mb-3">
-                                    <PortableText value={post.author.bio} />
-                                </div>
-                            )}
-                            {post.author.socialLinks && (
-                                <div className="flex space-x-4">
-                                    {post.author.socialLinks.twitter && (
-                                        <a
-                                            href={post.author.socialLinks.twitter}
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                            className="text-blue-500 hover:text-blue-700"
-                                        >
-                                            Twitter
-                                        </a>
-                                    )}
-                                    {post.author.socialLinks.linkedin && (
-                                        <a
-                                            href={post.author.socialLinks.linkedin}
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                            className="text-blue-600 hover:text-blue-800"
-                                        >
-                                            LinkedIn
-                                        </a>
-                                    )}
-                                    {post.author.socialLinks.website && (
-                                        <a
-                                            href={post.author.socialLinks.website}
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                            className="text-gray-600 hover:text-gray-800"
-                                        >
-                                            Website
-                                        </a>
-                                    )}
-                                </div>
-                            )}
                         </div>
                     </div>
-                </div>
+                )}
             </article>
 
             {/* Related Posts */}
@@ -383,7 +387,7 @@ export default async function BlogPostPage({ params }: PageProps) {
                                         )}
 
                                         <div className="flex items-center text-sm text-gray-500">
-                                            <span>{relatedPost.author.name}</span>
+                                            <span>{relatedPost.author?.name || 'Anonymous'}</span>
                                             <span className="mx-2">•</span>
                                             <time dateTime={relatedPost.publishedAt}>
                                                 {formatDate(relatedPost.publishedAt)}
