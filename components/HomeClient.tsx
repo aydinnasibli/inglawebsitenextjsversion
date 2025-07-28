@@ -317,7 +317,7 @@ export default function HomeClient({ initialCarouselData, initialFaqData, initia
                         className="text-center"
                     >
                         <h1 className="text-6xl font-bold mb-6 text-white">
-                            <span className="text-yellow-500">İngla</span> School
+                            <span className="text-yellow-500">Ingla</span> School Baku
                         </h1>
                         <p className="text-2xl mb-8 max-w-2xl mx-auto text-gray-200">
                             Uğurlu gələcəyiniz üçün peşəkar təhsil həlləri

@@ -99,7 +99,7 @@ const Navbar = () => {
                         className="text-white font-bold text-3xl tracking-wider"
                         onClick={handleNavigation}
                     >
-                        <span className="text-yellow-500">İngla</span>
+                        <span className="text-yellow-500">Ingla</span>
                     </Link>
 
                     {/* Desktop Navigation */}
