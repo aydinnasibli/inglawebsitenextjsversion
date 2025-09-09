@@ -12,7 +12,7 @@ async function getCarouselData(): Promise<SanityCarouselItem[]> {
       {},
       {
         cache: 'force-cache',
-        next: { revalidate: 30 } // Revalidate every hour
+        next: { revalidate: 3600 } // Revalidate every hour
       }
     );
     return Array.isArray(data) ? data : [];
