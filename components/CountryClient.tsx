@@ -6,16 +6,12 @@ import Link from "next/link";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import {
-    ChevronRight,
     ArrowLeft,
     Globe,
     MapPin,
     Calendar,
-    Users,
-    Star,
     DollarSign,
     FileText,
-    Award,
     Building2
 } from "lucide-react";
 import { client } from "@/sanity/lib/client";
@@ -71,17 +67,6 @@ export default function CountryClient({
         },
     };
 
-    const cardVariants = {
-        hidden: { opacity: 0, y: 30 },
-        visible: {
-            opacity: 1,
-            y: 0,
-            transition: {
-                duration: 0.6,
-            },
-        },
-    };
-
     // Transform functions
     const transformCountryData = (sanityCountry: SanityCountry): Country => {
         return {
@@ -114,25 +99,9 @@ export default function CountryClient({
                     nameAz: uni.country.nameAz,
                     slug: uni.country.slug.current,
                 },
-                shortDescription: uni.shortDescription,
-                fullDescription: uni.fullDescription,
-                logo: uni.logo ? urlFor(uni.logo).width(120).height(120).quality(90).url() : '',
-                coverImage: uni.coverImage ? urlFor(uni.coverImage).width(600).height(400).quality(85).url() : '',
-                gallery: uni.gallery?.map(img => urlFor(img).width(800).height(600).quality(85).url()),
-                ranking: uni.ranking,
-                established: uni.established,
-                studentCount: uni.studentCount,
-                location: uni.location,
-                programs: uni.programs,
-                facilities: uni.facilities,
-                admissionInfo: uni.admissionInfo,
-                scholarships: uni.scholarships,
-                contactInfo: uni.contactInfo,
-                isFeatured: uni.isFeatured,
+                logo: uni.logo ? urlFor(uni.logo).width(200).height(200).quality(90).url() : '',
             }));
     };
-
-
 
     // Load data
     useEffect(() => {
@@ -176,20 +145,6 @@ export default function CountryClient({
             isMounted = false;
         };
     }, [initialCountryData, initialUniversitiesData]);
-
-    // Helper functions
-    const getDegreeDisplayName = (degree: string) => {
-        const degreeNames: Record<string, string> = {
-            'bachelor': 'Bakalavr',
-            'master': 'Magistr',
-            'phd': 'Doktorluq',
-            'foundation': 'Foundation',
-            'certificate': 'Sertifikat'
-        };
-        return degreeNames[degree] || degree;
-    };
-
-
 
     if (!country) {
         return (
@@ -260,8 +215,6 @@ export default function CountryClient({
                         <p className="text-2xl mb-8 max-w-3xl mx-auto text-gray-200">
                             {country.shortDescription}
                         </p>
-
-
                     </motion.div>
                 </div>
 
@@ -315,7 +268,7 @@ export default function CountryClient({
                         <div className="lg:col-span-1">
                             {/* Study Info Card */}
                             {country.studyInfo && (
-                                <div className=" top-8 bg-gray-900/50 border border-gray-800 rounded-lg p-6 mb-8">
+                                <div className="top-8 bg-gray-900/50 border border-gray-800 rounded-lg p-6 mb-8">
                                     <h3 className="text-xl font-bold mb-4 text-yellow-500">Təhsil Məlumatları</h3>
                                     <div className="space-y-4">
                                         {country.studyInfo.language && (
@@ -403,14 +356,14 @@ export default function CountryClient({
                 </div>
             </motion.section>
 
-            {/* Universities Section */}
+            {/* Universities Carousel Section */}
             <motion.section
                 id="universities"
                 initial="hidden"
                 whileInView="visible"
                 viewport={{ once: true }}
                 variants={sectionVariants}
-                className="py-24 bg-gray-900/30"
+                className="py-24 bg-gray-900/30 overflow-hidden"
             >
                 <div className="container mx-auto px-4">
                     <motion.div
@@ -446,129 +399,63 @@ export default function CountryClient({
                             </p>
                         </div>
                     ) : (
-                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                            {universities.map((university) => (
+                        <div className="relative">
+                            {/* Infinite Carousel */}
+                            <div className="overflow-hidden">
                                 <motion.div
-                                    key={university.id}
-                                    variants={cardVariants}
-                                    className="group cursor-pointer"
+                                    className="flex gap-12"
+                                    animate={{
+                                        x: [0, -100 * universities.length],
+                                    }}
+                                    transition={{
+                                        x: {
+                                            repeat: Infinity,
+                                            repeatType: "loop",
+                                            duration: universities.length * 3,
+                                            ease: "linear",
+                                        },
+                                    }}
                                 >
-                                    <Link href={`/studyabroad/${country.slug}/${university.slug}`}>
-                                        <div className="bg-gray-900/50 border border-gray-800 rounded-lg overflow-hidden hover:shadow-2xl hover:shadow-yellow-900/20 transition-all duration-300 hover:border-yellow-500/50">
-                                            {/* University Image */}
-                                            <div className="relative h-48 overflow-hidden">
-                                                <Image
-                                                    src={university.coverImage || '/assets/bg.webp'}
-                                                    alt={university.name}
-                                                    fill
-                                                    className="object-cover group-hover:scale-105 transition-transform duration-300"
-                                                />
-                                                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-
-                                                {/* Logo and Featured Badge */}
-                                                <div className="absolute top-4 left-4 flex items-center gap-2">
-                                                    {university.logo && (
-                                                        <div className="w-12 h-12 rounded bg-white p-1">
-                                                            <Image
-                                                                src={university.logo}
-                                                                alt={`${university.name} logo`}
-                                                                width={48}
-                                                                height={48}
-                                                                className="object-contain w-full h-full"
-                                                            />
-                                                        </div>
-                                                    )}
-                                                    {university.isFeatured && (
-                                                        <div className="bg-yellow-500 text-black px-2 py-1 rounded text-xs font-bold">
-                                                            <Star className="w-3 h-3 inline mr-1" />
-                                                            Seçilmiş
-                                                        </div>
-                                                    )}
-                                                </div>
-
-                                                {/* University Name */}
-                                                <div className="absolute bottom-4 left-4 right-4">
-                                                    <h3 className="text-xl font-bold text-white mb-1">
-                                                        {university.name}
-                                                    </h3>
-                                                    {university.location && (
-                                                        <div className="flex items-center text-gray-300 text-sm">
-                                                            <MapPin className="w-4 h-4 mr-1" />
-                                                            {university.location.city}
-                                                        </div>
-                                                    )}
-                                                </div>
-                                            </div>
-
-                                            {/* University Details */}
-                                            <div className="p-6">
-                                                <p className="text-gray-300 mb-4 text-sm leading-relaxed">
-                                                    {university.shortDescription}
-                                                </p>
-
-                                                {/* University Stats */}
-                                                <div className="grid grid-cols-2 gap-4 mb-4 text-xs">
-                                                    {university.ranking && (
-                                                        <div className="flex items-center text-gray-400">
-                                                            <Award className="w-3 h-3 mr-1" />
-                                                            {university.ranking}
-                                                        </div>
-                                                    )}
-                                                    {university.established && (
-                                                        <div className="flex items-center text-gray-400">
-                                                            <Calendar className="w-3 h-3 mr-1" />
-                                                            {university.established}
-                                                        </div>
-                                                    )}
-                                                    {university.studentCount && (
-                                                        <div className="flex items-center text-gray-400">
-                                                            <Users className="w-3 h-3 mr-1" />
-                                                            {university.studentCount}
-                                                        </div>
-                                                    )}
-                                                </div>
-
-                                                {/* Programs */}
-                                                {university.programs && university.programs.length > 0 && (
-                                                    <div className="mb-4">
-                                                        <div className="flex flex-wrap gap-1">
-                                                            {university.programs.slice(0, 3).map((program, idx) => (
-                                                                <span
-                                                                    key={idx}
-                                                                    className="bg-gray-800 text-yellow-400 px-2 py-1 rounded text-xs"
-                                                                >
-                                                                    {getDegreeDisplayName(program.degree)}
-                                                                </span>
-                                                            ))}
-                                                            {university.programs.length > 3 && (
-                                                                <span className="text-xs text-gray-400">
-                                                                    +{university.programs.length - 3} daha
-                                                                </span>
-                                                            )}
-                                                        </div>
-                                                    </div>
-                                                )}
-
-                                                {/* Action */}
-                                                <div className="flex items-center justify-between">
-                                                    <span className="text-yellow-500 text-sm font-medium group-hover:text-yellow-400 transition-colors">
-                                                        Ətraflı məlumat
-                                                    </span>
-                                                    <ChevronRight className="w-4 h-4 text-yellow-500 group-hover:translate-x-1 transition-transform" />
-                                                </div>
-                                            </div>
+                                    {/* First set */}
+                                    {universities.map((university) => (
+                                        <div
+                                            key={`first-${university.id}`}
+                                            className="flex-shrink-0 w-48 h-48 bg-white rounded-lg p-6 flex items-center justify-center hover:shadow-xl hover:shadow-yellow-500/20 transition-all duration-300"
+                                        >
+                                            <Image
+                                                src={university.logo}
+                                                alt={university.name}
+                                                width={150}
+                                                height={150}
+                                                className="object-contain max-w-full max-h-full"
+                                            />
                                         </div>
-                                    </Link>
+                                    ))}
+                                    {/* Duplicate set for seamless loop */}
+                                    {universities.map((university) => (
+                                        <div
+                                            key={`second-${university.id}`}
+                                            className="flex-shrink-0 w-48 h-48 bg-white rounded-lg p-6 flex items-center justify-center hover:shadow-xl hover:shadow-yellow-500/20 transition-all duration-300"
+                                        >
+                                            <Image
+                                                src={university.logo}
+                                                alt={university.name}
+                                                width={150}
+                                                height={150}
+                                                className="object-contain max-w-full max-h-full"
+                                            />
+                                        </div>
+                                    ))}
                                 </motion.div>
-                            ))}
+                            </div>
+
+                            {/* Gradient overlays */}
+                            <div className="absolute left-0 top-0 bottom-0 w-24 bg-gradient-to-r from-gray-900/30 to-transparent pointer-events-none"></div>
+                            <div className="absolute right-0 top-0 bottom-0 w-24 bg-gradient-to-l from-gray-900/30 to-transparent pointer-events-none"></div>
                         </div>
                     )}
                 </div>
             </motion.section>
-
-
-
-
         </div>
     );
 }

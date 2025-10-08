@@ -46,53 +46,10 @@ export interface SanityUniversity {
             current: string;
         };
     };
-    shortDescription: string;
-    fullDescription?: any[];
     logo: any;
-    coverImage: any;
-    gallery?: any[];
-    ranking?: string;
-    established?: number;
-    studentCount?: string;
-    location: {
-        city: string;
-        address?: string;
-        coordinates?: {
-            lat: number;
-            lng: number;
-        };
-    };
-    programs?: Array<{
-        name: string;
-        degree: 'bachelor' | 'master' | 'phd' | 'foundation' | 'certificate';
-        duration?: string;
-        tuitionFee?: string;
-        requirements?: string[];
-    }>;
-    facilities?: string[];
-    admissionInfo?: {
-        applicationDeadline?: string;
-        applicationFee?: string;
-        requirements?: string[];
-        documents?: string[];
-    };
-    scholarships?: Array<{
-        name: string;
-        amount?: string;
-        criteria?: string;
-    }>;
-    contactInfo?: {
-        website?: string;
-        admissionsEmail?: string;
-        phone?: string;
-    };
     order: number;
     isActive: boolean;
-    isFeatured?: boolean;
-    seoTitle?: string;
-    seoDescription?: string;
 }
-
 
 // Frontend display types
 export interface Country {
@@ -132,45 +89,5 @@ export interface University {
         nameAz: string;
         slug: string;
     };
-    shortDescription: string;
-    fullDescription?: any[];
     logo: string;
-    coverImage: string;
-    gallery?: string[];
-    ranking?: string;
-    established?: number;
-    studentCount?: string;
-    location: {
-        city: string;
-        address?: string;
-        coordinates?: {
-            lat: number;
-            lng: number;
-        };
-    };
-    programs?: Array<{
-        name: string;
-        degree: string;
-        duration?: string;
-        tuitionFee?: string;
-        requirements?: string[];
-    }>;
-    facilities?: string[];
-    admissionInfo?: {
-        applicationDeadline?: string;
-        applicationFee?: string;
-        requirements?: string[];
-        documents?: string[];
-    };
-    scholarships?: Array<{
-        name: string;
-        amount?: string;
-        criteria?: string;
-    }>;
-    contactInfo?: {
-        website?: string;
-        admissionsEmail?: string;
-        phone?: string;
-    };
-    isFeatured?: boolean;
 }
