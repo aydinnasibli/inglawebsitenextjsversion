@@ -8,7 +8,6 @@ import { Button } from "@/components/ui/button";
 import {
     ArrowLeft,
     Globe,
-    MapPin,
     Calendar,
     DollarSign,
     FileText,
