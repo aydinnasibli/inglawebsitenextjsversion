@@ -1,6 +1,5 @@
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import UniversityClient from '@/components/UniversityClient';
 import { client } from '@/sanity/lib/client';
 import {
     UNIVERSITY_BY_SLUG_QUERY,
@@ -74,33 +73,3 @@ export async function generateMetadata({ params }: UniversityPageProps): Promise
     }
 }
 
-export default async function UniversityPage({ params }: UniversityPageProps) {
-    const { slug: countrySlug, universitySlug } = await params;
-
-    try {
-        // Fetch university data
-        const universityData = await client.fetch(UNIVERSITY_BY_SLUG_QUERY, {
-            slug: universitySlug,
-            countrySlug: countrySlug,
-        });
-
-        // Fetch country data
-        const countryData = await client.fetch(COUNTRY_BY_SLUG_QUERY, {
-            slug: countrySlug,
-        });
-
-        if (!universityData || !countryData) {
-            notFound();
-        }
-
-        return (
-            <UniversityClient
-                initialUniversityData={universityData}
-                initialCountryData={countryData}
-            />
-        );
-    } catch (error) {
-        console.error('Error fetching university data:', error);
-        notFound();
-    }
-}
