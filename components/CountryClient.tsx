@@ -176,15 +176,7 @@ export default function CountryClient({
                     />
                 </div>
 
-                {/* Back Button */}
-                <div className="absolute top-8 left-8 z-30">
-                    <Link href="/studyabroad">
-                        <Button variant="outline" className="border-white/50 text-white hover:bg-white hover:text-black">
-                            <ArrowLeft className="mr-2 h-4 w-4" />
-                            Geri
-                        </Button>
-                    </Link>
-                </div>
+
 
                 <div className="container mx-auto px-4 relative z-20">
                     <motion.div
@@ -355,15 +347,22 @@ export default function CountryClient({
                 </div>
             </motion.section>
 
-            {/* Universities Carousel Section */}
+            {/* Universities Section - Creative Design */}
             <motion.section
                 id="universities"
                 initial="hidden"
                 whileInView="visible"
                 viewport={{ once: true }}
                 variants={sectionVariants}
-                className="py-40 relative overflow-hidden bg-transparent"
+                className="py-32 relative overflow-hidden"
             >
+                {/* Animated background elements */}
+                <div className="absolute inset-0 bg-gradient-to-b from-black via-yellow-950/5 to-black"></div>
+                <div className="absolute inset-0 opacity-30">
+                    <div className="absolute top-20 left-1/4 w-96 h-96 bg-yellow-500/10 rounded-full blur-3xl animate-pulse"></div>
+                    <div className="absolute bottom-20 right-1/4 w-96 h-96 bg-yellow-500/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }}></div>
+                </div>
+
                 <div className="container mx-auto px-4 relative z-10">
                     <motion.div
                         initial={{ opacity: 0, y: 20 }}
@@ -372,11 +371,16 @@ export default function CountryClient({
                         viewport={{ once: true }}
                         className="text-center mb-20"
                     >
-                        <h2 className="text-5xl md:text-6xl font-bold mb-6">
-                            {country.nameAz} <span className="text-yellow-500">Universitetləri</span>
+                        <div className="inline-block mb-4">
+                            <span className="text-yellow-500 text-sm font-semibold tracking-wider uppercase px-4 py-2 bg-yellow-500/10 rounded-full border border-yellow-500/20">
+                                Tərəfdaş Universitetlər
+                            </span>
+                        </div>
+                        <h2 className="text-5xl md:text-7xl font-bold mb-6">
+                            Prestijli <span className="text-yellow-500">Universitetlər</span>
                         </h2>
-                        <p className="text-gray-400 text-xl max-w-2xl mx-auto">
-                            {country.nameAz}in ən yaxşı universitetlərində təhsil imkanlarını kəşf edin
+                        <p className="text-gray-400 text-xl max-w-3xl mx-auto leading-relaxed">
+                            Dünya səviyyəli universitetlərdə akademik mükəmməlliyə doğru ilk addımınızı atın
                         </p>
                     </motion.div>
 
@@ -398,95 +402,157 @@ export default function CountryClient({
                             </p>
                         </div>
                     ) : (
-                        <div className="relative py-12">
-                            {/* Infinite Carousel */}
-                            <div
-                                className="overflow-hidden"
-                                style={{
-                                    WebkitMaskImage: 'linear-gradient(to right, transparent, black 15%, black 85%, transparent)',
-                                    maskImage: 'linear-gradient(to right, transparent, black 15%, black 85%, transparent)'
-                                }}
-                            >
-                                <motion.div
-                                    className="flex gap-12"
-                                    animate={{
-                                        x: [0, -(280 * universities.length)],
-                                    }}
-                                    transition={{
-                                        x: {
-                                            repeat: Infinity,
-                                            repeatType: "loop",
-                                            duration: universities.length * 5,
-                                            ease: "linear",
-                                        },
-                                    }}
-                                >
-                                    {/* First set */}
-                                    {universities.map((university) => (
-                                        <div
-                                            key={`first-${university.id}`}
-                                            className="flex-shrink-0 w-64 h-40 group cursor-pointer"
-                                        >
-                                            <div className="w-full h-full bg-white/95 backdrop-blur-sm rounded-xl p-6 flex items-center justify-center relative overflow-hidden">
-                                                {/* Subtle glow effect */}
+                        <>
+                            {/* Top Row - Moving Right */}
+                            <div className="relative mb-8">
+                                <div className="overflow-hidden py-8">
+                                    <motion.div
+                                        className="flex gap-6"
+                                        animate={{
+                                            x: [0, -(420 * Math.ceil(universities.length / 2))],
+                                        }}
+                                        transition={{
+                                            x: {
+                                                repeat: Infinity,
+                                                repeatType: "loop",
+                                                duration: Math.ceil(universities.length / 2) * 8,
+                                                ease: "linear",
+                                            },
+                                        }}
+                                    >
+                                        {/* Render first half twice for seamless loop */}
+                                        {[...Array(3)].map((_, setIndex) => (
+                                            universities.slice(0, Math.ceil(universities.length / 2)).map((university, idx) => (
+                                                <Link
+                                                    href={`/universities/${university.slug}`}
+                                                    key={`top-${setIndex}-${university.id}`}
+                                                    className="flex-shrink-0 w-[400px] h-[260px] group relative"
+                                                >
+                                                    {/* Glow effect */}
+                                                    <div className="absolute -inset-1 bg-gradient-to-r from-yellow-500/0 via-yellow-500/30 to-yellow-500/0 rounded-3xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
 
-                                                <Image
-                                                    src={university.logo}
-                                                    alt={university.name}
-                                                    width={200}
-                                                    height={120}
-                                                    className="object-contain max-w-full max-h-full relative z-10"
-                                                />
-                                            </div>
-                                        </div>
-                                    ))}
-                                    {/* Second set */}
-                                    {universities.map((university) => (
-                                        <div
-                                            key={`second-${university.id}`}
-                                            className="flex-shrink-0 w-64 h-40 group cursor-pointer"
-                                        >
-                                            <div className="w-full h-full bg-white/95 backdrop-blur-sm rounded-xl p-6 flex items-center justify-center  relative overflow-hidden">
-                                                <div className="absolute inset-0 "></div>
+                                                    {/* Card */}
+                                                    <div className="relative w-full h-full bg-gradient-to-br from-gray-900 to-black border border-gray-800 rounded-3xl p-12 flex items-center justify-center overflow-hidden group-hover:border-yellow-500/50 transition-all duration-500">
+                                                        {/* Background pattern */}
+                                                        <div className="absolute inset-0 opacity-5">
+                                                            <div className="absolute inset-0" style={{
+                                                                backgroundImage: 'radial-gradient(circle at 2px 2px, white 1px, transparent 0)',
+                                                                backgroundSize: '40px 40px'
+                                                            }}></div>
+                                                        </div>
 
-                                                <Image
-                                                    src={university.logo}
-                                                    alt={university.name}
-                                                    width={200}
-                                                    height={120}
-                                                    className="object-contain max-w-full max-h-full relative z-10 "
-                                                />
-                                            </div>
-                                        </div>
-                                    ))}
-                                    {/* Third set */}
-                                    {universities.map((university) => (
-                                        <div
-                                            key={`third-${university.id}`}
-                                            className="flex-shrink-0 w-64 h-40 group cursor-pointer"
-                                        >
-                                            <div className="w-full h-full bg-white/95 backdrop-blur-sm rounded-xl p-6 flex items-center justify-center hover:bg-white transition-all duration-500 hover:scale-110 hover:shadow-2xl hover:shadow-yellow-500/30 relative overflow-hidden">
-                                                <div className="absolute inset-0 bg-gradient-to-br from-yellow-500/0 via-yellow-500/0 to-yellow-500/0 group-hover:from-yellow-500/10 group-hover:via-yellow-500/5 group-hover:to-transparent transition-all duration-500"></div>
+                                                        {/* Animated gradient overlay */}
+                                                        <div className="absolute inset-0 bg-gradient-to-tr from-yellow-500/0 via-yellow-500/5 to-yellow-500/0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
 
-                                                <Image
-                                                    src={university.logo}
-                                                    alt={university.name}
-                                                    width={200}
-                                                    height={120}
-                                                    className="object-contain max-w-full max-h-full relative z-10 transition-transform duration-500 group-hover:scale-105"
-                                                />
-                                            </div>
-                                        </div>
-                                    ))}
-                                </motion.div>
+                                                        {/* Logo */}
+                                                        <div className="relative z-10 w-full h-full flex items-center justify-center">
+                                                            <Image
+                                                                src={university.logo}
+                                                                alt={university.name}
+                                                                width={350}
+                                                                height={220}
+                                                                className="object-contain w-full h-full transition-all duration-500 group-hover:scale-105"
+                                                            />
+                                                        </div>
+
+                                                        {/* University name overlay on hover */}
+                                                        <div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black/90 to-transparent translate-y-full group-hover:translate-y-0 transition-transform duration-500">
+                                                            <p className="text-white font-semibold text-lg text-center">
+                                                                {university.name}
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                </Link>
+                                            ))
+                                        ))}
+                                    </motion.div>
+                                </div>
                             </div>
 
-                            {/* Subtle edge fades */}
-                            <div className="absolute left-0 top-0 bottom-0 w-40 bg-gradient-to-r from-gray-950 to-transparent pointer-events-none z-20"></div>
-                            <div className="absolute right-0 top-0 bottom-0 w-40 bg-gradient-to-l from-gray-950 to-transparent pointer-events-none z-20"></div>
-                        </div>
+                            {/* Bottom Row - Moving Left */}
+                            {universities.length > 1 && (
+                                <div className="relative">
+                                    <div className="overflow-hidden py-8">
+                                        <motion.div
+                                            className="flex gap-6"
+                                            animate={{
+                                                x: [-(420 * Math.floor(universities.length / 2)), 0],
+                                            }}
+                                            transition={{
+                                                x: {
+                                                    repeat: Infinity,
+                                                    repeatType: "loop",
+                                                    duration: Math.floor(universities.length / 2) * 8,
+                                                    ease: "linear",
+                                                },
+                                            }}
+                                        >
+                                            {/* Render second half twice for seamless loop */}
+                                            {[...Array(3)].map((_, setIndex) => (
+                                                universities.slice(Math.ceil(universities.length / 2)).map((university, idx) => (
+                                                    <Link
+                                                        href={`/universities/${university.slug}`}
+                                                        key={`bottom-${setIndex}-${university.id}`}
+                                                        className="flex-shrink-0 w-[400px] h-[260px] group relative"
+                                                    >
+                                                        <div className="absolute -inset-1 bg-gradient-to-r from-yellow-500/0 via-yellow-500/30 to-yellow-500/0 rounded-3xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
+
+                                                        <div className="relative w-full h-full bg-gradient-to-br from-gray-900 to-black border border-gray-800 rounded-3xl p-12 flex items-center justify-center overflow-hidden group-hover:border-yellow-500/50 transition-all duration-500">
+                                                            <div className="absolute inset-0 opacity-5">
+                                                                <div className="absolute inset-0" style={{
+                                                                    backgroundImage: 'radial-gradient(circle at 2px 2px, white 1px, transparent 0)',
+                                                                    backgroundSize: '40px 40px'
+                                                                }}></div>
+                                                            </div>
+
+                                                            <div className="absolute inset-0 bg-gradient-to-tr from-yellow-500/0 via-yellow-500/5 to-yellow-500/0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+
+                                                            <div className="relative z-10 w-full h-full flex items-center justify-center">
+                                                                <Image
+                                                                    src={university.logo}
+                                                                    alt={university.name}
+                                                                    width={350}
+                                                                    height={220}
+                                                                    className="object-contain w-full h-full transition-all duration-500 group-hover:scale-105"
+                                                                />
+                                                            </div>
+
+                                                            <div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black/90 to-transparent translate-y-full group-hover:translate-y-0 transition-transform duration-500">
+                                                                <p className="text-white font-semibold text-lg text-center">
+                                                                    {university.name}
+                                                                </p>
+                                                            </div>
+                                                        </div>
+                                                    </Link>
+                                                ))
+                                            ))}
+                                        </motion.div>
+                                    </div>
+                                </div>
+                            )}
+
+                            {/* Gradient overlays for fade effect */}
+                            <div className="absolute left-0 top-0 bottom-0 w-64 bg-gradient-to-r from-black via-black to-transparent pointer-events-none z-20"></div>
+                            <div className="absolute right-0 top-0 bottom-0 w-64 bg-gradient-to-l from-black via-black to-transparent pointer-events-none z-20"></div>
+                        </>
                     )}
                 </div>
+
+                {/* Bottom CTA */}
+                <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.6, delay: 0.3 }}
+                    viewport={{ once: true }}
+                    className="container mx-auto px-4 relative z-10 mt-20 text-center"
+                >
+                    <Link href="/universities">
+                        <Button className="bg-yellow-500 hover:bg-yellow-600 text-black font-semibold px-8 py-6 rounded-full text-lg transition-all duration-300 hover:shadow-2xl hover:shadow-yellow-500/50 hover:scale-105">
+                            Bütün Universitetlərə Baxın
+                            <ArrowLeft className="ml-2 rotate-180" />
+                        </Button>
+                    </Link>
+                </motion.div>
             </motion.section>
         </div>
     );
