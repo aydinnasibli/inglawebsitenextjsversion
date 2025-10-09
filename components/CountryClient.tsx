@@ -362,7 +362,7 @@ export default function CountryClient({
                 whileInView="visible"
                 viewport={{ once: true }}
                 variants={sectionVariants}
-                className="py-32 relative overflow-hidden bg-gradient-to-b from-black via-gray-950 to-black"
+                className="py-40 relative overflow-hidden bg-transparent"
             >
                 <div className="container mx-auto px-4 relative z-10">
                     <motion.div
@@ -427,16 +427,15 @@ export default function CountryClient({
                                             key={`first-${university.id}`}
                                             className="flex-shrink-0 w-64 h-40 group cursor-pointer"
                                         >
-                                            <div className="w-full h-full bg-white/95 backdrop-blur-sm rounded-xl p-6 flex items-center justify-center hover:bg-white transition-all duration-500 hover:scale-110 hover:shadow-2xl hover:shadow-yellow-500/30 relative overflow-hidden">
+                                            <div className="w-full h-full bg-white/95 backdrop-blur-sm rounded-xl p-6 flex items-center justify-center relative overflow-hidden">
                                                 {/* Subtle glow effect */}
-                                                <div className="absolute inset-0 bg-gradient-to-br from-yellow-500/0 via-yellow-500/0 to-yellow-500/0 group-hover:from-yellow-500/10 group-hover:via-yellow-500/5 group-hover:to-transparent transition-all duration-500"></div>
 
                                                 <Image
                                                     src={university.logo}
                                                     alt={university.name}
                                                     width={200}
                                                     height={120}
-                                                    className="object-contain max-w-full max-h-full relative z-10 transition-transform duration-500 group-hover:scale-105"
+                                                    className="object-contain max-w-full max-h-full relative z-10"
                                                 />
                                             </div>
                                         </div>
@@ -447,15 +446,15 @@ export default function CountryClient({
                                             key={`second-${university.id}`}
                                             className="flex-shrink-0 w-64 h-40 group cursor-pointer"
                                         >
-                                            <div className="w-full h-full bg-white/95 backdrop-blur-sm rounded-xl p-6 flex items-center justify-center hover:bg-white transition-all duration-500 hover:scale-110 hover:shadow-2xl hover:shadow-yellow-500/30 relative overflow-hidden">
-                                                <div className="absolute inset-0 bg-gradient-to-br from-yellow-500/0 via-yellow-500/0 to-yellow-500/0 group-hover:from-yellow-500/10 group-hover:via-yellow-500/5 group-hover:to-transparent transition-all duration-500"></div>
+                                            <div className="w-full h-full bg-white/95 backdrop-blur-sm rounded-xl p-6 flex items-center justify-center  relative overflow-hidden">
+                                                <div className="absolute inset-0 "></div>
 
                                                 <Image
                                                     src={university.logo}
                                                     alt={university.name}
                                                     width={200}
                                                     height={120}
-                                                    className="object-contain max-w-full max-h-full relative z-10 transition-transform duration-500 group-hover:scale-105"
+                                                    className="object-contain max-w-full max-h-full relative z-10 "
                                                 />
                                             </div>
                                         </div>
