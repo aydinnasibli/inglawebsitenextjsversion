@@ -422,7 +422,7 @@ export default function CountryClient({
                                     >
                                         {/* Render first half twice for seamless loop */}
                                         {[...Array(3)].map((_, setIndex) => (
-                                            universities.slice(0, Math.ceil(universities.length / 2)).map((university, idx) => (
+                                            universities.slice(0, Math.ceil(universities.length / 2)).map((university) => (
                                                 <Link
                                                     href={`/universities/${university.slug}`}
                                                     key={`top-${setIndex}-${university.id}`}
@@ -489,7 +489,7 @@ export default function CountryClient({
                                         >
                                             {/* Render second half twice for seamless loop */}
                                             {[...Array(3)].map((_, setIndex) => (
-                                                universities.slice(Math.ceil(universities.length / 2)).map((university, idx) => (
+                                                universities.slice(Math.ceil(universities.length / 2)).map((university) => (
                                                     <Link
                                                         href={`/universities/${university.slug}`}
                                                         key={`bottom-${setIndex}-${university.id}`}
