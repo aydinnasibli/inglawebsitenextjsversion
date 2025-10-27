@@ -257,14 +257,6 @@ export default function PreschoolServicesPage() {
                         variants={containerVariants}
                         className="text-center max-w-5xl mx-auto"
                     >
-                        {/* Badge */}
-                        <motion.div
-                            variants={itemVariants}
-                            className="inline-flex items-center px-6 py-3 mb-8 bg-white/5 backdrop-blur-md rounded-full border border-white/10"
-                        >
-                            <Sparkles className="w-4 h-4 text-yellow-400 mr-2" />
-                            <span className="text-sm font-medium text-yellow-400">Keyfiyyətli Təhsil</span>
-                        </motion.div>
 
                         {/* Main Title */}
                         <motion.h1
@@ -430,13 +422,13 @@ export default function PreschoolServicesPage() {
                         className="text-center mb-20"
                     >
                         <div className="inline-flex items-center px-4 py-2 mb-6 bg-blue-500/10 rounded-full border border-blue-500/20">
-                            <Star className="w-4 h-4 text-blue-400 mr-2" />
-                            <span className="text-sm font-medium text-blue-400">Xidmətlərimiz</span>
+                            <Star className="w-4 h-4 text-yelow-400 mr-2" />
+                            <span className="text-sm font-medium text-yellow-400">Xidmətlərimiz</span>
                         </div>
                         <h2 className="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
                             Keyfiyyətli Təhsil
                             <br />
-                            <span className="text-blue-400">Xidmətləri</span>
+                            <span className="text-yellow-400">Xidmətləri</span>
                         </h2>
                         <p className="text-xl text-gray-400 max-w-3xl mx-auto leading-relaxed">
                             Hər uşağın ehtiyaclarına uyğun fərdiləşdirilmiş təhsil proqramları

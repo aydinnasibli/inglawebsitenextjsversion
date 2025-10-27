@@ -539,20 +539,7 @@ export default function CountryClient({
                 </div>
 
                 {/* Bottom CTA */}
-                <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.6, delay: 0.3 }}
-                    viewport={{ once: true }}
-                    className="container mx-auto px-4 relative z-10 mt-20 text-center"
-                >
-                    <Link href="/universities">
-                        <Button className="bg-yellow-500 hover:bg-yellow-600 text-black font-semibold px-8 py-6 rounded-full text-lg transition-all duration-300 hover:shadow-2xl hover:shadow-yellow-500/50 hover:scale-105">
-                            Bütün Universitetlərə Baxın
-                            <ArrowLeft className="ml-2 rotate-180" />
-                        </Button>
-                    </Link>
-                </motion.div>
+
             </motion.section>
         </div>
     );

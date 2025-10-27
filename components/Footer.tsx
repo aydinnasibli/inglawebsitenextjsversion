@@ -187,7 +187,7 @@ export default function Footer() {
                                 href="/privacy"
                                 className="text-gray-500 hover:text-yellow-500 text-sm transition-colors duration-300"
                             >
-                                Məxfilik siyasəti
+                                Məxfilik
                             </Link>
                             <Link
                                 href="/terms"
@@ -199,7 +199,7 @@ export default function Footer() {
                                 href="/cookies"
                                 className="text-gray-500 hover:text-yellow-500 text-sm transition-colors duration-300"
                             >
-                                Cookie siyasəti
+                                Cookie
                             </Link>
                         </div>
                     </div>
