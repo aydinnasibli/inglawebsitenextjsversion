@@ -159,10 +159,7 @@ export default function Footer() {
                                         <span>Həftəiçi:</span>
                                         <span className="text-yellow-500 font-medium">09:00 - 18:00</span>
                                     </li>
-                                    <li className="flex justify-between items-center p-2 rounded bg-gray-900/50">
-                                        <span>Şənbə:</span>
-                                        <span className="text-yellow-500 font-medium">10:00 - 16:00</span>
-                                    </li>
+
                                     <li className="flex justify-between items-center p-2 rounded bg-gray-900/50">
                                         <span>Bazar:</span>
                                         <span className="text-red-400 font-medium">Bağlıdır</span>

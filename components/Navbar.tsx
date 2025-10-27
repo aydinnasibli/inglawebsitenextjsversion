@@ -1,7 +1,8 @@
 "use client"
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-
+import Image from 'next/image';
+import Logo from '@/public/assets/logoingla.png'
 const Navbar = () => {
     const [isScrolled, setIsScrolled] = useState<boolean>(false);
     const [mobileMenuOpen, setMobileMenuOpen] = useState<boolean>(false);
@@ -99,7 +100,7 @@ const Navbar = () => {
                         className="text-white font-bold text-3xl tracking-wider"
                         onClick={handleNavigation}
                     >
-                        <span className="text-yellow-500">Ingla</span>
+                        <Image className='w-24 h-auto' src={Logo} alt='Logo' />
                     </Link>
 
                     {/* Desktop Navigation */}
