@@ -281,7 +281,7 @@ export default function ServicesPage({ initialServicesData }: ServicesPageProps)
                             className="mb-12"
                         >
                             <p className="text-xl md:text-2xl mb-6 max-w-4xl mx-auto text-gray-200 leading-relaxed">
-                                İngla School-da təqdim olunan bütün təhsil xidmətləri və proqramlarımızı kəşf edin
+                                Ingla School Bakı-da təqdim olunan bütün təhsil xidmətləri və proqramlarımızı kəşf edin
                             </p>
                             <div className="flex flex-wrap justify-center gap-4 text-sm text-yellow-400">
                                 <span className="flex items-center bg-yellow-500/10 px-4 py-2 rounded-full border border-yellow-500/20">
