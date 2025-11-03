@@ -34,17 +34,17 @@ export async function generateMetadata({ params }: CountryPageProps): Promise<Me
 
         if (!country) {
             return {
-                title: 'Ölkə tapılmadı | İngla School',
+                title: 'Ölkə tapılmadı | Ingla School',
                 description: 'Axtardığınız ölkə məlumatları tapılmadı.',
             };
         }
 
         return {
-            title: country.seoTitle || `${country.nameAz}də Təhsil | İngla School`,
+            title: country.seoTitle || `${country.nameAz}də Təhsil | Ingla School`,
             description: country.seoDescription || country.shortDescription,
             keywords: `${country.nameAz}, xaricdə təhsil, universitet, beynəlxalq təhsil`,
             openGraph: {
-                title: `${country.nameAz}də Təhsil | İngla School`,
+                title: `${country.nameAz}də Təhsil | Ingla School`,
                 description: country.shortDescription,
                 type: 'website',
                 locale: 'az_AZ',
@@ -53,7 +53,7 @@ export async function generateMetadata({ params }: CountryPageProps): Promise<Me
     } catch (error) {
         console.error('Error generating metadata:', error);
         return {
-            title: 'Xaricdə Təhsil | İngla School',
+            title: 'Xaricdə Təhsil | Ingla School',
             description: 'Xaricdə təhsil imkanları haqqında ətraflı məlumat',
         };
     }

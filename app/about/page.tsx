@@ -162,7 +162,7 @@ export default function AboutPage() {
                     <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/50 to-black/80 z-10" />
                     <Image
                         src="/assets/bg.webp"
-                        alt="İngla School Haqqında"
+                        alt="Ingla School Haqqında"
                         fill
                         priority
                         quality={95}
@@ -197,7 +197,7 @@ export default function AboutPage() {
                             className="text-5xl md:text-7xl font-bold mb-6 leading-tight"
                         >
                             <span className="bg-gradient-to-r from-white via-white to-gray-300 bg-clip-text text-transparent">
-                                İngla School
+                                Ingla School
                             </span>
                             <br />
                             <span className="bg-gradient-to-r from-yellow-400 via-yellow-500 to-orange-500 bg-clip-text text-transparent">
@@ -462,7 +462,7 @@ export default function AboutPage() {
                                 Bizim <span className="bg-gradient-to-r from-purple-400 to-pink-500 bg-clip-text text-transparent">Dəyərlərimiz</span>
                             </h2>
                             <p className="text-gray-300 text-lg max-w-2xl mx-auto leading-relaxed">
-                                İngla School-un əsas dəyərləri və prinsipləri
+                                Ingla School-un əsas dəyərləri və prinsipləri
                             </p>
                         </motion.div>
                     </motion.div>

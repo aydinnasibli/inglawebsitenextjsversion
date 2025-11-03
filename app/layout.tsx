@@ -9,8 +9,8 @@ import Footer from '@/components/Footer';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'İngla School | Azərbaycan',
-  description: 'İngla School - Təhsil mərkəzi, Preschool, Xaricdə təhsil',
+  title: 'Ingla School | Azərbaycan',
+  description: 'Ingla School - Təhsil mərkəzi, Preschool, Xaricdə təhsil',
 };
 
 export default function RootLayout({

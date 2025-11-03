@@ -5,11 +5,11 @@ import { COUNTRIES_QUERY } from '@/sanity/lib/queries';
 import { SanityCountry } from '@/types/study-abroad';
 
 export const metadata: Metadata = {
-    title: 'Xaricdə Təhsil | İngla School',
+    title: 'Xaricdə Təhsil | Ingla School',
     description: 'Dünyanın ən yaxşı universitetlərində təhsil imkanları. Xaricdə təhsil üçün peşəkar məsləhət və tam dəstək.',
     keywords: 'xaricdə təhsil, universitet, beynəlxalq təhsil, təhsil qrantları, study abroad',
     openGraph: {
-        title: 'Xaricdə Təhsil | İngla School',
+        title: 'Xaricdə Təhsil | Ingla School',
         description: 'Dünyanın ən yaxşı universitetlərində təhsil imkanları',
         type: 'website',
         locale: 'az_AZ',

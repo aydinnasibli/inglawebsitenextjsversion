@@ -301,7 +301,7 @@ export default function HomeClient({ initialCarouselData, initialFaqData, initia
                     <div className="absolute inset-0 z-10" />
                     <Image
                         src="/assets/bg.webp"
-                        alt="İngla School"
+                        alt="Ingla School"
                         fill
                         priority
                         quality={100}
@@ -348,7 +348,7 @@ export default function HomeClient({ initialCarouselData, initialFaqData, initia
                             Bizim <span className="text-yellow-500">Üstünlüklərimiz</span>
                         </h2>
                         <p className="text-gray-300 text-lg max-w-2xl mx-auto">
-                            İngla School-da təhsil təcrübənizi daha da zənginləşdirən xüsusiyyətlərimizi kəşf edin
+                            Ingla School-da təhsil təcrübənizi daha da zənginləşdirən xüsusiyyətlərimizi kəşf edin
                         </p>
                     </motion.div>
 
@@ -399,7 +399,7 @@ export default function HomeClient({ initialCarouselData, initialFaqData, initia
                                 <span className="text-yellow-500">Xidmətlər</span>
                             </h2>
                             <p className="text-gray-300 mb-8 text-lg">
-                                Müxtəlif təhsil xidmətlərimiz və proqramlarımız haqqında ətraflı məlumat əldə edin. İngla School
+                                Müxtəlif təhsil xidmətlərimiz və proqramlarımız haqqında ətraflı məlumat əldə edin. Ingla School
                                 olaraq tələbələrimizin ehtiyaclarına uyğun geniş xidmət spektri təklif edirik.
                             </p>
                             <div className="space-y-4 mb-8">
@@ -704,7 +704,7 @@ export default function HomeClient({ initialCarouselData, initialFaqData, initia
                             Tələbə <span className="text-yellow-500">Rəyləri</span>
                         </h2>
                         <p className="text-gray-300 text-lg max-w-2xl mx-auto">
-                            İngla School məzunları və tələbələrinin təcrübələrini oxuyun
+                            Ingla School məzunları və tələbələrinin təcrübələrini oxuyun
                         </p>
                     </motion.div>
 
@@ -808,7 +808,7 @@ export default function HomeClient({ initialCarouselData, initialFaqData, initia
                             Tez-tez <span className="text-yellow-500">Verilən Suallar</span>
                         </h2>
                         <p className="text-gray-300 text-lg max-w-2xl mx-auto">
-                            İngla School haqqında ən çox soruşulan sualların cavablarını tapın
+                            Ingla School haqqında ən çox soruşulan sualların cavablarını tapın
                         </p>
                     </motion.div>
 

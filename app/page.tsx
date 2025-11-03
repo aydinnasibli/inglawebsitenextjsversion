@@ -45,6 +45,6 @@ export default async function Home() {
 
 // Add metadata
 export const metadata = {
-  title: 'İngla School - Dünya Səviyyəsində Təhsil',
+  title: 'Ingla School - Dünya Səviyyəsində Təhsil',
   description: 'Beynəlxalq standartlara uyğun təhsil proqramları və müasir tədris metodları ilə gələcəyinizi formalaşdırın.',
 };

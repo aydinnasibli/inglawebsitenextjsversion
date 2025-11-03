@@ -507,7 +507,7 @@ export default function ServiceDetailClient({ slug, initialServiceData }: Servic
                         Digər <span className="text-yellow-500">xidmətlərimizi</span> kəşf edin
                     </h2>
                     <p className="text-xl mb-10 max-w-3xl mx-auto text-gray-200">
-                        İngla School-da təqdim olunan bütün təhsil proqramlarına nəzər salın
+                        Ingla School-da təqdim olunan bütün təhsil proqramlarına nəzər salın
                     </p>
                     <Link href="/services">
                         <Button size="lg" className="bg-yellow-600 hover:bg-yellow-700 text-white shadow-lg shadow-yellow-900/20">

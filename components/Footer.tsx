@@ -54,7 +54,7 @@ export default function Footer() {
                                         </div>
                                     </div>
                                     <span className="text-2xl font-bold text-white group-hover:text-yellow-500 transition-colors duration-300">
-                                        İngla School
+                                        Ingla School
                                     </span>
                                 </div>
                             </Link>
@@ -180,7 +180,7 @@ export default function Footer() {
                 >
                     <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
                         <p className="text-gray-500 text-sm">
-                            © {currentYear} İngla School. Bütün hüquqlar qorunur.
+                            © {currentYear} Ingla School. Bütün hüquqlar qorunur.
                         </p>
                         <div className="flex space-x-6">
                             <Link
