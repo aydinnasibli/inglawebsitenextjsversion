@@ -5,6 +5,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import WhatsAppButton from "@/components/WhatsAppButton";
 import { GoogleAnalytics } from "@next/third-parties/google";
 const inter = Inter({ subsets: ["latin"] });
 
@@ -26,6 +27,7 @@ export default function RootLayout({
         <GoogleAnalytics gaId="G-4680L6LTVN" />
         <Navbar />
         <main className="grow">{children}</main>
+        <WhatsAppButton />
         <Footer />
       </body>
     </html>
