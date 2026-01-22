@@ -2,6 +2,13 @@
 
 import { z } from 'zod';
 import nodemailer from 'nodemailer';
+import { headers } from 'next/headers';
+
+// In-memory rate limiter (Note: This is per-instance, but effective enough for basic protection)
+// Format: IP -> { count: number, resetTime: number }
+const RATE_LIMIT_WINDOW = 60 * 1000; // 1 minute
+const MAX_REQUESTS_PER_WINDOW = 3;
+const rateLimitMap = new Map<string, { count: number, resetTime: number }>();
 
 // Form validation schema with Zod
 const RegistrationSchema = z.object({
@@ -11,6 +18,7 @@ const RegistrationSchema = z.object({
     email: z.string().email({ message: 'Valid email is required' }),
     message: z.string().min(10, { message: 'Message must be at least 10 characters' }),
     serviceTitle: z.string().min(1, { message: 'Service title is required' }),
+    _gotcha: z.string().optional(), // Honeypot field
 });
 
 // Define return type for the registration submission
@@ -28,6 +36,7 @@ interface RegistrationFormData {
     email: string;
     message: string;
     serviceTitle: string;
+    _gotcha?: string; // Optional honeypot
 }
 
 // Nodemailer setup with Gmail
@@ -36,7 +45,6 @@ const createTransporter = () => {
         throw new Error('Email credentials are not defined in environment variables');
     }
 
-    // Use nodemailer.createTransport instead of createTransporter
     return nodemailer.createTransport({
         service: 'gmail',
         auth: {
@@ -48,30 +56,66 @@ const createTransporter = () => {
 
 export async function submitRegistration(formData: RegistrationFormData): Promise<RegistrationSubmissionResult> {
     'use server';
-    console.log("📩 Received registration data:", formData);
+    console.log("📩 Received registration data:", { ...formData, _gotcha: formData._gotcha ? '[REDACTED]' : undefined });
+
+    // 1. Honeypot Check
+    if (formData._gotcha) {
+        console.warn("⚠️ Bot detected via honeypot.");
+        // Return success to confuse the bot, but do nothing
+        return { success: true, message: "Registration submitted successfully" };
+    }
 
     try {
+        // 2. Rate Limiting Check
+        const headersList = await headers();
+        // Try to get IP from various headers
+        const ip = headersList.get('x-forwarded-for')?.split(',')[0] ||
+                   headersList.get('x-real-ip') ||
+                   'unknown';
+
+        const now = Date.now();
+
+        if (ip !== 'unknown') {
+            const userRate = rateLimitMap.get(ip);
+
+            if (userRate) {
+                if (now > userRate.resetTime) {
+                    // Reset window
+                    rateLimitMap.set(ip, { count: 1, resetTime: now + RATE_LIMIT_WINDOW });
+                } else {
+                    // Inside window
+                    if (userRate.count >= MAX_REQUESTS_PER_WINDOW) {
+                        console.warn(`⚠️ Rate limit exceeded for IP: ${ip}`);
+                        return {
+                            success: false,
+                            error: "Çox sayda müraciət göndərdiniz. Zəhmət olmasa bir az gözləyin."
+                        };
+                    }
+                    userRate.count++;
+                }
+            } else {
+                // New IP
+                rateLimitMap.set(ip, { count: 1, resetTime: now + RATE_LIMIT_WINDOW });
+            }
+
+            // Cleanup old entries periodically (simple random check to avoid memory leaks)
+            if (rateLimitMap.size > 1000 && Math.random() < 0.01) {
+                 for (const [key, value] of rateLimitMap.entries()) {
+                     if (now > value.resetTime) rateLimitMap.delete(key);
+                 }
+            }
+        }
+
+
         const { name, surname, phone, email, message, serviceTitle } = formData;
 
         // Validate inputs manually
-        if (!name) {
-            return { success: false, error: "Name is required" };
-        }
-        if (!surname) {
-            return { success: false, error: "Surname is required" };
-        }
-        if (!phone) {
-            return { success: false, error: "Phone number is required" };
-        }
-        if (!email) {
-            return { success: false, error: "Email is required" };
-        }
-        if (!message) {
-            return { success: false, error: "Message is required" };
-        }
-        if (!serviceTitle) {
-            return { success: false, error: "Service title is required" };
-        }
+        if (!name) return { success: false, error: "Name is required" };
+        if (!surname) return { success: false, error: "Surname is required" };
+        if (!phone) return { success: false, error: "Phone number is required" };
+        if (!email) return { success: false, error: "Email is required" };
+        if (!message) return { success: false, error: "Message is required" };
+        if (!serviceTitle) return { success: false, error: "Service title is required" };
 
         // Use Zod for comprehensive validation
         const validatedFields = RegistrationSchema.safeParse({
@@ -80,7 +124,8 @@ export async function submitRegistration(formData: RegistrationFormData): Promis
             phone,
             email,
             message,
-            serviceTitle
+            serviceTitle,
+            _gotcha: formData._gotcha
         });
 
         if (!validatedFields.success) {
@@ -95,7 +140,6 @@ export async function submitRegistration(formData: RegistrationFormData): Promis
 
         // Create transporter
         const transporter = createTransporter();
-        console.log("✅ Email transporter created");
 
         // Email recipient fallback
         const emailTo = process.env.EMAIL_TO || 'aydinnasibli7@gmail.com';
@@ -153,7 +197,7 @@ export async function submitRegistration(formData: RegistrationFormData): Promis
         console.error("❌ Error submitting registration:", errorMessage);
         return {
             success: false,
-            error: "An unexpected error occurred. Please try again later."
+            error: "Xəta baş verdi. Zəhmət olmasa bir az sonra yenidən cəhd edin."
         };
     }
 }

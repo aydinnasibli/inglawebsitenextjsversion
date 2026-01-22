@@ -18,6 +18,7 @@ interface FormData {
     phone: string;
     email: string;
     message: string;
+    _gotcha: string; // Honeypot field
 }
 
 interface FormErrors {
@@ -35,6 +36,7 @@ export default function RegistrationModal({ isOpen, onClose, serviceTitle }: Reg
         phone: "",
         email: "",
         message: "",
+        _gotcha: "",
     });
 
     const [errors, setErrors] = useState<FormErrors>({});
@@ -94,7 +96,7 @@ export default function RegistrationModal({ isOpen, onClose, serviceTitle }: Reg
         setErrorMessage("");
 
         try {
-            console.log("Submitting data:", { ...formData, serviceTitle }); // Debug log
+            console.log("Submitting data:", { ...formData, serviceTitle, _gotcha: formData._gotcha ? '[Present]' : '[Empty]' });
 
             const result = await submitRegistration({
                 name: formData.name.trim(),
@@ -103,6 +105,7 @@ export default function RegistrationModal({ isOpen, onClose, serviceTitle }: Reg
                 email: formData.email.trim(),
                 message: formData.message.trim(),
                 serviceTitle,
+                _gotcha: formData._gotcha,
             });
 
             console.log("Submission result:", result); // Debug log
@@ -131,7 +134,7 @@ export default function RegistrationModal({ isOpen, onClose, serviceTitle }: Reg
     const handleInputChange = (field: keyof FormData, value: string) => {
         setFormData(prev => ({ ...prev, [field]: value }));
         // Clear error when user starts typing
-        if (errors[field]) {
+        if (field !== '_gotcha' && errors[field as keyof FormErrors]) {
             setErrors(prev => ({ ...prev, [field]: undefined }));
         }
         // Clear submit status when user makes changes
@@ -148,6 +151,7 @@ export default function RegistrationModal({ isOpen, onClose, serviceTitle }: Reg
             phone: "",
             email: "",
             message: "",
+            _gotcha: "",
         });
         setErrors({});
         setSubmitStatus('idle');
@@ -227,6 +231,20 @@ export default function RegistrationModal({ isOpen, onClose, serviceTitle }: Reg
 
                     {/* Form */}
                     <form onSubmit={handleSubmit} className="space-y-6">
+                        {/* Honeypot Field (Hidden) */}
+                        <div style={{ display: 'none' }} aria-hidden="true">
+                            <label htmlFor="_gotcha">Do not fill this field</label>
+                            <input
+                                type="text"
+                                id="_gotcha"
+                                name="_gotcha"
+                                value={formData._gotcha}
+                                onChange={(e) => handleInputChange('_gotcha', e.target.value)}
+                                tabIndex={-1}
+                                autoComplete="off"
+                            />
+                        </div>
+
                         {/* Name and Surname Row */}
                         <div className="grid grid-cols-2 gap-4">
                             <div>

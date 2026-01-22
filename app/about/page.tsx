@@ -146,32 +146,31 @@ export default function AboutPage() {
     ];
 
     return (
-        <div ref={containerRef} className="relative min-h-screen bg-black text-white overflow-hidden">
+        <div ref={containerRef} className="relative min-h-screen text-white overflow-hidden bg-background">
             {/* Enhanced Hero Section */}
             <motion.div
                 ref={heroRef}
-                className="relative h-screen flex items-center justify-center"
+                className="relative h-screen flex items-center justify-center overflow-hidden"
             >
                 {/* Background with enhanced parallax */}
                 <motion.div
                     style={{ y: heroY, scale: heroScale }}
                     className="absolute inset-0 z-0"
                 >
-                    <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/50 to-black/80 z-10" />
+                    <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-black/60 to-background z-10" />
                     <Image
                         src="/assets/bg.webp"
                         alt="Ingla School Haqqında"
                         fill
                         priority
-                        quality={95}
+                        quality={90}
                         className="object-cover"
                     />
+
                     {/* Animated overlay patterns */}
-                    <div className="absolute inset-0 bg-gradient-to-br from-yellow-500/5 to-transparent z-10" />
-                    <div className="absolute inset-0 opacity-30 z-10">
-                        <div className="absolute top-1/4 left-1/4 w-32 h-32 bg-yellow-500/10 rounded-full blur-3xl animate-pulse" />
-                        <div className="absolute bottom-1/4 right-1/4 w-48 h-48 bg-blue-500/5 rounded-full blur-3xl animate-pulse delay-1000" />
-                    </div>
+                    <div className="absolute inset-0 bg-gradient-to-br from-yellow-500/10 to-transparent z-10 mix-blend-overlay" />
+                    <div className="absolute -top-40 -right-40 w-96 h-96 bg-yellow-500/10 rounded-full blur-[100px] pointer-events-none z-10" />
+                    <div className="absolute -bottom-40 -left-40 w-96 h-96 bg-blue-500/10 rounded-full blur-[100px] pointer-events-none z-10" />
                 </motion.div>
 
                 {/* Hero Content */}
@@ -185,20 +184,18 @@ export default function AboutPage() {
                         transition={{ duration: 1, ease: "easeOut" }}
                         className="text-center max-w-5xl mx-auto"
                     >
-
-
                         {/* Main heading with gradient */}
                         <motion.h1
                             initial={{ opacity: 0, y: 30 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ duration: 1, delay: 0.3 }}
-                            className="text-5xl md:text-7xl font-bold mb-6 leading-tight"
+                            className="text-5xl md:text-8xl font-black mb-6 leading-tight tracking-tight"
                         >
-                            <span className="bg-gradient-to-r from-white via-white to-gray-300 bg-clip-text text-transparent">
+                            <span className="text-white drop-shadow-lg">
                                 Ingla School
                             </span>
                             <br />
-                            <span className="bg-gradient-to-r from-yellow-400 via-yellow-500 to-orange-500 bg-clip-text text-transparent">
+                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-yellow-600 drop-shadow-lg">
                                 Haqqında
                             </span>
                         </motion.h1>
@@ -208,15 +205,10 @@ export default function AboutPage() {
                             initial={{ opacity: 0, y: 30 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ duration: 1, delay: 0.5 }}
-                            className="text-xl md:text-2xl mb-10 max-w-4xl mx-auto text-gray-200 leading-relaxed"
+                            className="text-xl md:text-3xl mb-12 max-w-4xl mx-auto text-gray-200 leading-relaxed font-light"
                         >
                             İllərlə formalaşan təcrübə ilə sizi uğura aparan bilik və metodlarla zənginləşdiririk.
-                            <span className="block mt-2 text-lg text-gray-300">
-                                Keyfiyyətli təhsil və innovativ yanaşmalarla gələcəyinizə sərmayə edin.
-                            </span>
                         </motion.p>
-
-
                     </motion.div>
                 </motion.div>
 
@@ -225,15 +217,15 @@ export default function AboutPage() {
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ delay: 1.5, duration: 0.5 }}
-                    className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-20"
+                    className="absolute bottom-12 left-1/2 transform -translate-x-1/2 z-20"
                 >
                     <motion.div
                         animate={{ y: [0, 10, 0] }}
                         transition={{ duration: 2, repeat: Infinity }}
-                        className="flex flex-col items-center text-white/60"
+                        className="flex flex-col items-center text-white/50 hover:text-white transition-colors cursor-pointer"
                     >
-                        <span className="text-sm mb-2">Aşağı keçin</span>
-                        <ArrowDown className="w-5 h-5" />
+                        <span className="text-xs tracking-widest uppercase mb-2">Aşağı keçin</span>
+                        <ArrowDown className="w-6 h-6" />
                     </motion.div>
                 </motion.div>
             </motion.div>
@@ -244,22 +236,25 @@ export default function AboutPage() {
                 whileInView="visible"
                 viewport={{ once: true, margin: "-100px" }}
                 variants={sectionVariants}
-                className="py-24 bg-gradient-to-b from-gray-900/50 to-gray-800/30 relative"
+                className="py-32 relative overflow-hidden"
             >
-                <div className="absolute inset-0 bg-gradient-to-r from-yellow-500/5 to-blue-500/5" />
+                {/* Background Elements */}
+                <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-yellow-500/20 to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-b from-transparent to-yellow-500/5 opacity-30" />
+
                 <div className="container mx-auto px-4 relative">
                     <motion.div
                         variants={staggerContainer}
                         initial="hidden"
                         whileInView="visible"
                         viewport={{ once: true }}
-                        className="text-center mb-16"
+                        className="text-center mb-20"
                     >
                         <motion.div variants={cardVariants}>
-                            <h2 className="text-4xl md:text-5xl font-bold mb-4">
-                                Uğur <span className="bg-gradient-to-r from-yellow-400 to-orange-500 bg-clip-text text-transparent">Hekayəmiz</span>
+                            <h2 className="text-4xl md:text-6xl font-bold mb-6">
+                                Uğur <span className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-orange-500">Hekayəmiz</span>
                             </h2>
-                            <p className="text-gray-300 text-lg max-w-3xl mx-auto leading-relaxed">
+                            <p className="text-gray-400 text-lg md:text-xl max-w-3xl mx-auto leading-relaxed font-light">
                                 Uğur hekayəmiz komanda işi və səbirin sübutudur. Birlikdə çətinlikləri dəf etmiş,
                                 qələbələrimizi qeyd etmiş və irəliləyiş və uğurdan ibarət bir hekayə yaratmışıq.
                             </p>
@@ -277,23 +272,19 @@ export default function AboutPage() {
                             <motion.div
                                 key={index}
                                 variants={cardVariants}
-                                whileHover={{ y: -10, scale: 1.02 }}
-                                className="text-center p-8 bg-gradient-to-br from-gray-900/80 to-gray-800/50 backdrop-blur-sm border border-gray-700/50 rounded-2xl hover:shadow-2xl hover:shadow-yellow-900/20 transition-all duration-500 hover:border-yellow-500/30 group"
+                                whileHover={{ y: -10 }}
+                                className="glass-card p-8 rounded-3xl text-center group"
                             >
-                                <div className="flex justify-center mb-4">
-                                    <div className="p-3 bg-gradient-to-br from-yellow-400/20 to-orange-500/20 rounded-full group-hover:scale-110 transition-transform duration-300">
-                                        <div className="text-yellow-400 group-hover:text-yellow-300 transition-colors duration-300">
-                                            {stat.icon}
-                                        </div>
-                                    </div>
+                                <div className="inline-flex items-center justify-center p-4 rounded-2xl bg-gradient-to-br from-yellow-500/10 to-orange-500/10 text-yellow-500 mb-6 group-hover:scale-110 transition-transform duration-300">
+                                    {stat.icon}
                                 </div>
-                                <div className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-yellow-400 to-orange-500 bg-clip-text text-transparent mb-3">
+                                <div className="text-5xl font-bold text-white mb-2 tracking-tight group-hover:text-yellow-400 transition-colors">
                                     {stat.number}
                                 </div>
-                                <div className="text-xl font-semibold mb-3 text-white group-hover:text-yellow-100 transition-colors duration-300">
+                                <div className="text-lg font-semibold text-gray-200 mb-4">
                                     {stat.label}
                                 </div>
-                                <div className="text-gray-400 text-sm leading-relaxed group-hover:text-gray-300 transition-colors duration-300">
+                                <div className="text-gray-400 text-sm leading-relaxed">
                                     {stat.description}
                                 </div>
                             </motion.div>
@@ -308,26 +299,26 @@ export default function AboutPage() {
                 whileInView="visible"
                 viewport={{ once: true, margin: "-50px" }}
                 variants={sectionVariants}
-                className="py-24 relative"
+                className="py-32 relative"
             >
                 <div className="container mx-auto px-4">
-                    <div className="flex flex-col lg:flex-row items-center gap-16">
+                    <div className="flex flex-col lg:flex-row items-center gap-20">
                         <motion.div
-                            initial={{ opacity: 0, x: -50 }}
-                            whileInView={{ opacity: 1, x: 0 }}
+                            initial={{ opacity: 0, rotate: -5, x: -50 }}
+                            whileInView={{ opacity: 1, rotate: 0, x: 0 }}
                             transition={{ duration: 0.8 }}
                             viewport={{ once: true }}
-                            className="lg:w-1/2"
+                            className="lg:w-1/2 relative"
                         >
-                            <div className="relative h-[500px] w-full overflow-hidden rounded-3xl shadow-2xl shadow-yellow-900/20 border border-gray-800/50 group">
+                            <div className="absolute inset-0 bg-yellow-500/20 blur-3xl transform -rotate-6 scale-95 rounded-3xl" />
+                            <div className="relative h-[600px] w-full overflow-hidden rounded-[2rem] border border-white/10 shadow-2xl shadow-black/50">
                                 <Image
                                     src="/assets/bg.webp"
                                     alt="Vizyonumuz"
                                     fill
-                                    className="object-cover group-hover:scale-105 transition-transform duration-700"
+                                    className="object-cover"
                                 />
-                                <div className="absolute inset-0 bg-gradient-to-br from-yellow-500/20 via-transparent to-blue-500/10" />
-                                <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
+                                <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent" />
                             </div>
                         </motion.div>
 
@@ -338,29 +329,25 @@ export default function AboutPage() {
                             viewport={{ once: true }}
                             className="lg:w-1/2"
                         >
-                            <div className="space-y-6">
-                                <div>
-                                    <span className="inline-block px-4 py-2 bg-yellow-500/10 border border-yellow-500/20 rounded-full text-yellow-400 text-sm font-medium mb-4">
-                                        Vizyonumuz
-                                    </span>
-                                    <h2 className="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
-                                        Gələcəyin İnnovativ Lideri
-                                    </h2>
-                                </div>
+                            <span className="inline-block px-4 py-2 bg-yellow-500/10 border border-yellow-500/20 rounded-full text-yellow-400 text-sm font-medium mb-6">
+                                Vizyonumuz
+                            </span>
+                            <h2 className="text-5xl md:text-7xl font-bold mb-8 text-white leading-tight">
+                                Gələcəyin <br />
+                                <span className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-orange-500">İnnovativ Lideri</span>
+                            </h2>
 
-                                <div className="space-y-4 text-gray-300 text-lg leading-relaxed">
-                                    <p>
-                                        Biz gələcəyin innovativ və dayanıqlı inkişafına töhfə verən lider şirkət olmaq istəyirik.
-                                        Texnologiya və təhsili birləşdirərək, müştərilərimizə və cəmiyyətə dəyər qatan həllər
-                                        təqdim etməyi hədəfləyirik.
-                                    </p>
-                                    <p>
-                                        Qlobal bazarda güclü mövqe tutaraq, beynəlxalq əməkdaşlıqları genişləndirmək,
-                                        insan kapitalının inkişafına töhfə vermək və rəqabətə davamlı mütəxəssislər
-                                        yetişdirmək bizim əsas məqsədlərimizdəndir.
-                                    </p>
-                                </div>
-
+                            <div className="space-y-6 text-gray-300 text-lg leading-relaxed font-light">
+                                <p className="border-l-2 border-yellow-500/50 pl-6">
+                                    Biz gələcəyin innovativ və dayanıqlı inkişafına töhfə verən lider şirkət olmaq istəyirik.
+                                    Texnologiya və təhsili birləşdirərək, müştərilərimizə və cəmiyyətə dəyər qatan həllər
+                                    təqdim etməyi hədəfləyirik.
+                                </p>
+                                <p>
+                                    Qlobal bazarda güclü mövqe tutaraq, beynəlxalq əməkdaşlıqları genişləndirmək,
+                                    insan kapitalının inkişafına töhfə vermək və rəqabətə davamlı mütəxəssislər
+                                    yetişdirmək bizim əsas məqsədlərimizdəndir.
+                                </p>
                             </div>
                         </motion.div>
                     </div>
@@ -373,26 +360,26 @@ export default function AboutPage() {
                 whileInView="visible"
                 viewport={{ once: true, margin: "-50px" }}
                 variants={sectionVariants}
-                className="py-24 bg-gradient-to-b from-gray-900/30 to-transparent relative"
+                className="py-32 relative bg-black/30"
             >
                 <div className="container mx-auto px-4">
-                    <div className="flex flex-col lg:flex-row-reverse items-center gap-16">
+                    <div className="flex flex-col lg:flex-row-reverse items-center gap-20">
                         <motion.div
-                            initial={{ opacity: 0, x: 50 }}
-                            whileInView={{ opacity: 1, x: 0 }}
+                            initial={{ opacity: 0, rotate: 5, x: 50 }}
+                            whileInView={{ opacity: 1, rotate: 0, x: 0 }}
                             transition={{ duration: 0.8 }}
                             viewport={{ once: true }}
-                            className="lg:w-1/2"
+                            className="lg:w-1/2 relative"
                         >
-                            <div className="relative h-[500px] w-full overflow-hidden rounded-3xl shadow-2xl shadow-blue-900/20 border border-gray-800/50 group">
+                            <div className="absolute inset-0 bg-blue-500/20 blur-3xl transform rotate-6 scale-95 rounded-3xl" />
+                            <div className="relative h-[600px] w-full overflow-hidden rounded-[2rem] border border-white/10 shadow-2xl shadow-black/50">
                                 <Image
                                     src="/assets/bg.webp"
                                     alt="Missiyamız"
                                     fill
-                                    className="object-cover group-hover:scale-105 transition-transform duration-700"
+                                    className="object-cover"
                                 />
-                                <div className="absolute inset-0 bg-gradient-to-br from-blue-500/20 via-transparent to-purple-500/10" />
-                                <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
+                                <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent" />
                             </div>
                         </motion.div>
 
@@ -403,32 +390,23 @@ export default function AboutPage() {
                             viewport={{ once: true }}
                             className="lg:w-1/2"
                         >
-                            <div className="space-y-6">
-                                <div>
-                                    <span className="inline-block px-4 py-2 bg-blue-500/10 border border-blue-500/20 rounded-full text-blue-400 text-sm font-medium mb-4">
-                                        Missiyamız
-                                    </span>
-                                    <h2 className="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
-                                        Keyfiyyət və İnnovasiya
-                                    </h2>
-                                </div>
+                            <span className="inline-block px-4 py-2 bg-blue-500/10 border border-blue-500/20 rounded-full text-blue-400 text-sm font-medium mb-6">
+                                Missiyamız
+                            </span>
+                            <h2 className="text-5xl md:text-7xl font-bold mb-8 text-white leading-tight">
+                                Keyfiyyət və <br />
+                                <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500">İnnovasiya</span>
+                            </h2>
 
-                                <div className="space-y-4 text-gray-300 text-lg leading-relaxed">
-                                    <p>
-                                        Biz texnologiya və innovasiyaların gücündən istifadə edərək müştərilərimizə ən yaxşı
-                                        həlləri təqdim etməyə və onların bizneslərini inkişaf etdirməyə çalışırıq.
-                                    </p>
-                                    <p>
-                                        Yenilikçi yanaşmalarımızla insanlara və müəssisələrə daha səmərəli, keyfiyyətli və
-                                        dayanıqlı xidmətlər göstərməyi hədəfləyirik.
-                                    </p>
-                                    <p>
-                                        Beynəlxalq əməkdaşlıqlar quraraq, müasir və keyfiyyətli təhsil imkanları yaratmaq,
-                                        fərdlərin akademik və peşəkar inkişafını dəstəkləmək üçün çalışırıq.
-                                    </p>
-                                </div>
-
-
+                            <div className="space-y-6 text-gray-300 text-lg leading-relaxed font-light">
+                                <p className="border-l-2 border-blue-500/50 pl-6">
+                                    Biz texnologiya və innovasiyaların gücündən istifadə edərək müştərilərimizə ən yaxşı
+                                    həlləri təqdim etməyə və onların bizneslərini inkişaf etdirməyə çalışırıq.
+                                </p>
+                                <p>
+                                    Yenilikçi yanaşmalarımızla insanlara və müəssisələrə daha səmərəli, keyfiyyətli və
+                                    dayanıqlı xidmətlər göstərməyi hədəfləyirik.
+                                </p>
                             </div>
                         </motion.div>
                     </div>
@@ -441,25 +419,25 @@ export default function AboutPage() {
                 whileInView="visible"
                 viewport={{ once: true, margin: "-100px" }}
                 variants={sectionVariants}
-                className="py-24 relative"
+                className="py-32 relative overflow-hidden"
             >
-                <div className="absolute inset-0 bg-gradient-to-r from-purple-500/5 to-pink-500/5" />
+                {/* Background Blobs */}
+                <div className="absolute top-1/2 left-0 w-96 h-96 bg-purple-500/5 rounded-full blur-[120px] pointer-events-none" />
+                <div className="absolute bottom-0 right-0 w-96 h-96 bg-pink-500/5 rounded-full blur-[120px] pointer-events-none" />
+
                 <div className="container mx-auto px-4 relative">
                     <motion.div
                         variants={staggerContainer}
                         initial="hidden"
                         whileInView="visible"
                         viewport={{ once: true }}
-                        className="text-center mb-16"
+                        className="text-center mb-20"
                     >
                         <motion.div variants={cardVariants}>
-                            <span className="inline-block px-4 py-2 bg-purple-500/10 border border-purple-500/20 rounded-full text-purple-400 text-sm font-medium mb-4">
-                                Dəyərlərimiz
-                            </span>
-                            <h2 className="text-4xl md:text-5xl font-bold mb-4">
-                                Bizim <span className="bg-gradient-to-r from-purple-400 to-pink-500 bg-clip-text text-transparent">Dəyərlərimiz</span>
+                            <h2 className="text-4xl md:text-6xl font-bold mb-6">
+                                Bizim <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-500">Dəyərlərimiz</span>
                             </h2>
-                            <p className="text-gray-300 text-lg max-w-2xl mx-auto leading-relaxed">
+                            <p className="text-gray-400 text-lg max-w-2xl mx-auto leading-relaxed">
                                 Ingla School-un əsas dəyərləri və prinsipləri
                             </p>
                         </motion.div>
@@ -476,20 +454,20 @@ export default function AboutPage() {
                             <motion.div
                                 key={index}
                                 variants={cardVariants}
-                                whileHover={{ y: -10, scale: 1.02 }}
-                                className="bg-gradient-to-br from-gray-900/80 to-gray-800/50 backdrop-blur-sm border border-gray-700/50 rounded-2xl p-8 hover:shadow-2xl hover:shadow-purple-900/20 transition-all duration-500 hover:border-purple-500/30 group"
+                                whileHover={{ y: -10 }}
+                                className="glass-card p-8 rounded-3xl group hover:border-purple-500/30"
                             >
-                                <div className="flex items-center justify-center w-16 h-16 rounded-2xl mb-6 bg-gradient-to-br from-gray-800 to-gray-900 group-hover:scale-110 transition-transform duration-300">
-                                    <div className={`bg-gradient-to-r ${value.gradient} bg-clip-text text-transparent group-hover:scale-110 transition-transform duration-300`}>
+                                <div className="w-16 h-16 rounded-2xl mb-8 flex items-center justify-center bg-white/5 border border-white/10 group-hover:scale-110 transition-transform duration-300">
+                                    <div className={`text-2xl text-transparent bg-clip-text bg-gradient-to-r ${value.gradient}`}>
                                         {value.icon}
                                     </div>
                                 </div>
 
-                                <h3 className="text-xl font-semibold mb-4 text-white group-hover:text-purple-100 transition-colors duration-300">
+                                <h3 className="text-2xl font-bold mb-4 text-white group-hover:text-purple-300 transition-colors">
                                     {value.title}
                                 </h3>
 
-                                <p className="text-gray-300 leading-relaxed group-hover:text-gray-200 transition-colors duration-300">
+                                <p className="text-gray-400 leading-relaxed font-light">
                                     {value.description}
                                 </p>
                             </motion.div>
@@ -504,7 +482,7 @@ export default function AboutPage() {
                 whileInView="visible"
                 viewport={{ once: true, margin: "-100px" }}
                 variants={sectionVariants}
-                className="py-24 bg-gradient-to-b from-gray-900/30 to-black relative"
+                className="py-32 relative"
             >
                 <div className="container mx-auto px-4">
                     <motion.div
@@ -512,16 +490,13 @@ export default function AboutPage() {
                         initial="hidden"
                         whileInView="visible"
                         viewport={{ once: true }}
-                        className="text-center mb-16"
+                        className="text-center mb-20"
                     >
                         <motion.div variants={cardVariants}>
-                            <span className="inline-block px-4 py-2 bg-green-500/10 border border-green-500/20 rounded-full text-green-400 text-sm font-medium mb-4">
-                                Hədəflərimiz
-                            </span>
-                            <h2 className="text-4xl md:text-5xl font-bold mb-4">
-                                Bizim <span className="bg-gradient-to-r from-green-400 to-teal-500 bg-clip-text text-transparent">Hədəflərimiz</span>
+                            <h2 className="text-4xl md:text-6xl font-bold mb-6">
+                                Bizim <span className="text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-teal-500">Hədəflərimiz</span>
                             </h2>
-                            <p className="text-gray-300 text-lg max-w-2xl mx-auto leading-relaxed">
+                            <p className="text-gray-400 text-lg max-w-2xl mx-auto leading-relaxed">
                                 Gələcək üçün müəyyən etdiyimiz əsas istiqamətlər və hədəflər
                             </p>
                         </motion.div>
@@ -538,31 +513,25 @@ export default function AboutPage() {
                             <motion.div
                                 key={index}
                                 variants={cardVariants}
-                                whileHover={{ y: -5, scale: 1.01 }}
-                                className="bg-gradient-to-br from-gray-900/80 to-gray-800/50 backdrop-blur-sm border border-gray-700/50 rounded-2xl p-8 hover:shadow-2xl hover:shadow-green-900/20 transition-all duration-500 hover:border-green-500/30 group"
+                                whileHover={{ scale: 1.02 }}
+                                className="glass-card p-10 rounded-3xl group flex flex-col md:flex-row gap-8 items-center md:items-start text-center md:text-left hover:border-green-500/30"
                             >
-                                <div className="flex items-start gap-4">
-                                    <div className="flex-shrink-0 p-3 bg-gradient-to-br from-green-500/20 to-teal-500/20 rounded-full group-hover:scale-110 transition-transform duration-300">
-                                        <div className="text-green-400 group-hover:text-green-300 transition-colors duration-300">
-                                            {goal.icon}
-                                        </div>
-                                    </div>
-                                    <div className="flex-1">
-                                        <h3 className="text-xl font-semibold mb-4 text-white group-hover:text-green-100 transition-colors duration-300">
-                                            {goal.title}
-                                        </h3>
-                                        <p className="text-gray-300 leading-relaxed group-hover:text-gray-200 transition-colors duration-300">
-                                            {goal.description}
-                                        </p>
-                                    </div>
+                                <div className="w-20 h-20 rounded-full flex-shrink-0 flex items-center justify-center bg-gradient-to-br from-green-500/10 to-teal-500/10 text-green-400 group-hover:scale-110 transition-transform duration-300">
+                                    {goal.icon}
+                                </div>
+                                <div>
+                                    <h3 className="text-2xl font-bold mb-4 text-white group-hover:text-green-300 transition-colors">
+                                        {goal.title}
+                                    </h3>
+                                    <p className="text-gray-400 leading-relaxed font-light text-lg">
+                                        {goal.description}
+                                    </p>
                                 </div>
                             </motion.div>
                         ))}
                     </motion.div>
                 </div>
             </motion.section>
-
-
         </div>
     );
 }

@@ -45,14 +45,18 @@
 
 :root {
   --radius: 0.625rem;
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
+  /* Updated Light Mode Colors - Slightly warmer/richer */
+  --background: oklch(0.99 0.01 90);
+  --foreground: oklch(0.12 0.02 85);
+  --card: oklch(0.995 0 0);
+  --card-foreground: oklch(0.12 0.02 85);
+  --popover: oklch(0.995 0 0);
+  --popover-foreground: oklch(0.12 0.02 85);
+
+  /* Primary Yellow - Updated for better contrast and vibrancy */
+  --primary: oklch(0.75 0.18 85); /* Vibrant Yellow/Gold */
+  --primary-foreground: oklch(0.1 0.05 85); /* Dark Text on Yellow */
+
   --secondary: oklch(0.97 0 0);
   --secondary-foreground: oklch(0.205 0 0);
   --muted: oklch(0.97 0 0);
@@ -79,24 +83,34 @@
 }
 
 .dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.205 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.922 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
+  /* Updated Dark Mode - Deep Graphite/Black with slight yellow tint */
+  --background: oklch(0.12 0.01 90);
+  --foreground: oklch(0.98 0.01 90);
+
+  /* Cards - Glassy/Darker */
+  --card: oklch(0.15 0.01 90);
+  --card-foreground: oklch(0.98 0.01 90);
+
+  --popover: oklch(0.15 0.01 90);
+  --popover-foreground: oklch(0.98 0.01 90);
+
+  --primary: oklch(0.85 0.15 85); /* Bright Yellow */
+  --primary-foreground: oklch(0.1 0.05 85);
+
+  --secondary: oklch(0.2 0.02 90);
+  --secondary-foreground: oklch(0.98 0 0);
+
+  --muted: oklch(0.2 0.02 90);
+  --muted-foreground: oklch(0.7 0.01 90);
+
+  --accent: oklch(0.2 0.02 90);
+  --accent-foreground: oklch(0.98 0.01 90);
+
   --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.556 0 0);
+  --border: oklch(0.3 0.01 90);
+  --input: oklch(0.3 0.01 90);
+  --ring: oklch(0.85 0.15 85);
+
   --chart-1: oklch(0.488 0.243 264.376);
   --chart-2: oklch(0.696 0.17 162.48);
   --chart-3: oklch(0.769 0.188 70.08);
@@ -118,5 +132,32 @@
   }
   body {
     @apply bg-background text-foreground;
+    /* Add a subtle noise texture to the background */
+    background-image:
+      radial-gradient(at 0% 0%, rgba(234, 179, 8, 0.03) 0px, transparent 50%),
+      radial-gradient(at 100% 0%, rgba(234, 179, 8, 0.03) 0px, transparent 50%),
+      radial-gradient(at 100% 100%, rgba(234, 179, 8, 0.03) 0px, transparent 50%),
+      radial-gradient(at 0% 100%, rgba(234, 179, 8, 0.03) 0px, transparent 50%);
+    background-attachment: fixed;
+  }
+}
+
+@layer utilities {
+  /* Glassmorphism Utilities */
+  .glass {
+    @apply bg-black/40 backdrop-blur-xl border border-white/10 shadow-xl;
+  }
+
+  .glass-card {
+    @apply bg-gray-900/40 backdrop-blur-md border border-white/5 hover:border-yellow-500/30 transition-all duration-300;
+  }
+
+  .glass-button {
+    @apply bg-white/5 hover:bg-white/10 backdrop-blur-sm border border-white/10 transition-all duration-300;
+  }
+
+  /* Text Gradients */
+  .text-gradient-gold {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-yellow-400 to-yellow-600;
   }
 }
