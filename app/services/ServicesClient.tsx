@@ -172,7 +172,6 @@ export default function ServicesPage({ initialServicesData }: ServicesPageProps)
             y: 0,
             transition: {
                 duration: 1,
-                ease: [0.25, 0.25, 0.25, 0.75]
             },
         },
     };
@@ -185,7 +184,6 @@ export default function ServicesPage({ initialServicesData }: ServicesPageProps)
             scale: 1,
             transition: {
                 duration: 0.6,
-                ease: [0.25, 0.25, 0.25, 0.75]
             },
         },
     };

@@ -156,7 +156,6 @@ export default function PreschoolServicesPage() {
             y: 0,
             transition: {
                 duration: 0.8,
-                ease: "easeOut",
             },
         },
     };
@@ -179,7 +178,6 @@ export default function PreschoolServicesPage() {
             y: 0,
             transition: {
                 duration: 0.6,
-                ease: "easeOut",
             },
         },
     };
