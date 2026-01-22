@@ -1,4 +1,4 @@
-import { SanityImageSource } from "@sanity/image-url/lib/types/types"
+import { SanityImageSource } from "@sanity/image-url"
 import { PortableTextBlock } from '@portabletext/types'
 
 export interface ServiceItem {
