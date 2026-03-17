@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import Logo from '@/public/assets/logoingla.png'
+
 const Navbar = () => {
     const [isScrolled, setIsScrolled] = useState<boolean>(false);
     const [mobileMenuOpen, setMobileMenuOpen] = useState<boolean>(false);
@@ -10,7 +11,7 @@ const Navbar = () => {
     // Track scroll position to change header style
     useEffect(() => {
         const handleScroll = () => {
-            if (window.scrollY > 50) {
+            if (window.scrollY > 10) {
                 setIsScrolled(true);
             } else {
                 setIsScrolled(false);
@@ -23,19 +24,13 @@ const Navbar = () => {
 
     // Fix body scroll when mobile menu is open
     useEffect(() => {
-        // Store original body overflow style
         const originalStyle = window.getComputedStyle(document.body).overflow;
-
         if (mobileMenuOpen) {
-            // Prevent scrolling on the body when menu is open
             document.body.style.overflow = 'hidden';
         } else {
-            // Re-enable scrolling when menu is closed
             document.body.style.overflow = originalStyle;
         }
-
         return () => {
-            // Cleanup on unmount
             document.body.style.overflow = originalStyle;
         };
     }, [mobileMenuOpen]);
@@ -62,7 +57,6 @@ const Navbar = () => {
                 closeMenu();
             }
         };
-
         window.addEventListener('keydown', handleEscKeypress);
         return () => {
             window.removeEventListener('keydown', handleEscKeypress);
@@ -71,14 +65,10 @@ const Navbar = () => {
 
     // Close menu on route change
     useEffect(() => {
-        // This will close the menu when navigation occurs
         const handleRouteChange = () => {
             closeMenu();
         };
-
-        // Add event listener for route changes if you're using Next.js router events
         window.addEventListener('popstate', handleRouteChange);
-
         return () => {
             window.removeEventListener('popstate', handleRouteChange);
         };
@@ -86,73 +76,62 @@ const Navbar = () => {
 
     return (
         <>
-            {/* Fixed header that changes style on scroll */}
-            <header
-                className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 ${isScrolled
-                    ? 'bg-black/80 backdrop-blur-md py-4 shadow-md'
-                    : 'bg-gradient-to-b from-black/70 to-transparent py-6'
-                    }`}
-            >
-                <div className="container mx-auto px-4 flex justify-between items-center">
-                    {/* Logo - Added onClick to close menu when logo is clicked */}
-                    <Link
-                        href="/"
-                        className="text-white font-bold text-3xl tracking-wider"
-                        onClick={handleNavigation}
-                    >
-                        <Image className='w-24 h-auto' src={Logo} alt='Logo' />
-                    </Link>
+            <header className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 border-b border-solid ${isScrolled ? 'border-slate-200 dark:border-slate-800 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md shadow-sm py-3' : 'border-transparent bg-white dark:bg-slate-900 py-4'}`}>
+                <div className="max-w-[1200px] mx-auto px-6 md:px-10 flex items-center justify-between whitespace-nowrap">
+                    <div className="flex items-center gap-8">
+                        <Link href="/" className="flex items-center gap-3 text-slate-900 dark:text-slate-100" onClick={handleNavigation}>
+                            <div className="size-10 bg-primary rounded-lg flex items-center justify-center overflow-hidden">
+                                <Image src={Logo} alt="Ingla School Logo" className="w-full h-full object-contain" />
+                            </div>
+                            <h2 className="text-xl font-bold leading-tight tracking-tight">Ingla School</h2>
+                        </Link>
 
-                    {/* Desktop Navigation */}
-                    <nav className="hidden md:flex items-center space-x-8">
-                        <NavLinks />
+                        <nav className="hidden lg:flex items-center gap-6">
+                            <NavLinks />
+                        </nav>
+                    </div>
 
+                    <div className="flex flex-1 justify-end gap-4 md:gap-8 items-center">
+                        <label className="hidden md:flex flex-col min-w-40 h-10 max-w-64">
+                            <div className="flex w-full flex-1 items-stretch rounded-lg h-full bg-slate-100 dark:bg-slate-800">
+                                <div className="text-slate-500 flex items-center justify-center pl-4">
+                                    <span className="material-symbols-outlined text-[20px]">search</span>
+                                </div>
+                                <input className="form-input flex w-full min-w-0 flex-1 border-none bg-transparent focus:ring-0 text-sm placeholder:text-slate-500" placeholder="Search courses..." defaultValue="" />
+                            </div>
+                        </label>
+                        <button className="hidden sm:flex min-w-[100px] cursor-pointer items-center justify-center rounded-lg h-10 px-5 bg-primary text-slate-900 text-sm font-bold hover:brightness-95 transition-all">
+                            Sign Up
+                        </button>
 
-                    </nav>
-
-                    {/* Mobile Menu Button */}
-                    <button
-                        onClick={toggleMobileMenu}
-                        className="md:hidden text-white p-2 focus:outline-none focus:ring-2 focus:ring-yellow-500 rounded-md"
-                        aria-label={mobileMenuOpen ? "Close mobile menu" : "Open mobile menu"}
-                        aria-expanded={mobileMenuOpen}
-                    >
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            strokeWidth={1.5}
-                            stroke="currentColor"
-                            className="w-6 h-6"
-                            aria-hidden="true"
+                        {/* Mobile Menu Button */}
+                        <button
+                            onClick={toggleMobileMenu}
+                            className="lg:hidden text-slate-900 dark:text-slate-100 p-2 focus:outline-none focus:ring-2 focus:ring-primary rounded-md"
+                            aria-label={mobileMenuOpen ? "Close mobile menu" : "Open mobile menu"}
+                            aria-expanded={mobileMenuOpen}
                         >
-                            {mobileMenuOpen ? (
-                                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-                            ) : (
-                                <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
-                            )}
-                        </svg>
-                    </button>
+                            <span className="material-symbols-outlined text-[28px]">
+                                {mobileMenuOpen ? 'close' : 'menu'}
+                            </span>
+                        </button>
+                    </div>
                 </div>
             </header>
 
             {/* Mobile Navigation Overlay */}
-            {/* Using conditional rendering for complete accessibility */}
             {mobileMenuOpen && (
                 <div
-                    className="fixed inset-0 bg-black/95 backdrop-blur-sm z-40 transition-all duration-300"
+                    className="fixed inset-0 bg-white/95 dark:bg-slate-900/95 backdrop-blur-sm z-40 transition-all duration-300 lg:hidden"
                     aria-hidden="false"
                     role="dialog"
                     aria-modal="true"
                     aria-labelledby="mobile-menu-heading"
                 >
-                    <div className="h-full flex flex-col justify-center items-center p-6">
+                    <div className="h-full flex flex-col justify-center items-center p-6 mt-16">
                         <h2 id="mobile-menu-heading" className="sr-only">Mobile navigation menu</h2>
-
                         <nav className="flex flex-col items-center space-y-8">
                             <NavLinks isMobile={true} closeMenu={closeMenu} />
-
-
                         </nav>
                     </div>
                 </div>
@@ -161,15 +140,13 @@ const Navbar = () => {
     );
 };
 
-// Shared navigation links component
 interface NavLinksProps {
     isMobile?: boolean;
     closeMenu?: () => void;
 }
 
 const NavLinks = ({ isMobile = false, closeMenu = () => { } }: NavLinksProps) => {
-    const linkClasses = `text-white uppercase tracking-wider font-medium hover:text-yellow-500 transition-colors ${isMobile ? 'text-3xl' : 'text-sm'
-        }`;
+    const linkClasses = `text-slate-700 dark:text-slate-300 font-medium hover:text-primary transition-colors ${isMobile ? 'text-2xl' : 'text-sm'}`;
 
     const links = [
         { name: 'Tədris İstiqamətlərimiz', path: '/services' },
@@ -177,6 +154,7 @@ const NavLinks = ({ isMobile = false, closeMenu = () => { } }: NavLinksProps) =>
         { name: 'Preschool', path: '/preschool' },
         { name: 'Təlim Mərkəzi', path: '/training-center' },
         { name: 'Haqqımızda', path: '/about' },
+        { name: 'Blog', path: '/blog' },
     ];
 
     return (
