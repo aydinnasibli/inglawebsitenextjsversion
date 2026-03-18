@@ -1,11 +1,8 @@
 "use client";
 
-import { useRef, useState, useEffect, } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { motion, useScroll, useTransform, useSpring } from "framer-motion";
-import { Button } from "@/components/ui/button";
-import { ChevronRight, Clock, Users, Star, } from "lucide-react";
 import { client } from "@/sanity/lib/client";
 import { urlFor } from "@/sanity/lib/image";
 import { SERVICES_QUERY } from "@/sanity/lib/queries";
@@ -13,14 +10,6 @@ import { SanityServiceItem, ServiceItem } from "@/types/services";
 
 interface ServicesPageProps {
     initialServicesData?: SanityServiceItem[];
-}
-
-interface Particle {
-    id: string;
-    left: number;
-    top: number;
-    delay: number;
-    duration: number;
 }
 
 const transformSanityData = (sanityItems: SanityServiceItem[]): ServiceItem[] => {
@@ -38,452 +27,204 @@ const transformSanityData = (sanityItems: SanityServiceItem[]): ServiceItem[] =>
                 alt: img.alt,
                 caption: img.caption,
             })),
-            keyFeatures: item.keyFeatures,
-            targetAudience: item.targetAudience,
-            duration: item.duration,
-            priceRange: item.priceRange,
-            contactInfo: item.contactInfo,
-            scheduleInfo: item.scheduleInfo,
-            requirements: item.requirements,
-            order: item.order,
-            isFeatured: item.isFeatured,
-            seoTitle: item.seoTitle,
-            seoDescription: item.seoDescription,
+            features: (item as any).features,
+            order: item.order || 0,
+            active: item.isActive !== false, isFeatured: (item as any).isFeatured || false,
+            // Fallbacks for missing fields since we don't know the exact schema
+            category: (item as any).category || 'General',
+            price: (item as any).price || '',
+            duration: (item as any).duration || '',
+            level: (item as any).level || '',
         }));
 };
 
 export default function ServicesPage({ initialServicesData }: ServicesPageProps) {
-    const [services, setServices] = useState<ServiceItem[]>(() => {
-        return initialServicesData ? transformSanityData(initialServicesData) : [];
-    });
+    const [services, setServices] = useState<ServiceItem[]>([]);
     const [isLoading, setIsLoading] = useState(!initialServicesData);
-    const [isMounted, setIsMounted] = useState(false);
-    const [particles, setParticles] = useState<Particle[]>([]);
 
-    const containerRef = useRef<HTMLDivElement>(null);
-    const heroRef = useRef<HTMLDivElement>(null);
-
-    // Generate particles on client side only
     useEffect(() => {
-        setIsMounted(true);
+        let isMounted = true;
 
-        // Generate particles
-        const newParticles: Particle[] = Array.from({ length: 20 }, (_, i) => ({
-            id: `particle-${i}`,
-            left: Math.random() * 100,
-            top: Math.random() * 100,
-            delay: Math.random() * 2,
-            duration: 3 + Math.random() * 2,
-        }));
-
-        setParticles(newParticles);
-    }, []);
-
-    // Parallax effects - only initialize after mount
-    const { scrollYProgress } = useScroll({
-        target: containerRef,
-        offset: ["start start", "end end"],
-    });
-
-    const heroY = useSpring(
-        useTransform(scrollYProgress, [0, 0.4], [0, -150]),
-        {
-            stiffness: 100,
-            damping: 30,
-            restDelta: 0.001
-        }
-    );
-
-    const opacity = useSpring(
-        useTransform(scrollYProgress, [0, 0.3], [1, 0.2]),
-        {
-            stiffness: 100,
-            damping: 30
-        }
-    );
-
-    const scale = useSpring(
-        useTransform(scrollYProgress, [0, 0.3], [1, 1.1]),
-        {
-            stiffness: 100,
-            damping: 30
-        }
-    );
-
-
-    // Load services data with proper error handling and cleanup
-    useEffect(() => {
-        let isCancelled = false;
-        let timeoutId: NodeJS.Timeout;
-
-        const loadServicesData = async () => {
-            // Skip if we already have initial data
-            if (initialServicesData && initialServicesData.length > 0) {
-                setIsLoading(false);
-                return;
-            }
-
+        const loadServices = async () => {
             try {
-                const controller = new AbortController();
-                timeoutId = setTimeout(() => controller.abort(), 10000);
-
-                const data = await client.fetch<SanityServiceItem[]>(
-                    SERVICES_QUERY,
-                    {},
-                    {
-                        signal: controller.signal,
-                        cache: 'force-cache'
+                if (initialServicesData && initialServicesData.length > 0) {
+                    if (isMounted) {
+                        setServices(transformSanityData(initialServicesData));
+                        setIsLoading(false);
                     }
-                );
+                    return;
+                }
 
-                clearTimeout(timeoutId);
+                const data = await client.fetch<SanityServiceItem[]>(SERVICES_QUERY);
 
-                if (!isCancelled && data) {
-                    setServices(data.length > 0 ? transformSanityData(data) : []);
+                if (isMounted) {
+                    if (data && data.length > 0) {
+                        setServices(transformSanityData(data));
+                    }
                     setIsLoading(false);
                 }
             } catch (error) {
-                if (!isCancelled) {
-                    console.error('Error fetching services data from Sanity:', error);
-                    setIsLoading(false);
-                }
+                console.error("Error fetching services data:", error);
+                if (isMounted) setIsLoading(false);
             }
         };
 
-        if (!initialServicesData) {
-            loadServicesData();
-        } else {
-            setIsLoading(false);
-        }
+        loadServices();
 
         return () => {
-            isCancelled = true;
-            if (timeoutId) {
-                clearTimeout(timeoutId);
-            }
+            isMounted = false;
         };
     }, [initialServicesData]);
 
-    // Animation variants
-    const sectionVariants = {
-        hidden: { opacity: 0, y: 60 },
-        visible: {
-            opacity: 1,
-            y: 0,
-            transition: {
-                duration: 1,
-            },
-        },
-    };
-
-    const cardVariants = {
-        hidden: { opacity: 0, y: 40, scale: 0.95 },
-        visible: {
-            opacity: 1,
-            y: 0,
-            scale: 1,
-            transition: {
-                duration: 0.6,
-            },
-        },
-    };
-
-    // Prevent hydration mismatch by not rendering motion styles on server
-    const motionStyles = isMounted ? { y: heroY, opacity } : {};
-    const scaleStyles = isMounted ? { scale } : {};
-
     return (
-        <div ref={containerRef} className="relative min-h-screen bg-gradient-to-br from-gray-950 via-gray-900 to-black text-white">
-            {/* Enhanced Hero Section */}
-            <motion.div
-                ref={heroRef}
-                style={motionStyles}
-                className="relative h-screen flex items-center justify-center overflow-hidden"
-            >
-                {/* Background with enhanced effects */}
-                <motion.div
-                    style={scaleStyles}
-                    className="absolute inset-0 z-0"
-                >
-                    {/* Gradient overlays for depth */}
-                    <div className="absolute inset-0 bg-gradient-to-br from-yellow-500/10 via-transparent to-blue-500/10 z-10" />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-black/20 z-20" />
-
-                    {/* Main background image */}
-                    <Image
-                        src="/assets/bg.webp"
-                        alt="Tədris İstiqamətləri"
-                        fill
-                        priority
-                        quality={100}
-                        className="object-cover"
-                        sizes="100vw"
-                    />
-
-                    {/* Animated particles effect - only render on client */}
-                    {isMounted && particles.length > 0 && (
-                        <div className="absolute inset-0 z-15">
-                            {particles.map((particle) => (
-                                <motion.div
-                                    key={particle.id}
-                                    className="absolute w-1 h-1 bg-yellow-500/30 rounded-full"
-                                    style={{
-                                        left: `${particle.left}%`,
-                                        top: `${particle.top}%`,
-                                    }}
-                                    animate={{
-                                        y: [-20, -100],
-                                        opacity: [0, 1, 0],
-                                    }}
-                                    transition={{
-                                        duration: particle.duration,
-                                        repeat: Infinity,
-                                        delay: particle.delay,
-                                    }}
-                                />
-                            ))}
-                        </div>
-                    )}
-                </motion.div>
-
-                {/* Hero Content */}
-                <div className="container mx-auto px-4 relative z-30">
-                    <motion.div
-                        initial={isMounted ? { opacity: 0, y: 50 } : {}}
-                        animate={isMounted ? { opacity: 1, y: 0 } : {}}
-                        transition={{ duration: 1.2, ease: [0.25, 0.25, 0.25, 0.75] }}
-                        className="text-center max-w-5xl mx-auto"
-                    >
-
-
-                        {/* Main heading with gradient text */}
-                        <motion.h1
-                            initial={isMounted ? { opacity: 0, y: 30 } : {}}
-                            animate={isMounted ? { opacity: 1, y: 0 } : {}}
-                            transition={{ duration: 1, delay: 0.5 }}
-                            className="text-4xl md:text-5xl lg:text-6xl font-bold mb-8 leading-tight"
-                        >
-                            Tədris
-
-                            <br />
-                            <span className="bg-gradient-to-r from-yellow-500 via-yellow-400 to-yellow-500 bg-clip-text text-transparent">
-                                İstiqamətləri
+        <div className="flex-1 bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100">
+            {/* Hero Section */}
+            <div className="max-w-[1200px] mx-auto px-6 md:px-10 py-12 md:py-20">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                    <div className="flex flex-col gap-6 md:gap-8">
+                        <div className="flex flex-col gap-4">
+                            <span className="inline-block px-3 py-1 bg-primary/20 text-slate-900 dark:text-primary text-xs font-bold uppercase tracking-widest rounded-full w-fit">
+                                Peşəkar Təhsil
                             </span>
-                        </motion.h1>
-
-                        {/* Enhanced description */}
-                        <motion.div
-                            initial={isMounted ? { opacity: 0, y: 20 } : {}}
-                            animate={isMounted ? { opacity: 1, y: 0 } : {}}
-                            transition={{ duration: 1, delay: 0.8 }}
-                            className="mb-12"
-                        >
-                            <p className="text-xl md:text-2xl mb-6 max-w-4xl mx-auto text-gray-200 leading-relaxed">
-                                Ingla School Baku-da təqdim olunan bütün təhsil xidmətləri və proqramlarımızı kəşf edin
+                            <h1 className="text-slate-900 dark:text-white text-4xl md:text-6xl font-extrabold leading-[1.1] tracking-tight">
+                                Gələcəyiniz üçün <span className="text-primary bg-slate-900 px-2 dark:bg-transparent">Doğru Seçim</span>
+                            </h1>
+                            <p className="text-slate-600 dark:text-slate-400 text-lg md:text-xl leading-relaxed">
+                                Ingla School olaraq uşaqlardan yetkinlərə qədər hər kəs üçün fərdiləşdirilmiş və beynəlxalq standartlara uyğun təhsil proqramları təklif edirik.
                             </p>
-                            <div className="flex flex-wrap justify-center gap-4 text-sm text-yellow-400">
-                                <span className="flex items-center bg-yellow-500/10 px-4 py-2 rounded-full border border-yellow-500/20">
-                                    <Star className="w-4 h-4 mr-2" />
-                                    Premium Keyfiyyət
-                                </span>
-                                <span className="flex items-center bg-yellow-500/10 px-4 py-2 rounded-full border border-yellow-500/20">
-                                    <Users className="w-4 h-4 mr-2" />
-                                    Təcrübəli Müəllimlər
-                                </span>
-                                <span className="flex items-center bg-yellow-500/10 px-4 py-2 rounded-full border border-yellow-500/20">
-                                    <Clock className="w-4 h-4 mr-2" />
-                                    Çevik Cədvəl
-                                </span>
-                            </div>
-                        </motion.div>
-
-
-                    </motion.div>
+                        </div>
+                        <div className="flex flex-col sm:flex-row gap-4">
+                            <button className="flex min-w-[160px] cursor-pointer items-center justify-center rounded-lg h-14 px-8 bg-primary text-slate-900 text-base font-bold hover:shadow-lg transition-all">
+                                İndi Müraciət Et
+                            </button>
+                            <button className="flex min-w-[160px] cursor-pointer items-center justify-center rounded-lg h-14 px-8 border-2 border-slate-200 dark:border-slate-700 text-slate-900 dark:text-slate-100 text-base font-bold hover:bg-slate-50 dark:hover:bg-slate-800 transition-all">
+                                Bütün Proqramlar
+                            </button>
+                        </div>
+                    </div>
+                    <div className="relative">
+                        <div className="w-full aspect-square md:aspect-video lg:aspect-square bg-slate-200 dark:bg-slate-800 rounded-2xl overflow-hidden shadow-2xl relative z-10">
+                            <div className="absolute inset-0 bg-gradient-to-tr from-primary/20 to-transparent z-10"></div>
+                            <Image
+                                src="/assets/bg.webp"
+                                alt="Students learning"
+                                fill
+                                className="object-cover"
+                            />
+                        </div>
+                        <div className="absolute -bottom-6 -right-6 w-32 h-32 bg-primary rounded-2xl -z-0"></div>
+                        <div className="absolute -top-6 -left-6 w-24 h-24 border-4 border-primary rounded-full -z-0"></div>
+                    </div>
                 </div>
+            </div>
 
-                {/* Scroll indicator */}
-                {isMounted && (
-                    <motion.div
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        transition={{ duration: 1, delay: 1.5 }}
-                        className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-30"
-                    >
-                        <motion.div
-                            animate={{ y: [0, 10, 0] }}
-                            transition={{ duration: 2, repeat: Infinity }}
-                            className="w-6 h-10 border-2 border-yellow-500/50 rounded-full flex justify-center"
-                        >
-                            <div className="w-1 h-3 bg-yellow-500 rounded-full mt-2" />
-                        </motion.div>
-                    </motion.div>
-                )}
-            </motion.div>
-
-            {/* Enhanced Services Grid Section */}
-            <motion.section
-                id="services-section"
-                initial={isMounted ? "hidden" : false}
-                whileInView={isMounted ? "visible" : {}}
-                viewport={{ once: true, margin: "-100px" }}
-                variants={sectionVariants}
-                className="py-32 relative"
-            >
-                {/* Section background gradient */}
-                <div className="absolute inset-0 bg-gradient-to-b from-transparent via-gray-900/50 to-transparent" />
-
-                <div className="container mx-auto px-4 relative z-10">
-                    {/* Section header */}
-                    <motion.div
-                        initial={isMounted ? { opacity: 0, y: 30 } : {}}
-                        whileInView={isMounted ? { opacity: 1, y: 0 } : {}}
-                        transition={{ duration: 0.8 }}
-                        viewport={{ once: true }}
-                        className="text-center mb-20"
-                    >
-                        <h2 className="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
-                            Bizim Xidmətlərimiz
-                        </h2>
-                        <p className="text-xl text-gray-400 max-w-2xl mx-auto">
-                            Hər yaş qrupu və səviyyə üçün uyğunlaşdırılmış təhsil proqramları
-                        </p>
-                    </motion.div>
+            {/* Services Section */}
+            <section className="bg-white dark:bg-slate-900/50 py-20">
+                <div className="max-w-[1200px] mx-auto px-6 md:px-10">
+                    <div className="flex flex-col gap-4 mb-12">
+                        <h2 className="text-primary font-bold text-sm tracking-widest uppercase">Təkliflərimiz</h2>
+                        <h3 className="text-slate-900 dark:text-white text-3xl md:text-4xl font-bold leading-tight max-w-2xl">
+                            Hər Yaş və Səviyyə üçün Kompleks Təhsil Həlləri
+                        </h3>
+                    </div>
 
                     {isLoading ? (
-                        <div className="flex justify-center items-center h-96">
-                            <div className="text-center">
-                                <motion.div
-                                    animate={isMounted ? { rotate: 360 } : {}}
-                                    transition={isMounted ? { duration: 1, repeat: Infinity, ease: "linear" } : {}}
-                                    className="w-16 h-16 border-4 border-yellow-500/20 border-t-yellow-500 rounded-full mx-auto mb-6"
-                                />
-                                <p className="text-gray-300 text-lg">Xidmətlər yüklənir...</p>
-                            </div>
-                        </div>
-                    ) : services.length === 0 ? (
-                        <div className="text-center py-20">
-                            <div className="text-gray-400 text-xl mb-4">
-                                Heç bir xidmət tapılmadı.
-                            </div>
+                        <div className="flex justify-center items-center py-20">
+                            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
                         </div>
                     ) : (
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                            {services.map((service, index) => (
-                                <motion.div
-                                    key={service.id}
-                                    variants={cardVariants}
-                                    initial={isMounted ? "hidden" : false}
-                                    whileInView={isMounted ? "visible" : {}}
-                                    viewport={{ once: true, margin: "-50px" }}
-                                    transition={{ delay: 0.1 * index }}
-                                    whileHover={isMounted ? {
-                                        y: -10,
-                                        transition: { duration: 0.3 }
-                                    } : {}}
-                                    className={`relative bg-gradient-to-br from-gray-900/80 to-gray-800/80 backdrop-blur-sm border rounded-2xl overflow-hidden shadow-2xl hover:shadow-yellow-500/10 transition-all duration-500 group ${service.isFeatured
-                                        ? 'border-yellow-500/50 shadow-yellow-500/20'
-                                        : 'border-gray-700/50'
-                                        }`}
-                                >
-                                    {/* Featured badge */}
-                                    {service.isFeatured && (
-                                        <div className="absolute top-4 right-4 z-20">
-                                            <motion.div
-                                                initial={isMounted ? { scale: 0 } : {}}
-                                                animate={isMounted ? { scale: 1 } : {}}
-                                                transition={{ delay: 0.2 * index + 0.5, type: "spring" }}
-                                                className="bg-gradient-to-r from-yellow-500 to-yellow-600 text-black px-3 py-1 rounded-full text-sm font-semibold flex items-center shadow-lg"
-                                            >
-                                                <Star className="w-4 h-4 mr-1" />
-                                                Populyar
-                                            </motion.div>
+                            {services.length > 0 ? services.map((service, index) => {
+                                // Default icon logic based on category/title
+                                let iconName = "workspace_premium";
+                                const title = service.title.toLowerCase();
+                                if (title.includes('dil') || title.includes('language')) iconName = "language";
+                                else if (title.includes('xaric')) iconName = "public";
+                                else if (title.includes('preschool') || title.includes('uşaq')) iconName = "child_care";
+                                else if (title.includes('təlim') || title.includes('biznes')) iconName = "business_center";
+                                else if (title.includes('imtahan')) iconName = "history_edu";
+
+                                return (
+                                    <div key={service.id} className="group flex flex-col gap-5 rounded-2xl border border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900 p-8 hover:border-primary transition-all shadow-sm hover:shadow-md">
+                                        <div className="w-14 h-14 rounded-xl bg-primary/10 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-slate-900 transition-colors">
+                                            <span className="material-symbols-outlined text-[32px]">{iconName}</span>
                                         </div>
-                                    )}
-
-                                    {/* Service Image */}
-                                    <div className="relative h-56 overflow-hidden">
-                                        <Image
-                                            src={service.featuredImage}
-                                            alt={service.title}
-                                            fill
-                                            className="object-cover group-hover:scale-110 transition-transform duration-700"
-                                            sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                                        />
-                                        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
-                                    </div>
-
-                                    {/* Service Content */}
-                                    <div className="p-8">
-                                        {/* Title */}
-                                        <h3 className="text-2xl font-bold mb-4 text-white group-hover:text-yellow-500 transition-colors duration-300">
-                                            {service.title}
-                                        </h3>
-
-                                        {/* Description */}
-                                        <p className="text-gray-300 text-sm mb-6 line-clamp-3 leading-relaxed">
-                                            {service.shortDescription}
-                                        </p>
-
-                                        {/* Service Info */}
-                                        <div className="space-y-3 mb-8">
-                                            {service.duration && (
-                                                <div className="flex items-center text-sm text-gray-400">
-                                                    <div className="w-8 h-8 rounded-full bg-yellow-500/10 flex items-center justify-center mr-3">
-                                                        <Clock className="w-4 h-4 text-yellow-500" />
-                                                    </div>
-                                                    <span>Müddət: {service.duration}</span>
-                                                </div>
-                                            )}
-                                            {service.targetAudience && service.targetAudience.length > 0 && (
-                                                <div className="flex items-center text-sm text-gray-400">
-                                                    <div className="w-8 h-8 rounded-full bg-yellow-500/10 flex items-center justify-center mr-3">
-                                                        <Users className="w-4 h-4 text-yellow-500" />
-                                                    </div>
-                                                    <span>Hədəf qrup: {service.targetAudience[0]}</span>
-                                                </div>
-                                            )}
-                                            {service.priceRange && (
-                                                <div className="text-lg font-bold text-yellow-500">
-                                                    Qiymət: {service.priceRange}
-                                                </div>
-                                            )}
+                                        <div className="flex flex-col gap-2">
+                                            <h4 className="text-slate-900 dark:text-white text-xl font-bold">{service.title}</h4>
+                                            <p className="text-slate-600 dark:text-slate-400 leading-relaxed line-clamp-3">
+                                                {service.shortDescription}
+                                            </p>
                                         </div>
-
-                                        {/* Key Features */}
-                                        {service.keyFeatures && service.keyFeatures.length > 0 && (
-                                            <div className="mb-8">
-                                                <div className="space-y-3">
-                                                    {service.keyFeatures.slice(0, 3).map((feature, i) => (
-                                                        <motion.div
-                                                            key={`${service.id}-feature-${i}`}
-                                                            initial={isMounted ? { opacity: 0, x: -20 } : {}}
-                                                            whileInView={isMounted ? { opacity: 1, x: 0 } : {}}
-                                                            transition={{ delay: 0.1 * i }}
-                                                            viewport={{ once: true }}
-                                                            className="flex items-start text-sm"
-                                                        >
-                                                            <div className="h-2 w-2 rounded-full bg-gradient-to-r from-yellow-500 to-yellow-600 mr-3 mt-2 flex-shrink-0 shadow-sm" />
-                                                            <span className="text-gray-300 leading-relaxed">{feature.feature}</span>
-                                                        </motion.div>
-                                                    ))}
-                                                </div>
-                                            </div>
-                                        )}
-
-                                        {/* Action Button */}
-                                        <Link href={`/services/${service.slug}`} className="block">
-                                            <Button className="w-full border-2 border-yellow-500/50 text-yellow-500 hover:bg-yellow-500 hover:text-black hover:border-yellow-500 transition-all duration-300 rounded-xl py-3 font-semibold group/btn">
-                                                <span>Ətraflı Məlumat</span>
-                                                <ChevronRight className="ml-2 h-4 w-4 group-hover/btn:translate-x-1 transition-transform duration-300" />
-                                            </Button>
+                                        <Link href={`/services/${service.slug}`} className="mt-auto text-primary text-sm font-bold flex items-center gap-2 group-hover:gap-3 transition-all">
+                                            Ətraflı Bax <span className="material-symbols-outlined text-[18px]">arrow_forward</span>
                                         </Link>
                                     </div>
-                                </motion.div>
-                            ))}
+                                );
+                            }) : (
+                                // Fallback services if CMS is empty
+                                <>
+                                    <div className="group flex flex-col gap-5 rounded-2xl border border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900 p-8 hover:border-primary transition-all shadow-sm hover:shadow-md">
+                                        <div className="w-14 h-14 rounded-xl bg-primary/10 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-slate-900 transition-colors">
+                                            <span className="material-symbols-outlined text-[32px]">public</span>
+                                        </div>
+                                        <div className="flex flex-col gap-2">
+                                            <h4 className="text-slate-900 dark:text-white text-xl font-bold">Xaricdə Təhsil</h4>
+                                            <p className="text-slate-600 dark:text-slate-400 leading-relaxed">
+                                                Dünyanın nüfuzlu universitetlərinə qəbul prosesində, viza dəstəyində və mədəniyyətə uyğunlaşmaqda mütəxəssis dəstəyi.
+                                            </p>
+                                        </div>
+                                        <Link href="/studyabroad" className="mt-auto text-primary text-sm font-bold flex items-center gap-2 group-hover:gap-3 transition-all">
+                                            Ətraflı Bax <span className="material-symbols-outlined text-[18px]">arrow_forward</span>
+                                        </Link>
+                                    </div>
+                                    <div className="group flex flex-col gap-5 rounded-2xl border border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900 p-8 hover:border-primary transition-all shadow-sm hover:shadow-md">
+                                        <div className="w-14 h-14 rounded-xl bg-primary/10 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-slate-900 transition-colors">
+                                            <span className="material-symbols-outlined text-[32px]">child_care</span>
+                                        </div>
+                                        <div className="flex flex-col gap-2">
+                                            <h4 className="text-slate-900 dark:text-white text-xl font-bold">Preschool (Məktəbəqədər)</h4>
+                                            <p className="text-slate-600 dark:text-slate-400 leading-relaxed">
+                                                Uşaqların erkən yaşdan idrak, sosial bacarıqlarını və dünyagörüşünü inkişaf etdirən təhlükəsiz və əyləncəli mühit.
+                                            </p>
+                                        </div>
+                                        <Link href="/preschool" className="mt-auto text-primary text-sm font-bold flex items-center gap-2 group-hover:gap-3 transition-all">
+                                            Ətraflı Bax <span className="material-symbols-outlined text-[18px]">arrow_forward</span>
+                                        </Link>
+                                    </div>
+                                    <div className="group flex flex-col gap-5 rounded-2xl border border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900 p-8 hover:border-primary transition-all shadow-sm hover:shadow-md">
+                                        <div className="w-14 h-14 rounded-xl bg-primary/10 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-slate-900 transition-colors">
+                                            <span className="material-symbols-outlined text-[32px]">workspace_premium</span>
+                                        </div>
+                                        <div className="flex flex-col gap-2">
+                                            <h4 className="text-slate-900 dark:text-white text-xl font-bold">Təlim Mərkəzi</h4>
+                                            <p className="text-slate-600 dark:text-slate-400 leading-relaxed">
+                                                Müasir iş dünyasının tələblərinə uyğunlaşdırılmış, karyera inkişafı üçün nəzərdə tutulan peşəkar sertifikatlı təlimlər.
+                                            </p>
+                                        </div>
+                                        <Link href="/training-center" className="mt-auto text-primary text-sm font-bold flex items-center gap-2 group-hover:gap-3 transition-all">
+                                            Ətraflı Bax <span className="material-symbols-outlined text-[18px]">arrow_forward</span>
+                                        </Link>
+                                    </div>
+                                </>
+                            )}
                         </div>
                     )}
                 </div>
-            </motion.section>
+            </section>
+
+            {/* Newsletter Call to Action */}
+            <section className="max-w-[1200px] mx-auto px-6 md:px-10 py-20">
+                <div className="bg-primary rounded-[2rem] p-8 md:p-16 text-slate-900 flex flex-col md:flex-row items-center justify-between gap-10">
+                    <div className="max-w-md">
+                        <h2 className="text-3xl md:text-4xl font-black mb-4">Bu gün təhsil səyahətinizə başlayın</h2>
+                        <p className="text-slate-800 font-medium">Bilik və inkişaf dolu icmamıza qoşulun, ən son xəbərlərdən və təhsil fürsətlərindən xəbərdar olun.</p>
+                    </div>
+                    <div className="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
+                        <input className="px-6 py-4 rounded-xl border-none focus:ring-2 focus:ring-slate-900 min-w-[280px] text-slate-900 outline-none" placeholder="E-poçt ünvanınız" type="email" />
+                        <button className="bg-slate-900 text-white font-bold px-8 py-4 rounded-xl hover:bg-slate-800 transition-colors">Abunə Ol</button>
+                    </div>
+                </div>
+            </section>
         </div>
     );
 }

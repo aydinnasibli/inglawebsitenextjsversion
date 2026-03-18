@@ -1,0 +1,152 @@
+
+> inglawebsitenextjsversion@0.1.0 dev
+> next dev --turbopack
+
+⚠ `images.domains` is deprecated in favor of `images.remotePatterns`. Please update next.config.ts to protect your application from malicious users.
+▲ Next.js 16.1.4 (Turbopack)
+- Local:         http://localhost:3000
+- Network:       http://192.168.0.2:3000
+
+✓ Starting...
+✓ Ready in 1196ms
+○ Compiling / ...
+⨯ Error: Missing environment variable: NEXT_PUBLIC_SANITY_DATASET
+    at assertValue (sanity/env.ts:16:11)
+    at module evaluation (sanity/env.ts:4:24)
+    at module evaluation (sanity/lib/client.ts:3:1)
+    at module evaluation (app/page.tsx:3:1)
+    at module evaluation (.next/dev/server/chunks/ssr/[root-of-the-server]__e6624640._.js:842:47)
+  14 | function assertValue<T>(v: T | undefined, errorMessage: string): T {
+  15 |   if (v === undefined) {
+> 16 |     throw new Error(errorMessage)
+     |           ^
+  17 |   }
+  18 |
+  19 |   return v
+⨯ Error: Missing environment variable: NEXT_PUBLIC_SANITY_DATASET
+    at assertValue (sanity/env.ts:16:11)
+    at module evaluation (sanity/env.ts:4:24)
+    at module evaluation (sanity/lib/client.ts:3:1)
+    at module evaluation (app/page.tsx:3:1)
+    at module evaluation (.next/dev/server/chunks/ssr/[root-of-the-server]__e6624640._.js:842:47)
+  14 | function assertValue<T>(v: T | undefined, errorMessage: string): T {
+  15 |   if (v === undefined) {
+> 16 |     throw new Error(errorMessage)
+     |           ^
+  17 |   }
+  18 |
+  19 |   return v {
+  page: '/'
+}
+ GET / 500 in 8.2s (compile: 8.1s, render: 162ms)
+ GET /about 200 in 986ms (compile: 708ms, render: 278ms)
+⚠ The "images.domains" configuration is deprecated. Please use "images.remotePatterns" configuration instead.
+⨯ Error: Missing environment variable: NEXT_PUBLIC_SANITY_DATASET
+    at assertValue (sanity/env.ts:16:11)
+    at module evaluation (sanity/env.ts:4:24)
+    at module evaluation (sanity/lib/client.ts:3:1)
+    at module evaluation (app/services/ServicesClient.tsx:6:1)
+  14 | function assertValue<T>(v: T | undefined, errorMessage: string): T {
+  15 |   if (v === undefined) {
+> 16 |     throw new Error(errorMessage)
+     |           ^
+  17 |   }
+  18 |
+  19 |   return v {
+  digest: '3032777435'
+}
+ GET /services 500 in 1449ms (compile: 837ms, render: 612ms)
+ GET /preschool 200 in 750ms (compile: 659ms, render: 91ms)
+⨯ Error: Missing environment variable: NEXT_PUBLIC_SANITY_DATASET
+    at assertValue (sanity/env.ts:16:11)
+    at module evaluation (sanity/env.ts:4:24)
+    at module evaluation (sanity/lib/client.ts:3:1)
+    at module evaluation (app/page.tsx:3:1)
+    at module evaluation (.next/dev/server/chunks/ssr/[root-of-the-server]__e6624640._.js:842:47)
+  14 | function assertValue<T>(v: T | undefined, errorMessage: string): T {
+  15 |   if (v === undefined) {
+> 16 |     throw new Error(errorMessage)
+     |           ^
+  17 |   }
+  18 |
+  19 |   return v {
+  page: '/'
+}
+⨯ Error: Missing environment variable: NEXT_PUBLIC_SANITY_DATASET
+    at assertValue (sanity/env.ts:16:11)
+    at module evaluation (sanity/env.ts:4:24)
+    at module evaluation (sanity/lib/client.ts:3:1)
+    at module evaluation (app/page.tsx:3:1)
+    at module evaluation (.next/dev/server/chunks/ssr/[root-of-the-server]__e6624640._.js:842:47)
+  14 | function assertValue<T>(v: T | undefined, errorMessage: string): T {
+  15 |   if (v === undefined) {
+> 16 |     throw new Error(errorMessage)
+     |           ^
+  17 |   }
+  18 |
+  19 |   return v {
+  page: '/studyabroad'
+}
+ GET /studyabroad 500 in 1927ms (compile: 1912ms, render: 15ms)
+⨯ Error: Missing environment variable: NEXT_PUBLIC_SANITY_DATASET
+    at assertValue (sanity/env.ts:16:11)
+    at module evaluation (sanity/env.ts:4:24)
+    at module evaluation (sanity/lib/client.ts:3:1)
+    at module evaluation (app/page.tsx:3:1)
+    at module evaluation (.next/dev/server/chunks/ssr/[root-of-the-server]__e6624640._.js:842:47)
+  14 | function assertValue<T>(v: T | undefined, errorMessage: string): T {
+  15 |   if (v === undefined) {
+> 16 |     throw new Error(errorMessage)
+     |           ^
+  17 |   }
+  18 |
+  19 |   return v {
+  page: '/studyabroad'
+}
+⨯ Error: Missing environment variable: NEXT_PUBLIC_SANITY_DATASET
+    at assertValue (sanity/env.ts:16:11)
+    at module evaluation (sanity/env.ts:4:24)
+    at module evaluation (sanity/lib/client.ts:3:1)
+    at module evaluation (app/page.tsx:3:1)
+    at module evaluation (.next/dev/server/chunks/ssr/[root-of-the-server]__e6624640._.js:842:47)
+  14 | function assertValue<T>(v: T | undefined, errorMessage: string): T {
+  15 |   if (v === undefined) {
+> 16 |     throw new Error(errorMessage)
+     |           ^
+  17 |   }
+  18 |
+  19 |   return v {
+  page: '/training-center'
+}
+ GET /training-center 500 in 1836ms (compile: 1822ms, render: 14ms)
+⨯ Error: Missing environment variable: NEXT_PUBLIC_SANITY_DATASET
+    at assertValue (sanity/env.ts:16:11)
+    at module evaluation (sanity/env.ts:4:24)
+    at module evaluation (sanity/lib/client.ts:3:1)
+    at module evaluation (app/page.tsx:3:1)
+    at module evaluation (.next/dev/server/chunks/ssr/[root-of-the-server]__e6624640._.js:842:47)
+  14 | function assertValue<T>(v: T | undefined, errorMessage: string): T {
+  15 |   if (v === undefined) {
+> 16 |     throw new Error(errorMessage)
+     |           ^
+  17 |   }
+  18 |
+  19 |   return v {
+  page: '/training-center'
+}
+⨯ Error: Missing environment variable: NEXT_PUBLIC_SANITY_DATASET
+    at assertValue (sanity/env.ts:16:11)
+    at module evaluation (sanity/env.ts:4:24)
+    at module evaluation (sanity/lib/client.ts:3:1)
+    at module evaluation (app/page.tsx:3:1)
+    at module evaluation (.next/dev/server/chunks/ssr/[root-of-the-server]__e6624640._.js:842:47)
+  14 | function assertValue<T>(v: T | undefined, errorMessage: string): T {
+  15 |   if (v === undefined) {
+> 16 |     throw new Error(errorMessage)
+     |           ^
+  17 |   }
+  18 |
+  19 |   return v {
+  page: '/blog'
+}
+ GET /blog 500 in 2.1s (compile: 2.1s, render: 14ms)
