@@ -1,26 +1,20 @@
 "use client";
 
-import { useRef, useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
-import { motion, useScroll, useTransform } from "framer-motion";
-import { Button } from "@/components/ui/button";
-import { ChevronRight } from "lucide-react";
-import Carousel from "./Carousel";
+import { useRouter } from "next/navigation";
 import { client } from "@/sanity/lib/client";
 import { urlFor } from "@/sanity/lib/image";
 import { HOMEPAGE_CAROUSEL_QUERY, FAQ_QUERY, TESTIMONIALS_QUERY } from "@/sanity/lib/queries";
 import { SanityCarouselItem, CarouselItem } from "@/types/carousel";
 import { SanityFAQItem, SanityTestimonialItem, FAQItem, TestimonialItem } from "@/types/faq-testimonials";
-import { useRouter } from "next/navigation";
 
-// Updated interface to include all props
 interface HomeClientProps {
     initialCarouselData?: SanityCarouselItem[];
     initialFaqData?: SanityFAQItem[];
     initialTestimonialsData?: SanityTestimonialItem[];
 }
 
-// Fallback carousel items in case Sanity data is not available
 const fallbackCarouselItems: CarouselItem[] = [
     {
         id: "1",
@@ -28,59 +22,9 @@ const fallbackCarouselItems: CarouselItem[] = [
         description: "Beynəlxalq standartlara uyğun təhsil proqramları və müasir tədris metodları ilə gələcəyinizi formalaşdırın.",
         image: "/assets/bg.webp",
         buttonText: "Daha Ətraflı",
-        buttonAction: () => console.log("Learn more clicked")
-    },
-    {
-        id: "2",
-        title: "Xaricdə Təhsil İmkanları",
-        description: "Dünyanın ən yaxşı universitetlərində təhsil almaq üçün peşəkar məsləhət və tam dəstək alın.",
-        image: "/assets/bg.webp",
-        buttonText: "Müraciət Et",
-        buttonAction: () => console.log("Apply clicked")
-    },
-    {
-        id: "3",
-        title: "Peşəkar Müəllimlər",
-        description: "Sahəsində mütəxəssis müəllim heyətimiz ilə keyfiyyətli təhsil və fərdi yanaşma təcrübəsi yaşayın.",
-        image: "/assets/bg.webp",
-        buttonText: "Komandamız",
-        buttonAction: () => console.log("Team clicked")
-    },
-    {
-        id: "4",
-        title: "Kiçik Yaşdan Böyük Nailiyyətlər",
-        description: "Preschool proqramımız ilə uşaqlarınızın erkən yaşlardan dil və sosial bacarıqlarını inkişaf etdirin.",
-        image: "/assets/bg.webp",
-        buttonText: "Qeydiyyat",
-        buttonAction: () => console.log("Register clicked")
     }
 ];
 
-// Helper functions
-const getCategoryDisplayName = (category: string) => {
-    const categoryNames: Record<string, string> = {
-        'all': 'Hamısı',
-        'general': 'Ümumi',
-        'admissions': 'Qəbul',
-        'programs': 'Proqramlar',
-        'study-abroad': 'Xaricdə Təhsil',
-        'preschool': 'Preschool'
-    };
-    return categoryNames[category] || category;
-};
-
-const getProgramDisplayName = (program: string) => {
-    const programNames: Record<string, string> = {
-        'language-courses': 'Dil Kursları',
-        'study-abroad': 'Xaricdə Təhsil',
-        'preschool': 'Preschool',
-        'training-center': 'Təlim Mərkəzi',
-        'general': 'Ümumi'
-    };
-    return programNames[program] || program;
-};
-
-// Transform functions
 const transformFaqData = (sanityItems: SanityFAQItem[]): FAQItem[] => {
     return sanityItems
         .filter(item => item && item._id && item.question && item.answer)
@@ -108,780 +52,280 @@ const transformTestimonialsData = (sanityItems: SanityTestimonialItem[]): Testim
         }));
 };
 
-export default function HomeClient({ initialCarouselData, initialFaqData, initialTestimonialsData }: HomeClientProps) {
-    // Carousel state
-    const [carouselItems, setCarouselItems] = useState<CarouselItem[]>(fallbackCarouselItems);
-    const [isLoading, setIsLoading] = useState(!initialCarouselData);
-
-    // FAQ state
-    const [faqItems, setFaqItems] = useState<FAQItem[]>([]);
-    const [faqLoading, setFaqLoading] = useState(!initialFaqData);
-    const [activeFaq, setActiveFaq] = useState<string | null>(null);
-    const [activeFaqCategory, setActiveFaqCategory] = useState<string>('all');
-    const router = useRouter();
-    // Testimonials state
-    const [testimonialItems, setTestimonialItems] = useState<TestimonialItem[]>([]);
-    const [testimonialsLoading, setTestimonialsLoading] = useState(!initialTestimonialsData);
-
-    // References for parallax sections
-    const containerRef = useRef<HTMLDivElement>(null);
-    const heroRef = useRef<HTMLDivElement>(null);
-
-    // Parallax effects for different sections
-    const { scrollYProgress } = useScroll({
-        target: containerRef,
-        offset: ["start start", "end end"],
-    });
-
-    const heroY = useTransform(scrollYProgress, [0, 0.2], [0, -100]);
-    const opacity = useTransform(scrollYProgress, [0, 0.2], [1, 0.3]);
-
-    // Animation variants
-    const sectionVariants = {
-        hidden: { opacity: 0, y: 50 },
-        visible: {
-            opacity: 1,
-            y: 0,
-            transition: {
-                duration: 0.8,
-            },
-        },
-    };
-
-    // Computed values for FAQ
-    const faqCategories = ['all', ...Array.from(new Set(faqItems.map(item => item.category)))];
-    const filteredFaqItems = activeFaqCategory === 'all'
-        ? faqItems
-        : faqItems.filter(item => item.category === activeFaqCategory);
-
-    const transformSanityData = (sanityItems: SanityCarouselItem[]): CarouselItem[] => {
-        return sanityItems
-            .filter(item => item && item._id && item.title && item.description)
-            .map((item) => {
-                try {
-                    return {
-                        id: item._id,
-                        title: item.title,
-                        description: item.description,
-                        image: item.image ? urlFor(item.image).width(1920).height(1080).quality(85).url() : '/assets/bg.webp',
-                        buttonText: item.buttonText,
-                        buttonAction: item.buttonLink ? () => {
-                            try {
-                                if (item.buttonLink?.startsWith('http')) {
-                                    window.open(item.buttonLink, '_blank', 'noopener,noreferrer');
-                                } else {
-                                    window.location.href = item.buttonLink || '#';
-                                }
-                            } catch (error) {
-                                console.error('Error navigating to link:', error);
-                            }
-                        } : undefined,
-                    };
-                } catch (error) {
-                    console.error('Error transforming carousel item:', item, error);
-                    return {
-                        id: item._id || 'fallback',
-                        title: item.title || 'Untitled',
-                        description: item.description || 'No description available',
-                        image: '/assets/bg.webp',
-                    };
-                }
-            });
-    };
-
-    // Effect for carousel data
-    useEffect(() => {
-        let isMounted = true;
-
-        const loadCarouselData = async () => {
-            try {
-                if (initialCarouselData && initialCarouselData.length > 0) {
-                    if (isMounted) {
-                        setCarouselItems(transformSanityData(initialCarouselData));
-                        setIsLoading(false);
-                    }
-                    return;
-                }
-
-                const controller = new AbortController();
-                const timeoutId = setTimeout(() => controller.abort(), 10000);
-
-                const data = await client.fetch<SanityCarouselItem[]>(
-                    HOMEPAGE_CAROUSEL_QUERY,
-                    {},
-                    {
-                        signal: controller.signal,
-                        cache: 'force-cache'
-                    }
-                );
-
-                clearTimeout(timeoutId);
-
-                if (isMounted) {
-                    if (data && data.length > 0) {
-                        setCarouselItems(transformSanityData(data));
+const transformSanityData = (sanityItems: SanityCarouselItem[]): CarouselItem[] => {
+    return sanityItems
+        .filter(item => item && item._id && item.title && item.description)
+        .map((item) => {
+            return {
+                id: item._id,
+                title: item.title,
+                description: item.description,
+                image: item.image ? urlFor(item.image).width(1920).height(1080).quality(85).url() : '/assets/bg.webp',
+                buttonText: item.buttonText,
+                buttonAction: item.buttonLink ? () => {
+                    if (item.buttonLink?.startsWith('http')) {
+                        window.open(item.buttonLink, '_blank', 'noopener,noreferrer');
                     } else {
-                        console.log('No carousel data found in Sanity, using fallback data');
+                        window.location.href = item.buttonLink || '#';
                     }
-                    setIsLoading(false);
-                }
-            } catch (error) {
-                console.error('Error fetching carousel data from Sanity:', error);
-                if (isMounted) {
-                    setIsLoading(false);
-                }
-            }
-        };
+                } : undefined,
+            };
+        });
+};
 
-        loadCarouselData();
+export default function HomeClient({ initialCarouselData, initialFaqData, initialTestimonialsData }: HomeClientProps) {
+    const [carouselItems, setCarouselItems] = useState<CarouselItem[]>(fallbackCarouselItems);
+    const [faqItems, setFaqItems] = useState<FAQItem[]>([]);
+    const [activeFaq, setActiveFaq] = useState<string | null>(null);
+    const [testimonialItems, setTestimonialItems] = useState<TestimonialItem[]>([]);
 
-        return () => {
-            isMounted = false;
-        };
+    const router = useRouter();
+
+    useEffect(() => {
+        if (initialCarouselData && initialCarouselData.length > 0) {
+            setCarouselItems(transformSanityData(initialCarouselData));
+        } else {
+            client.fetch<SanityCarouselItem[]>(HOMEPAGE_CAROUSEL_QUERY).then(data => {
+                if (data && data.length > 0) setCarouselItems(transformSanityData(data));
+            }).catch(console.error);
+        }
     }, [initialCarouselData]);
 
-    // Effect for FAQ and Testimonials data
     useEffect(() => {
-        let isMounted = true;
+        if (initialFaqData && initialFaqData.length > 0) {
+            setFaqItems(transformFaqData(initialFaqData));
+        } else {
+            client.fetch<SanityFAQItem[]>(FAQ_QUERY).then(data => {
+                if (data) setFaqItems(transformFaqData(data));
+            }).catch(console.error);
+        }
 
-        const loadFaqAndTestimonials = async () => {
-            try {
-                // Handle FAQ data
-                if (initialFaqData && initialFaqData.length > 0) {
-                    if (isMounted) {
-                        setFaqItems(transformFaqData(initialFaqData));
-                        setFaqLoading(false);
-                    }
-                } else {
-                    const faqData = await client.fetch<SanityFAQItem[]>(FAQ_QUERY);
-                    if (isMounted && faqData) {
-                        setFaqItems(transformFaqData(faqData));
-                        setFaqLoading(false);
-                    }
-                }
-
-                // Handle Testimonials data
-                if (initialTestimonialsData && initialTestimonialsData.length > 0) {
-                    if (isMounted) {
-                        setTestimonialItems(transformTestimonialsData(initialTestimonialsData));
-                        setTestimonialsLoading(false);
-                    }
-                } else {
-                    const testimonialsData = await client.fetch<SanityTestimonialItem[]>(TESTIMONIALS_QUERY);
-                    if (isMounted && testimonialsData) {
-                        setTestimonialItems(transformTestimonialsData(testimonialsData));
-                        setTestimonialsLoading(false);
-                    }
-                }
-            } catch (error) {
-                console.error('Error fetching FAQ or Testimonials data:', error);
-                if (isMounted) {
-                    setFaqLoading(false);
-                    setTestimonialsLoading(false);
-                }
-            }
-        };
-
-        loadFaqAndTestimonials();
-
-        return () => {
-            isMounted = false;
-        };
+        if (initialTestimonialsData && initialTestimonialsData.length > 0) {
+            setTestimonialItems(transformTestimonialsData(initialTestimonialsData));
+        } else {
+            client.fetch<SanityTestimonialItem[]>(TESTIMONIALS_QUERY).then(data => {
+                if (data) setTestimonialItems(transformTestimonialsData(data));
+            }).catch(console.error);
+        }
     }, [initialFaqData, initialTestimonialsData]);
 
+    const activeCarouselItem = carouselItems[0];
+
     return (
-        <div ref={containerRef} className="relative min-h-screen text-white">
+        <div className="flex-1 bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100">
             {/* Hero Section */}
-            <motion.div
-                ref={heroRef}
-                style={{ y: heroY, opacity }}
-                className="relative h-screen flex items-center justify-center overflow-hidden"
-            >
-                <div className="absolute inset-0 z-0">
-                    <div className="absolute inset-0 z-10" />
-                    <Image
-                        src="/assets/bg.webp"
-                        alt="Ingla School"
-                        fill
-                        priority
-                        quality={100}
-                        className="object-cover"
-                    />
-                </div>
-
-                <div className="container mx-auto px-4 relative z-20">
-                    <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.8 }}
-                        className="text-center"
-                    >
-                        <h1 className="text-6xl font-bold mb-6 text-white">
-                            <span className="text-yellow-500">Ingla</span> School Baku
-                        </h1>
-                        <p className="text-2xl mb-8 max-w-2xl mx-auto text-gray-200">
-                            Uğurlu gələcəyiniz üçün peşəkar təhsil həlləri
-                        </p>
-                    </motion.div>
-                </div>
-
-                <div className="absolute bottom-0 left-0 right-0 h-24"></div>
-            </motion.div>
-
-            {/* Carousel Section */}
-            <motion.section
-                initial="hidden"
-                whileInView="visible"
-                viewport={{ once: true }}
-                variants={sectionVariants}
-                className="py-24"
-            >
-                <div className="container mx-auto px-4">
-                    <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.6 }}
-                        viewport={{ once: true }}
-                        className="text-center mb-12"
-                    >
-                        <h2 className="text-4xl font-bold mb-4">
-                            Bizim <span className="text-yellow-500">Üstünlüklərimiz</span>
-                        </h2>
-                        <p className="text-gray-300 text-lg max-w-2xl mx-auto">
-                            Ingla School-da təhsil təcrübənizi daha da zənginləşdirən xüsusiyyətlərimizi kəşf edin
-                        </p>
-                    </motion.div>
-
-                    {isLoading ? (
-                        <div className="flex justify-center items-center h-96">
-                            <div className="text-center">
-                                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-yellow-500 mx-auto mb-4"></div>
-                                <p className="text-gray-300">Məlumatlar yüklənir...</p>
-                            </div>
-                        </div>
-                    ) : (
-                        <Carousel
-                            items={carouselItems}
-                            autoPlay={true}
-                            autoPlayInterval={6000}
-                            showControls={true}
-                            showIndicators={true}
-                            className="shadow-2xl shadow-yellow-900/20 border border-gray-800"
-                        />
-                    )}
-                </div>
-            </motion.section>
-
-            {/* Xidmətlər Section */}
-            <motion.section
-                id="xidmetler"
-                initial="hidden"
-                whileInView="visible"
-                viewport={{ once: true }}
-                variants={sectionVariants}
-                className="py-24 "
-            >
-                <div className="container mx-auto px-4">
-                    <div className="flex flex-col md:flex-row items-center gap-12">
-                        <div className="md:w-1/2">
-                            <div className="relative h-96 w-full overflow-hidden rounded-lg shadow-xl shadow-yellow-900/10 border border-gray-800">
-                                <Image
-                                    src="/assets/bg.webp"
-                                    alt="Xidmətlər"
-                                    fill
-                                    className="object-cover"
-                                />
-                                <div className="absolute inset-0 bg-gradient-to-br from-yellow-500/10 to-transparent"></div>
-                            </div>
-                        </div>
-                        <div className="md:w-1/2">
-                            <h2 className="text-4xl font-bold mb-6">
-                                <span className="text-yellow-500">Xidmətlər</span>
-                            </h2>
-                            <p className="text-gray-300 mb-8 text-lg">
-                                Müxtəlif təhsil xidmətlərimiz və proqramlarımız haqqında ətraflı məlumat əldə edin. Ingla School
-                                olaraq tələbələrimizin ehtiyaclarına uyğun geniş xidmət spektri təklif edirik.
+            <div className="max-w-7xl mx-auto px-6 py-12 md:py-20">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                    <div className="flex flex-col gap-8">
+                        <div className="flex flex-col gap-4">
+                            <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-slate-800 dark:text-primary text-xs font-bold uppercase tracking-wider w-fit">
+                                <span className="relative flex h-2 w-2">
+                                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
+                                    <span className="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
+                                </span>
+                                Yeni Qəbul Davam Edir
+                            </span>
+                            <h1 className="text-4xl md:text-6xl font-black leading-tight tracking-tight text-slate-900 dark:text-white">
+                                Gələcəyiniz üçün <span className="text-primary">Ən Yaxşı</span> Başlanğıc.
+                            </h1>
+                            <p className="text-lg text-slate-600 dark:text-slate-400 max-w-xl leading-relaxed">
+                                {activeCarouselItem?.description || "Beynəlxalq standartlara uyğun təhsil proqramları və müasir tədris metodları ilə gələcəyinizi formalaşdırın."}
                             </p>
-                            <div className="space-y-4 mb-8">
-                                {[
-                                    "Dil kursları və təlimləri",
-                                    "Beynəlxalq imtahanlara hazırlıq",
-                                    "Akademik mentorluq və təlimatlandırma",
-                                    "Xaricdə təhsil konsultasiyaları",
-                                ].map((item, i) => (
-                                    <motion.div
-                                        key={i}
-                                        initial={{ opacity: 0, x: -20 }}
-                                        whileInView={{ opacity: 1, x: 0 }}
-                                        transition={{ delay: 0.1 * i }}
-                                        viewport={{ once: true }}
-                                        className="flex items-center"
-                                    >
-                                        <div className="h-2 w-2 rounded-full bg-yellow-500 mr-3"></div>
-                                        <span>{item}</span>
-                                    </motion.div>
-                                ))}
-                            </div>
-                            <Button
-                                className="border-2 border-white hover:bg-white hover:text-black cursor-pointer transition duration-300 text-white"
-                                onClick={() => router.push('/services')}
-                            >
-                                <span>Ətraflı</span>
-                                <ChevronRight className="ml-1 h-4 w-4" />
-                            </Button>
+                        </div>
+                        <div className="flex flex-wrap gap-4">
+                            <button onClick={() => router.push('/services')} className="h-14 px-8 bg-primary text-slate-900 rounded-lg font-bold text-lg hover:shadow-lg hover:shadow-primary/20 transition-all flex items-center gap-2">
+                                Bizim Proqramlar <span className="material-symbols-outlined">arrow_forward</span>
+                            </button>
+                            <button onClick={() => router.push('/about')} className="h-14 px-8 bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white rounded-lg font-bold text-lg hover:bg-slate-200 dark:hover:bg-slate-700 transition-all">
+                                Haqqımızda
+                            </button>
+                        </div>
+                    </div>
+                    <div className="relative">
+                        <div className="w-full aspect-[4/3] bg-center bg-cover rounded-2xl shadow-2xl relative z-10 overflow-hidden" style={{ backgroundImage: `url(${activeCarouselItem?.image || '/assets/bg.webp'})` }}></div>
+                        <div className="absolute -bottom-6 -right-6 w-48 h-48 bg-primary/20 rounded-full blur-3xl -z-0"></div>
+                        <div className="absolute -top-6 -left-6 w-32 h-32 bg-primary rounded-2xl -z-0 opacity-20 rotate-12"></div>
+                    </div>
+                </div>
+            </div>
+
+            {/* Stats */}
+            <div className="max-w-7xl mx-auto px-6 py-8">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <div className="flex flex-col gap-2 rounded-xl p-8 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm">
+                        <span className="material-symbols-outlined text-primary text-3xl">groups</span>
+                        <p className="text-slate-500 dark:text-slate-400 text-sm font-medium uppercase tracking-wider">Aktiv Tələbələr</p>
+                        <p className="text-3xl font-extrabold text-slate-900 dark:text-white">5,000+</p>
+                    </div>
+                    <div className="flex flex-col gap-2 rounded-xl p-8 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm">
+                        <span className="material-symbols-outlined text-primary text-3xl">verified</span>
+                        <p className="text-slate-500 dark:text-slate-400 text-sm font-medium uppercase tracking-wider">Qəbul Faiz</p>
+                        <p className="text-3xl font-extrabold text-slate-900 dark:text-white">98%</p>
+                    </div>
+                    <div className="flex flex-col gap-2 rounded-xl p-8 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm">
+                        <span className="material-symbols-outlined text-primary text-3xl">corporate_fare</span>
+                        <p className="text-slate-500 dark:text-slate-400 text-sm font-medium uppercase tracking-wider">Tərəfdaşlar</p>
+                        <p className="text-3xl font-extrabold text-slate-900 dark:text-white">50+</p>
+                    </div>
+                    <div className="flex flex-col gap-2 rounded-xl p-8 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm">
+                        <span className="material-symbols-outlined text-primary text-3xl">star</span>
+                        <p className="text-slate-500 dark:text-slate-400 text-sm font-medium uppercase tracking-wider">Məmnuniyyət</p>
+                        <p className="text-3xl font-extrabold text-slate-900 dark:text-white">4.9/5</p>
+                    </div>
+                </div>
+            </div>
+
+            {/* Categories */}
+            <section className="max-w-7xl mx-auto px-6 py-16">
+                <div className="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-4">
+                    <div>
+                        <h2 className="text-3xl font-bold tracking-tight mb-2 text-slate-900 dark:text-white">Tədris İstiqamətlərimiz</h2>
+                        <p className="text-slate-500 dark:text-slate-400">Gələcəyiniz üçün ən uyğun proqramı seçin.</p>
+                    </div>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    {/* Course Card 1 */}
+                    <div onClick={() => router.push('/services')} className="cursor-pointer group bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 overflow-hidden hover:shadow-xl transition-all duration-300">
+                        <div className="h-48 overflow-hidden relative">
+                            <div className="absolute inset-0 bg-center bg-cover transition-transform duration-500 group-hover:scale-110" style={{ backgroundImage: "url('/assets/bg.webp')" }}></div>
+                        </div>
+                        <div className="p-6 flex flex-col gap-4">
+                            <h3 className="text-xl font-bold text-slate-900 dark:text-white group-hover:text-primary transition-colors">Ümumi İngilis Dili</h3>
+                            <p className="text-sm text-slate-500 line-clamp-2">Müasir metodika və peşəkar müəllimlərlə ingilis dilini mükəmməl öyrənin.</p>
+                        </div>
+                    </div>
+                    {/* Course Card 2 */}
+                    <div onClick={() => router.push('/studyabroad')} className="cursor-pointer group bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 overflow-hidden hover:shadow-xl transition-all duration-300">
+                        <div className="h-48 overflow-hidden relative">
+                            <div className="absolute inset-0 bg-center bg-cover transition-transform duration-500 group-hover:scale-110" style={{ backgroundImage: "url('/assets/bg.webp')" }}></div>
+                            <div className="absolute top-4 left-4 bg-primary text-slate-900 text-[10px] font-black px-2 py-1 rounded uppercase">Xaricdə</div>
+                        </div>
+                        <div className="p-6 flex flex-col gap-4">
+                            <h3 className="text-xl font-bold text-slate-900 dark:text-white group-hover:text-primary transition-colors">Xaricdə Təhsil</h3>
+                            <p className="text-sm text-slate-500 line-clamp-2">Dünyanın nüfuzlu universitetlərində təhsil almaq xəyalınızı bizimlə reallaşdırın.</p>
+                        </div>
+                    </div>
+                    {/* Course Card 3 */}
+                    <div onClick={() => router.push('/preschool')} className="cursor-pointer group bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 overflow-hidden hover:shadow-xl transition-all duration-300">
+                        <div className="h-48 overflow-hidden relative">
+                            <div className="absolute inset-0 bg-center bg-cover transition-transform duration-500 group-hover:scale-110" style={{ backgroundImage: "url('/assets/bg.webp')" }}></div>
+                        </div>
+                        <div className="p-6 flex flex-col gap-4">
+                            <h3 className="text-xl font-bold text-slate-900 dark:text-white group-hover:text-primary transition-colors">Preschool</h3>
+                            <p className="text-sm text-slate-500 line-clamp-2">Uşaqlarınızın parlaq gələcəyi üçün ən düzgün məktəbəqədər hazırlıq.</p>
                         </div>
                     </div>
                 </div>
-            </motion.section>
+            </section>
 
-            {/* Haqqımızda Section */}
-            <motion.section
-                id="haqqimizda"
-                initial="hidden"
-                whileInView="visible"
-                viewport={{ once: true }}
-                variants={sectionVariants}
-                className="py-24 "
-            >
-                <div className="container mx-auto px-4">
-                    <div className="flex flex-col md:flex-row-reverse items-center gap-12">
-                        <div className="md:w-1/2">
-                            <div className="relative h-96 w-full overflow-hidden rounded-lg shadow-xl shadow-yellow-900/10 border border-gray-800">
-                                <Image
-                                    src="/assets/bg.webp"
-                                    alt="Haqqımızda"
-                                    fill
-                                    className="object-cover"
-                                />
-                                <div className="absolute inset-0 bg-gradient-to-br from-yellow-500/10 to-transparent"></div>
-                            </div>
+            {/* Testimonials */}
+            {testimonialItems.length > 0 && (
+                <section className="py-20 bg-slate-50 dark:bg-slate-900/30">
+                    <div className="max-w-[1200px] mx-auto px-6 md:px-10">
+                        <div className="text-center mb-16">
+                            <h2 className="text-slate-900 dark:text-white text-3xl md:text-4xl font-bold mb-4">Tələbə Rəyləri</h2>
+                            <p className="text-slate-600 dark:text-slate-400 max-w-xl mx-auto">Ingla School məzunları və tələbələrinin uğur hekayələri və təcrübələri.</p>
                         </div>
-                        <div className="md:w-1/2">
-                            <h2 className="text-4xl font-bold mb-6">
-                                <span className="text-yellow-500">Haqqımızda</span>
-                            </h2>
-                            <p className="text-gray-300 mb-8 text-lg">
-                                Biz gələcəyin innovativ və dayanıqlı inkişafına töhfə verən lider şirkət olmaq istəyirik. Texnologiya və təhsili birləşdirərək, müştərilərimizə və cəmiyyətə dəyər qatan həllər təqdim etməyi hədəfləyirik.
-                            </p>
-                            <div className="space-y-4 mb-8">
-                                {[
-                                    "Təcrübəli müəllimlər və mentorlar",
-                                    "Beynəlxalq standartlara uyğun tədris proqramları",
-                                    "Müasir tədris infrastrukturu",
-                                    "Fərdi yanaşma və kiçik qruplarla məşğələlər",
-                                ].map((item, i) => (
-                                    <motion.div
-                                        key={i}
-                                        initial={{ opacity: 0, x: 20 }}
-                                        whileInView={{ opacity: 1, x: 0 }}
-                                        transition={{ delay: 0.1 * i }}
-                                        viewport={{ once: true }}
-                                        className="flex items-center"
-                                    >
-                                        <div className="h-2 w-2 rounded-full bg-yellow-500 mr-3"></div>
-                                        <span>{item}</span>
-                                    </motion.div>
-                                ))}
-                            </div>
-                            <Button
-                                className="border-2 border-white hover:bg-white hover:text-black cursor-pointer transition duration-300 text-white"
-                                onClick={() => router.push('/about')}
-                            >
-                                <span>Ətraflı</span>
-                                <ChevronRight className="ml-1 h-4 w-4" />
-                            </Button>
-                        </div>
-                    </div>
-                </div>
-            </motion.section>
-
-            {/* Xaricdə Təhsil Section */}
-            <motion.section
-                id="xaricde-tehsil"
-                initial="hidden"
-                whileInView="visible"
-                viewport={{ once: true }}
-                variants={sectionVariants}
-                className="py-24"
-            >
-                <div className="container mx-auto px-4">
-                    <div className="flex flex-col md:flex-row items-center gap-12">
-                        <div className="md:w-1/2">
-                            <div className="relative h-96 w-full overflow-hidden rounded-lg shadow-xl shadow-yellow-900/10 border border-gray-800">
-                                <Image
-                                    src="/assets/bg.webp"
-                                    alt="Xaricdə Təhsil"
-                                    fill
-                                    className="object-cover"
-                                />
-                                <div className="absolute inset-0 bg-gradient-to-br from-yellow-500/10 to-transparent"></div>
-                            </div>
-                        </div>
-                        <div className="md:w-1/2">
-                            <h2 className="text-4xl font-bold mb-6">
-                                <span className="text-yellow-500">Xaricdə Təhsil</span>
-                            </h2>
-                            <p className="text-gray-300 mb-8 text-lg">
-                                Dünyanın aparıcı universitetlərində təhsil fürsətləri və tərəfdaşlıq proqramlarımız. Xaricdə təhsil
-                                almaq istəyən tələbələr üçün bütün mərhələlərdə dəstək veririk.
-                            </p>
-                            <div className="space-y-4 mb-8">
-                                {[
-                                    "ABŞ, Böyük Britaniya, Almaniya və digər ölkələrdə təhsil imkanları",
-                                    "Təqaüd proqramları və maliyyə dəstəyi",
-                                    "Sənəd hazırlığı və müraciət prosesi",
-                                    "Viza məsləhətləri və yaşayış dəstəyi",
-                                ].map((item, i) => (
-                                    <motion.div
-                                        key={i}
-                                        initial={{ opacity: 0, x: -20 }}
-                                        whileInView={{ opacity: 1, x: 0 }}
-                                        transition={{ delay: 0.1 * i }}
-                                        viewport={{ once: true }}
-                                        className="flex items-center"
-                                    >
-                                        <div className="h-2 w-2 rounded-full bg-yellow-500 mr-3"></div>
-                                        <span>{item}</span>
-                                    </motion.div>
-                                ))}
-                            </div>
-                            <Button
-                                className="border-2 border-white hover:bg-white hover:text-black cursor-pointer transition duration-300 text-white"
-                                onClick={() => router.push('/studyabroad')}
-                            >
-                                <span>Ətraflı</span>
-                                <ChevronRight className="ml-1 h-4 w-4" />
-                            </Button>
-                        </div>
-                    </div>
-                </div>
-            </motion.section>
-
-            {/* Preschool Section */}
-            <motion.section
-                id="preschool"
-                initial="hidden"
-                whileInView="visible"
-                viewport={{ once: true }}
-                variants={sectionVariants}
-                className="py-24 "
-            >
-                <div className="container mx-auto px-4">
-                    <div className="flex flex-col md:flex-row-reverse items-center gap-12">
-                        <div className="md:w-1/2">
-                            <div className="relative h-96 w-full overflow-hidden rounded-lg shadow-xl shadow-yellow-900/10 border border-gray-800">
-                                <Image
-                                    src="/assets/bg.webp"
-                                    alt="Preschool"
-                                    fill
-                                    className="object-cover"
-                                />
-                                <div className="absolute inset-0 bg-gradient-to-br from-yellow-500/10 to-transparent"></div>
-                            </div>
-                        </div>
-                        <div className="md:w-1/2">
-                            <h2 className="text-4xl font-bold mb-6">
-                                <span className="text-yellow-500">Preschool</span>
-                            </h2>
-                            <p className="text-gray-300 mb-8 text-lg">
-                                Kiçik yaşlı uşaqlar üçün erkən təhsil və inkişaf proqramlarımız. 3-6 yaş aralığındakı uşaqların
-                                təhsil və sosial bacarıqlarını inkişaf etdirmək üçün əyləncəli və interaktiv dərs metodlarımız.
-                            </p>
-                            <div className="space-y-4 mb-8">
-                                {[
-                                    "Oyun əsaslı öyrənmə metodları",
-                                    "Dil inkişafı proqramları",
-                                    "Sosial bacarıqların təkmilləşdirilməsi",
-                                    "İngilis dilli mühitdə təhsil",
-                                ].map((item, i) => (
-                                    <motion.div
-                                        key={i}
-                                        initial={{ opacity: 0, x: 20 }}
-                                        whileInView={{ opacity: 1, x: 0 }}
-                                        transition={{ delay: 0.1 * i }}
-                                        viewport={{ once: true }}
-                                        className="flex items-center"
-                                    >
-                                        <div className="h-2 w-2 rounded-full bg-yellow-500 mr-3"></div>
-                                        <span>{item}</span>
-                                    </motion.div>
-                                ))}
-                            </div>
-                            <Button
-                                className="border-2 border-white hover:bg-white hover:text-black cursor-pointer transition duration-300 text-white"
-                                onClick={() => router.push('/preschool')}
-                            >
-                                <span>Ətraflı</span>
-                                <ChevronRight className="ml-1 h-4 w-4" />
-                            </Button>
-                        </div>
-                    </div>
-                </div>
-            </motion.section>
-
-
-            {/* Təlim Mərkəzi Section */}
-            <motion.section
-                id="telim-merkezi"
-                initial="hidden"
-                whileInView="visible"
-                viewport={{ once: true }}
-                variants={sectionVariants}
-                className="py-24 "
-            >
-                <div className="container mx-auto px-4">
-                    <div className="flex flex-col md:flex-row items-center gap-12">
-                        <div className="md:w-1/2">
-                            <div className="relative h-96 w-full overflow-hidden rounded-lg shadow-xl shadow-yellow-900/10 border border-gray-800">
-                                <Image
-                                    src="/assets/bg.webp"
-                                    alt="Təlim Mərkəzi"
-                                    fill
-                                    className="object-cover"
-                                />
-                                <div className="absolute inset-0 bg-gradient-to-br from-yellow-500/10 to-transparent"></div>
-                            </div>
-                        </div>
-                        <div className="md:w-1/2">
-                            <h2 className="text-4xl font-bold mb-6">
-                                <span className="text-yellow-500">Təlim Mərkəzi</span>
-                            </h2>
-                            <p className="text-gray-300 mb-8 text-lg">
-                                Peşəkar inkişaf üçün müxtəlif təlim proqramları və sertifikatlaşdırma kursları. Karyera yüksəlişi
-                                və ixtisaslaşma üçün fərdi və korporativ təlim həlləri təklif edirik.
-                            </p>
-                            <div className="space-y-4 mb-8">
-                                {[
-                                    "İxtisaslaşmış biznes təlimləri",
-                                    "Rəqəmsal bacarıqların inkişafı",
-                                    "Kommunikasiya və liderlik üzrə kurslar",
-                                    "Korporativ təlim proqramları",
-                                ].map((item, i) => (
-                                    <motion.div
-                                        key={i}
-                                        initial={{ opacity: 0, x: -20 }}
-                                        whileInView={{ opacity: 1, x: 0 }}
-                                        transition={{ delay: 0.1 * i }}
-                                        viewport={{ once: true }}
-                                        className="flex items-center"
-                                    >
-                                        <div className="h-2 w-2 rounded-full bg-yellow-500 mr-3"></div>
-                                        <span>{item}</span>
-                                    </motion.div>
-                                ))}
-                            </div>
-                            <Button
-                                className="border-2 border-white hover:bg-white hover:text-black cursor-pointer transition duration-300 text-white"
-                                onClick={() => router.push('/training-center')}
-                            >
-                                <span>Ətraflı</span>
-                                <ChevronRight className="ml-1 h-4 w-4" />
-                            </Button>
-                        </div>
-                    </div>
-                </div>
-            </motion.section>
-
-
-            {/* Testimonials Section */}
-            <motion.section
-                id="testimonials"
-                initial="hidden"
-                whileInView="visible"
-                viewport={{ once: true }}
-                variants={sectionVariants}
-                className="py-24 bg-gray-900/30"
-            >
-                <div className="container mx-auto px-4">
-                    <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.6 }}
-                        viewport={{ once: true }}
-                        className="text-center mb-12"
-                    >
-                        <h2 className="text-4xl font-bold mb-4">
-                            Tələbə <span className="text-yellow-500">Rəyləri</span>
-                        </h2>
-                        <p className="text-gray-300 text-lg max-w-2xl mx-auto">
-                            Ingla School məzunları və tələbələrinin təcrübələrini oxuyun
-                        </p>
-                    </motion.div>
-
-                    {testimonialsLoading ? (
-                        <div className="flex justify-center items-center h-64">
-                            <div className="text-center">
-                                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-yellow-500 mx-auto mb-4"></div>
-                                <p className="text-gray-300">Rəylər yüklənir...</p>
-                            </div>
-                        </div>
-                    ) : (
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                            {testimonialItems.map((testimonial, index) => (
-                                <motion.div
-                                    key={testimonial.id}
-                                    initial={{ opacity: 0, y: 30 }}
-                                    whileInView={{ opacity: 1, y: 0 }}
-                                    transition={{ delay: 0.1 * index }}
-                                    viewport={{ once: true }}
-                                    className={`bg-gray-900/50 border rounded-lg p-6 hover:shadow-xl hover:shadow-yellow-900/10 transition-all duration-300 ${testimonial.featured
-                                        ? 'border-yellow-500/50 bg-gradient-to-br from-yellow-500/5 to-transparent'
-                                        : 'border-gray-800'
-                                        }`}
-                                >
-                                    {/* Star Rating */}
-                                    <div className="flex items-center mb-4">
+                            {testimonialItems.slice(0, 3).map((testimonial) => (
+                                <div key={testimonial.id} className="bg-white dark:bg-slate-800 p-8 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
+                                    <div className="flex text-primary mb-4">
                                         {[...Array(5)].map((_, i) => (
-                                            <svg
-                                                key={i}
-                                                className={`w-5 h-5 ${i < testimonial.rating ? 'text-yellow-500' : 'text-gray-600'
-                                                    }`}
-                                                fill="currentColor"
-                                                viewBox="0 0 20 20"
-                                            >
-                                                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                                            </svg>
+                                            <span key={i} className="material-symbols-outlined text-[18px]">
+                                                {i < testimonial.rating ? 'star' : 'star_border'}
+                                            </span>
                                         ))}
                                     </div>
-
-                                    {/* Testimonial Text */}
-                                    <blockquote className="text-gray-300 mb-6 italic">
-                                        {testimonial.testimonial}
-                                    </blockquote>
-
-                                    {/* Author Info */}
-                                    <div className="flex items-center">
-                                        {testimonial.image && (
-                                            <div className="w-12 h-12 rounded-full overflow-hidden mr-4 border-2 border-gray-700">
-                                                <Image
-                                                    src={testimonial.image}
-                                                    alt={testimonial.name}
-                                                    width={48}
-                                                    height={48}
-                                                    className="object-cover w-full h-full"
-                                                />
-                                            </div>
-                                        )}
-                                        <div>
-                                            <div className="font-semibold text-white flex items-center">
-                                                {testimonial.name}
-                                                {testimonial.featured && (
-                                                    <span className="ml-2 text-yellow-500">⭐</span>
-                                                )}
-                                            </div>
-                                            {testimonial.position && (
-                                                <div className="text-sm text-gray-400">
-                                                    {testimonial.position}
-                                                    {testimonial.company && ` at ${testimonial.company}`}
+                                    <p className="text-slate-600 dark:text-slate-300 italic mb-6 line-clamp-4">
+                                        "{testimonial.testimonial}"
+                                    </p>
+                                    <div className="flex items-center gap-4 mt-auto">
+                                        <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-slate-100 dark:border-slate-700 bg-slate-200">
+                                            {testimonial.image ? (
+                                                <Image src={testimonial.image} alt={testimonial.name} width={48} height={48} className="object-cover w-full h-full" />
+                                            ) : (
+                                                <div className="w-full h-full flex justify-center items-center text-slate-400">
+                                                    <span className="material-symbols-outlined">person</span>
                                                 </div>
                                             )}
-                                            <div className="text-xs text-yellow-500 mt-1">
-                                                {getProgramDisplayName(testimonial.program)}
-                                            </div>
+                                        </div>
+                                        <div>
+                                            <h5 className="text-slate-900 dark:text-white font-bold text-sm flex items-center gap-1">
+                                                {testimonial.name} {testimonial.featured && <span className="material-symbols-outlined text-primary text-[14px]">verified</span>}
+                                            </h5>
+                                            <p className="text-slate-500 text-xs">
+                                                {testimonial.position} {testimonial.company && `at ${testimonial.company}`}
+                                            </p>
                                         </div>
                                     </div>
-                                </motion.div>
+                                </div>
                             ))}
                         </div>
-                    )}
+                    </div>
+                </section>
+            )}
+
+            {/* Corporate CTA */}
+            <section className="bg-slate-900 dark:bg-black text-white py-20">
+                <div className="max-w-7xl mx-auto px-6">
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+                        <div>
+                            <h2 className="text-4xl font-bold mb-6">Təlim Mərkəzimiz</h2>
+                            <p className="text-slate-400 text-lg mb-8 leading-relaxed">
+                                Şirkətiniz və işçiləriniz üçün xüsusi hazırlanmış korporativ təlimlər. Biznesinizin inkişafı üçün peşəkar kadrların hazırlanması.
+                            </p>
+                            <ul className="flex flex-col gap-4 mb-10">
+                                <li className="flex items-center gap-3">
+                                    <span className="material-symbols-outlined text-primary">check_circle</span>
+                                    <span>İxtisaslaşmış biznes təlimləri</span>
+                                </li>
+                                <li className="flex items-center gap-3">
+                                    <span className="material-symbols-outlined text-primary">check_circle</span>
+                                    <span>Kommunikasiya və liderlik üzrə kurslar</span>
+                                </li>
+                            </ul>
+                            <button onClick={() => router.push('/training-center')} className="px-10 py-4 bg-primary text-slate-900 rounded-lg font-bold text-lg hover:brightness-105 transition-all">
+                                Daha Ətraflı
+                            </button>
+                        </div>
+                        <div className="grid grid-cols-2 gap-4">
+                            <div className="aspect-square bg-slate-800 rounded-2xl overflow-hidden border border-slate-700">
+                                <img className="w-full h-full object-cover opacity-60 hover:opacity-100 transition-opacity" src="/assets/bg.webp" />
+                            </div>
+                            <div className="aspect-square bg-slate-800 rounded-2xl overflow-hidden border border-slate-700 translate-y-8">
+                                <img className="w-full h-full object-cover opacity-60 hover:opacity-100 transition-opacity" src="/assets/bg.webp" />
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            </motion.section>
+            </section>
 
             {/* FAQ Section */}
-            <motion.section
-                id="faq"
-                initial="hidden"
-                whileInView="visible"
-                viewport={{ once: true }}
-                variants={sectionVariants}
-                className="py-24"
-            >
-                <div className="container mx-auto px-4">
-                    <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.6 }}
-                        viewport={{ once: true }}
-                        className="text-center mb-12"
-                    >
-                        <h2 className="text-4xl font-bold mb-4">
-                            Tez-tez <span className="text-yellow-500">Verilən Suallar</span>
-                        </h2>
-                        <p className="text-gray-300 text-lg max-w-2xl mx-auto">
-                            Ingla School haqqında ən çox soruşulan sualların cavablarını tapın
-                        </p>
-                    </motion.div>
-
-                    {faqLoading ? (
-                        <div className="flex justify-center items-center h-64">
-                            <div className="text-center">
-                                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-yellow-500 mx-auto mb-4"></div>
-                                <p className="text-gray-300">FAQ məlumatları yüklənir...</p>
+            {faqItems.length > 0 && (
+                <section className="max-w-3xl mx-auto px-6 py-20">
+                    <div className="text-center mb-10">
+                        <h2 className="text-3xl font-bold mb-4 text-slate-900 dark:text-white">Tez-tez Verilən Suallar</h2>
+                    </div>
+                    <div className="flex flex-col gap-4">
+                        {faqItems.slice(0, 5).map(faq => (
+                            <div key={faq.id} className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg overflow-hidden transition-all shadow-sm">
+                                <button
+                                    className="w-full px-6 py-4 flex justify-between items-center text-left hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
+                                    onClick={() => setActiveFaq(activeFaq === faq.id ? null : faq.id)}
+                                >
+                                    <span className="font-bold text-slate-900 dark:text-white">{faq.question}</span>
+                                    <span className="material-symbols-outlined text-primary transition-transform duration-300" style={{ transform: activeFaq === faq.id ? 'rotate(180deg)' : 'rotate(0deg)' }}>expand_more</span>
+                                </button>
+                                {activeFaq === faq.id && (
+                                    <div className="px-6 pb-4 pt-2 text-slate-600 dark:text-slate-400">
+                                        {faq.answer}
+                                    </div>
+                                )}
                             </div>
-                        </div>
-                    ) : (
-                        <div className="max-w-4xl mx-auto">
-                            {/* FAQ Categories */}
-                            <div className="flex flex-wrap justify-center gap-4 mb-8">
-                                {faqCategories.map((category) => (
-                                    <button
-                                        key={category}
-                                        onClick={() => setActiveFaqCategory(category)}
-                                        className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 ${activeFaqCategory === category
-                                            ? 'bg-yellow-500 text-black'
-                                            : 'bg-gray-800 text-gray-300 hover:bg-gray-700'
-                                            }`}
-                                    >
-                                        {getCategoryDisplayName(category)}
-                                    </button>
-                                ))}
-                            </div>
-
-                            {/* FAQ Items */}
-                            <div className="space-y-4">
-                                {filteredFaqItems.map((item, index) => (
-                                    <motion.div
-                                        key={item.id}
-                                        initial={{ opacity: 0, y: 20 }}
-                                        whileInView={{ opacity: 1, y: 0 }}
-                                        transition={{ delay: 0.1 * index }}
-                                        viewport={{ once: true }}
-                                        className="bg-gray-900/50 border border-gray-800 rounded-lg overflow-hidden"
-                                    >
-                                        <button
-                                            onClick={() => setActiveFaq(activeFaq === item.id ? null : item.id)}
-                                            className="w-full px-6 py-4 text-left flex justify-between items-center hover:bg-gray-800/30 transition-colors"
-                                        >
-                                            <span className="font-medium text-white">{item.question}</span>
-                                            <ChevronRight
-                                                className={`w-5 h-5 text-yellow-500 transition-transform duration-300 ${activeFaq === item.id ? 'rotate-90' : ''
-                                                    }`}
-                                            />
-                                        </button>
-
-                                        <motion.div
-                                            initial={false}
-                                            animate={{
-                                                height: activeFaq === item.id ? 'auto' : 0,
-                                                opacity: activeFaq === item.id ? 1 : 0
-                                            }}
-                                            transition={{ duration: 0.3 }}
-                                            className="overflow-hidden"
-                                        >
-                                            <div className="px-6 mt-3 pb-4 text-gray-300">
-                                                {item.answer}
-                                            </div>
-                                        </motion.div>
-                                    </motion.div>
-                                ))}
-                            </div>
-                        </div>
-                    )}
-                </div>
-            </motion.section>
-
-
-
+                        ))}
+                    </div>
+                </section>
+            )}
         </div>
     );
 }

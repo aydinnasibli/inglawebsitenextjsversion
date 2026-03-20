@@ -13,179 +13,189 @@ export const metadata: Metadata = {
 }
 
 async function getBlogData() {
-    const [posts, categories] = await Promise.all([
-        client.fetch<BlogPost[]>(postsQuery),
-        client.fetch<Category[]>(categoriesQuery),
-    ])
-
-    return { posts, categories }
+    try {
+        const [posts, categories] = await Promise.all([
+            client.fetch<BlogPost[]>(postsQuery),
+            client.fetch<Category[]>(categoriesQuery),
+        ])
+        return { posts: posts || [], categories: categories || [] }
+    } catch(e) {
+        return { posts: [], categories: [] }
+    }
 }
 
 function formatDate(dateString: string) {
-    return new Date(dateString).toLocaleDateString('en-US', {
+    return new Date(dateString).toLocaleDateString('az-AZ', {
         year: 'numeric',
-        month: 'long',
+        month: 'short',
         day: 'numeric',
     })
-}
-
-function getCategoryColor(color?: string) {
-    const colors = {
-        blue: 'bg-blue-500/20 text-blue-300 border-blue-500/30',
-        green: 'bg-green-500/20 text-green-300 border-green-500/30',
-        red: 'bg-red-500/20 text-red-300 border-red-500/30',
-        purple: 'bg-purple-500/20 text-purple-300 border-purple-500/30',
-        yellow: 'bg-yellow-500/20 text-yellow-300 border-yellow-500/30',
-        gray: 'bg-gray-500/20 text-gray-300 border-gray-500/30',
-    }
-    return colors[color as keyof typeof colors] || colors.gray
 }
 
 export default async function BlogPage() {
     const { posts, categories } = await getBlogData()
 
+    const featuredPost = posts.length > 0 ? posts[0] : null;
+    const regularPosts = posts.length > 0 ? posts.slice(1) : [];
+
     return (
-        <div className="min-h-screen bg-black text-white">
-            {/* Hero Section */}
-            <div className="relative h-96 flex items-center justify-center overflow-hidden">
-                <div className="absolute inset-0 z-0">
-                    <div className="absolute inset-0 bg-black/60 z-10" />
-                    <Image
-                        src="/assets/bg.webp"
-                        alt="Blog"
-                        fill
-                        priority
-                        quality={100}
-                        className="object-cover"
-                    />
-                </div>
-
-                <div className="container mx-auto px-4 relative z-20">
-                    <div className="text-center">
-                        <h1 className="text-5xl font-bold mb-6 text-white">
-                            Bizim <span className="text-yellow-500">Blog</span>
-                        </h1>
-                        <p className="text-xl mb-8 max-w-2xl mx-auto text-gray-200">
-                            Komandasından məqalələr, təlimatlar və hekayələr
-                        </p>
-                    </div>
-                </div>
-
-                <div className="absolute bottom-0 left-0 right-0 h-12 bg-gradient-to-t from-black to-transparent"></div>
-            </div>
-
-            <div className="container mx-auto px-4 py-12">
-                {/* Categories Filter */}
-                {categories.length > 0 && (
-                    <div className="mb-12">
-                        <div className="flex flex-wrap gap-3 justify-center">
-                            <Link
-                                href="/blog"
-                                className="px-6 py-3 bg-yellow-500 text-black rounded-full text-sm font-medium hover:bg-yellow-400 transition-colors"
-                            >
-                                Bütün Məqalələr
-                            </Link>
-                            {categories.map((category) => (
-                                <Link
-                                    key={category._id}
-                                    href={`/blog/category/${category.slug.current}`}
-                                    className={`px-6 py-3 rounded-full text-sm font-medium border transition-all duration-300 hover:scale-105 ${getCategoryColor(category.color)}`}
-                                >
-                                    {category.title}
-                                </Link>
-                            ))}
+        <div className="flex-1 bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 flex justify-center py-10 px-6 lg:px-40">
+            <div className="layout-content-container flex flex-col max-w-[1200px] flex-1">
+                {/* Welcome & Header */}
+                <div className="flex flex-col gap-4 mb-8">
+                    <div className="flex items-center gap-3">
+                        <div className="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-12 ring-2 ring-primary ring-offset-2 border border-slate-200 dark:border-slate-800" style={{backgroundImage: "url('/assets/logoingla.png')"}}></div>
+                        <div className="flex flex-col">
+                            <h1 className="text-xl font-bold">Ingla School Blog</h1>
+                            <p className="text-slate-500 dark:text-slate-400 text-sm">Təhsil və texnologiya sahəsində ən son yeniliklərlə tanış olun</p>
                         </div>
                     </div>
-                )}
+                </div>
 
-                {/* Blog Posts Grid */}
-                {posts.length > 0 ? (
-                    <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-                        {posts.map((post, index) => (
-                            <article
-                                key={post._id}
-                                className={`group cursor-pointer ${index === 0 ? 'md:col-span-2 lg:col-span-2' : ''}`}
-                            >
-                                <Link href={`/blog/${post.slug.current}`}>
-                                    <div className="bg-gray-900/50 border border-gray-800 rounded-lg overflow-hidden hover:shadow-2xl hover:shadow-yellow-900/20 transition-all duration-300 hover:border-yellow-500/50 h-full">
-                                        {post.mainImage && (
-                                            <div className={`relative overflow-hidden ${index === 0 ? 'h-64' : 'h-48'}`}>
-                                                <Image
-                                                    src={urlFor(post.mainImage).width(800).height(400).url()}
-                                                    alt={post.mainImage.alt || post.title}
-                                                    fill
-                                                    className="object-cover group-hover:scale-105 transition-transform duration-300"
-                                                />
-                                                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-                                            </div>
-                                        )}
-
-                                        <div className="p-6">
-                                            {/* Categories */}
-                                            {post.categories && post.categories.length > 0 && (
-                                                <div className="flex flex-wrap gap-2 mb-4">
-                                                    {post.categories.map((category) => (
-                                                        <span
-                                                            key={category._id}
-                                                            className={`px-3 py-1 rounded-full text-xs font-medium border ${getCategoryColor(category.color)}`}
-                                                        >
-                                                            {category.title}
-                                                        </span>
-                                                    ))}
-                                                </div>
-                                            )}
-
-                                            {/* Title */}
-                                            <h2 className={`font-bold text-white mb-3 group-hover:text-yellow-400 transition-colors ${index === 0 ? 'text-2xl' : 'text-xl'}`}>
-                                                {post.title}
-                                            </h2>
-
-                                            {/* Excerpt */}
-                                            {post.excerpt && (
-                                                <p className={`text-gray-300 mb-4 leading-relaxed ${index === 0 ? 'text-base' : 'text-sm'} line-clamp-3`}>
-                                                    {post.excerpt}
-                                                </p>
-                                            )}
-
-                                            {/* Author and Date */}
-                                            <div className="flex items-center justify-between text-sm text-gray-400 mt-auto">
-                                                <div className="flex items-center space-x-3">
-                                                    {post.author?.image && (
-                                                        <div className="relative w-8 h-8">
-                                                            <Image
-                                                                src={urlFor(post.author.image).width(32).height(32).url()}
-                                                                alt={post.author.name}
-                                                                fill
-                                                                className="rounded-full object-cover border border-gray-700"
-                                                            />
-                                                        </div>
-                                                    )}
-                                                    <span className="text-gray-300 font-medium">
-                                                        {post.author?.name || 'Anonymous'}
-                                                    </span>
-                                                </div>
-                                                <time dateTime={post.publishedAt} className="text-yellow-500">
-                                                    {formatDate(post.publishedAt)}
-                                                </time>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </Link>
-                            </article>
+                {/* Search and Filters Section */}
+                <div className="flex flex-col md:flex-row gap-4 mb-10 sticky top-[73px] bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-sm py-4 z-40">
+                    <div className="flex-1">
+                        <label className="flex flex-col min-w-40 h-12 w-full">
+                            <div className="flex w-full flex-1 items-stretch rounded-xl h-full shadow-sm">
+                                <div className="flex items-center justify-center pl-4 rounded-l-xl bg-white dark:bg-slate-800 border-y border-l border-slate-200 dark:border-slate-700">
+                                    <span className="material-symbols-outlined text-slate-400">search</span>
+                                </div>
+                                <input className="form-input flex w-full min-w-0 flex-1 rounded-r-xl text-slate-900 dark:text-slate-100 focus:outline-0 focus:ring-2 focus:ring-primary border-y border-r border-l-0 border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 h-full placeholder:text-slate-400 px-4 text-base font-normal outline-none" placeholder="Məqalələr, məsləhətlər və ya xəbərlər axtarın..." />
+                            </div>
+                        </label>
+                    </div>
+                    <div className="flex gap-2 overflow-x-auto pb-2 md:pb-0 items-center no-scrollbar">
+                        <div className="flex h-10 shrink-0 items-center justify-center gap-x-2 rounded-full bg-primary px-5 cursor-pointer shadow-md">
+                            <p className="text-background-dark text-sm font-bold">Hamısı</p>
+                        </div>
+                        {categories.map((category) => (
+                            <div key={category._id} className="flex h-10 shrink-0 items-center justify-center gap-x-2 rounded-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-5 cursor-pointer hover:border-primary transition-colors">
+                                <p className="text-sm font-medium">{category.title}</p>
+                            </div>
                         ))}
                     </div>
-                ) : (
-                    <div className="text-center py-16">
-                        <div className="max-w-md mx-auto">
-                            <h3 className="text-2xl font-bold text-white mb-4">
-                                Heç bir blog məqaləsi tapılmadı
-                            </h3>
-                            <p className="text-gray-400">
-                                Yeni məzmun üçün daha sonra yoxlayın!
-                            </p>
+                </div>
+
+                {/* Featured Article */}
+                {featuredPost && (
+                    <section className="mb-12">
+                        <h2 className="text-2xl font-bold tracking-tight mb-6 flex items-center gap-2">
+                            <span className="material-symbols-outlined text-primary">auto_awesome</span>
+                            Seçilmiş Məqalə
+                        </h2>
+                        <div className="group relative overflow-hidden rounded-2xl bg-white dark:bg-slate-800 shadow-xl lg:flex h-auto lg:h-96 hover:shadow-2xl transition-all duration-300">
+                            <div className="lg:w-1/2 overflow-hidden h-64 lg:h-auto relative">
+                                {featuredPost.mainImage && (
+                                    <Image
+                                        src={urlFor(featuredPost.mainImage).width(800).height(600).url()}
+                                        alt={featuredPost.title}
+                                        fill
+                                        className="object-cover transition-transform duration-500 group-hover:scale-105"
+                                    />
+                                )}
+                            </div>
+                            <div className="lg:w-1/2 p-8 flex flex-col justify-center">
+                                <div className="flex items-center gap-2 mb-4">
+                                    {featuredPost.categories?.[0] && (
+                                        <span className="px-3 py-1 bg-primary/20 text-background-dark dark:text-primary text-xs font-bold rounded-full uppercase tracking-wider">
+                                            {featuredPost.categories[0].title}
+                                        </span>
+                                    )}
+                                    <span className="text-slate-400 text-xs">• {formatDate(featuredPost.publishedAt)}</span>
+                                </div>
+                                <h3 className="text-3xl font-bold mb-4 leading-tight group-hover:text-primary transition-colors">{featuredPost.title}</h3>
+                                {featuredPost.excerpt && (
+                                    <p className="text-slate-600 dark:text-slate-400 mb-6 line-clamp-3">
+                                        {featuredPost.excerpt}
+                                    </p>
+                                )}
+                                <div className="flex items-center gap-4 mt-auto">
+                                    <Link href={`/blog/${featuredPost.slug.current}`} className="bg-primary text-background-dark px-6 py-2 rounded-lg font-bold text-sm hover:brightness-110 transition-all flex items-center gap-2">
+                                        Məqaləni Oxu <span className="material-symbols-outlined text-sm">arrow_forward</span>
+                                    </Link>
+                                </div>
+                            </div>
                         </div>
-                    </div>
+                    </section>
                 )}
+
+                {/* Article Grid */}
+                <section>
+                    <h2 className="text-2xl font-bold tracking-tight mb-8">Son Yeniliklər</h2>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                        {regularPosts.map((post) => (
+                            <Link href={`/blog/${post.slug.current}`} key={post._id} className="flex flex-col bg-white dark:bg-slate-800 rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition-all border border-slate-100 dark:border-slate-700 group">
+                                <div className="h-48 overflow-hidden relative">
+                                    {post.mainImage ? (
+                                        <Image
+                                            src={urlFor(post.mainImage).width(600).height(400).url()}
+                                            alt={post.title}
+                                            fill
+                                            className="object-cover group-hover:scale-110 transition-transform duration-300"
+                                        />
+                                    ) : (
+                                        <div className="w-full h-full bg-slate-200 dark:bg-slate-700 flex items-center justify-center">
+                                            <span className="material-symbols-outlined text-slate-400 text-4xl">image</span>
+                                        </div>
+                                    )}
+                                </div>
+                                <div className="p-5 flex flex-col grow">
+                                    <div className="flex justify-between items-center mb-3">
+                                        {post.categories?.[0] ? (
+                                            <span className="text-[10px] font-bold text-primary uppercase tracking-widest">
+                                                {post.categories[0].title}
+                                            </span>
+                                        ) : (
+                                            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+                                                Ümumi
+                                            </span>
+                                        )}
+                                        <span className="text-[10px] text-slate-400">{formatDate(post.publishedAt)}</span>
+                                    </div>
+                                    <h4 className="text-lg font-bold mb-3 group-hover:text-primary transition-colors line-clamp-2">{post.title}</h4>
+                                    {post.excerpt && (
+                                        <p className="text-sm text-slate-500 dark:text-slate-400 line-clamp-3 mb-4">
+                                            {post.excerpt}
+                                        </p>
+                                    )}
+                                    <div className="mt-auto flex items-center justify-between border-t border-slate-100 dark:border-slate-700 pt-4">
+                                        <div className="flex items-center gap-2">
+                                            {post.author?.image ? (
+                                                <div className="size-6 rounded-full overflow-hidden relative">
+                                                    <Image src={urlFor(post.author.image).width(24).height(24).url()} alt={post.author.name} fill className="object-cover"/>
+                                                </div>
+                                            ) : (
+                                                <div className="size-6 rounded-full bg-slate-200 dark:bg-slate-700 flex items-center justify-center text-xs">
+                                                    <span className="material-symbols-outlined text-[14px]">person</span>
+                                                </div>
+                                            )}
+                                            <span className="text-xs font-medium text-slate-600 dark:text-slate-300">{post.author?.name || 'Admin'}</span>
+                                        </div>
+                                        <span className="material-symbols-outlined text-primary group-hover:translate-x-1 transition-transform">trending_flat</span>
+                                    </div>
+                                </div>
+                            </Link>
+                        ))}
+
+                        {/* Fallback Cards if not enough posts */}
+                        {regularPosts.length === 0 && (
+                            <div className="col-span-full flex justify-center py-10">
+                                <p className="text-slate-500">Hazırda məqalə tapılmadı.</p>
+                            </div>
+                        )}
+                    </div>
+                </section>
+
+                {/* Newsletter / Community Section */}
+                <div className="mt-16 bg-background-dark text-white rounded-2xl p-8 flex flex-col justify-center items-center text-center shadow-lg mb-10">
+                    <span className="material-symbols-outlined text-primary text-5xl mb-4">mail</span>
+                    <h3 className="text-xl font-bold mb-2">Yeniliklərdən İlk Siz Xəbərdar Olun</h3>
+                    <p className="text-sm text-slate-400 mb-6">Həftəlik təhsil məsləhətləri və xəbərləri birbaşa e-poçtunuza göndəriləcək.</p>
+                    <div className="w-full max-w-sm flex flex-col gap-3">
+                        <input className="bg-white/10 border-white/20 rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-primary outline-none" placeholder="E-poçt ünvanınız" type="email" />
+                        <button className="bg-primary text-background-dark font-bold py-3 rounded-lg text-sm hover:brightness-110 transition-all">İndi Abunə Ol</button>
+                    </div>
+                </div>
             </div>
         </div>
     )

@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import Logo from '@/public/assets/logoingla.png'
+
 const Navbar = () => {
     const [isScrolled, setIsScrolled] = useState<boolean>(false);
     const [mobileMenuOpen, setMobileMenuOpen] = useState<boolean>(false);
@@ -23,136 +24,116 @@ const Navbar = () => {
 
     // Fix body scroll when mobile menu is open
     useEffect(() => {
-        // Store original body overflow style
         const originalStyle = window.getComputedStyle(document.body).overflow;
-
         if (mobileMenuOpen) {
-            // Prevent scrolling on the body when menu is open
             document.body.style.overflow = 'hidden';
         } else {
-            // Re-enable scrolling when menu is closed
             document.body.style.overflow = originalStyle;
         }
-
         return () => {
-            // Cleanup on unmount
             document.body.style.overflow = originalStyle;
         };
     }, [mobileMenuOpen]);
 
-    // Toggle mobile menu
-    const toggleMobileMenu = () => {
-        setMobileMenuOpen(!mobileMenuOpen);
-    };
+    const toggleMobileMenu = () => setMobileMenuOpen(!mobileMenuOpen);
+    const closeMenu = () => setMobileMenuOpen(false);
 
-    // Close mobile menu
-    const closeMenu = () => {
-        setMobileMenuOpen(false);
-    };
-
-    // Close mobile menu on navigation
-    const handleNavigation = () => {
-        closeMenu();
-    };
-
-    // Close mobile menu on escape key press
     useEffect(() => {
         const handleEscKeypress = (event: KeyboardEvent) => {
             if (event.key === 'Escape' && mobileMenuOpen) {
                 closeMenu();
             }
         };
-
         window.addEventListener('keydown', handleEscKeypress);
-        return () => {
-            window.removeEventListener('keydown', handleEscKeypress);
-        };
+        return () => window.removeEventListener('keydown', handleEscKeypress);
     }, [mobileMenuOpen]);
 
-    // Close menu on route change
     useEffect(() => {
-        // This will close the menu when navigation occurs
-        const handleRouteChange = () => {
-            closeMenu();
-        };
-
-        // Add event listener for route changes if you're using Next.js router events
+        const handleRouteChange = () => closeMenu();
         window.addEventListener('popstate', handleRouteChange);
-
-        return () => {
-            window.removeEventListener('popstate', handleRouteChange);
-        };
+        return () => window.removeEventListener('popstate', handleRouteChange);
     }, []);
 
     return (
         <>
-            {/* Fixed header that changes style on scroll */}
             <header
-                className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 ${isScrolled
-                    ? 'bg-black/80 backdrop-blur-md py-4 shadow-md'
-                    : 'bg-gradient-to-b from-black/70 to-transparent py-6'
+                className={`flex items-center justify-between whitespace-nowrap border-b border-slate-200 dark:border-slate-800 px-6 md:px-20 py-4 transition-all duration-300 sticky top-0 z-50 ${isScrolled
+                    ? 'bg-white/90 dark:bg-slate-900/90 backdrop-blur-md shadow-md'
+                    : 'bg-white/80 dark:bg-slate-900/50 backdrop-blur-md'
                     }`}
             >
-                <div className="container mx-auto px-4 flex justify-between items-center">
-                    {/* Logo - Added onClick to close menu when logo is clicked */}
+                <div className="flex items-center gap-8">
                     <Link
                         href="/"
-                        className="text-white font-bold text-3xl tracking-wider"
-                        onClick={handleNavigation}
+                        className="flex items-center gap-3"
+                        onClick={closeMenu}
                     >
-                        <Image className='w-24 h-auto' src={Logo} alt='Logo' />
+                        <div className="flex items-center justify-center bg-primary rounded p-1">
+                            <Image className='w-8 h-auto object-contain' src={Logo} alt='Ingla School Logo' />
+                        </div>
+                        <h2 className="text-lg font-bold leading-tight tracking-tight text-slate-900 dark:text-slate-100">Ingla School</h2>
                     </Link>
 
-                    {/* Desktop Navigation */}
-                    <nav className="hidden md:flex items-center space-x-8">
+                    <nav className="hidden lg:flex items-center gap-8">
                         <NavLinks />
-
-
                     </nav>
+                </div>
 
-                    {/* Mobile Menu Button */}
+                <div className="flex flex-1 justify-end gap-4 items-center">
+                    <label className="hidden md:flex flex-col min-w-40 h-10 max-w-64">
+                        <div className="flex w-full flex-1 items-stretch rounded-lg h-full overflow-hidden border border-slate-200 dark:border-slate-700">
+                            <div className="text-slate-500 bg-slate-50 dark:bg-slate-800 flex items-center justify-center px-3">
+                                <span className="material-symbols-outlined text-[20px]">search</span>
+                            </div>
+                            <input className="w-full border-none bg-slate-50 dark:bg-slate-800 focus:ring-0 text-sm placeholder:text-slate-400 text-slate-900 dark:text-slate-100 outline-none" placeholder="Axtarış..." />
+                        </div>
+                    </label>
+
+                    <button className="hidden sm:flex items-center justify-center rounded-lg h-10 px-6 bg-primary text-slate-900 text-sm font-bold hover:brightness-105 transition-all">
+                        Bizimlə Əlaqə
+                    </button>
+
                     <button
                         onClick={toggleMobileMenu}
-                        className="md:hidden text-white p-2 focus:outline-none focus:ring-2 focus:ring-yellow-500 rounded-md"
+                        className="lg:hidden flex items-center justify-center text-slate-900 dark:text-slate-100 p-2 focus:outline-none rounded-md"
                         aria-label={mobileMenuOpen ? "Close mobile menu" : "Open mobile menu"}
                         aria-expanded={mobileMenuOpen}
                     >
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            strokeWidth={1.5}
-                            stroke="currentColor"
-                            className="w-6 h-6"
-                            aria-hidden="true"
-                        >
-                            {mobileMenuOpen ? (
-                                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-                            ) : (
-                                <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
-                            )}
-                        </svg>
+                        <span className="material-symbols-outlined text-2xl">
+                            {mobileMenuOpen ? 'close' : 'menu'}
+                        </span>
                     </button>
                 </div>
             </header>
 
-            {/* Mobile Navigation Overlay */}
-            {/* Using conditional rendering for complete accessibility */}
             {mobileMenuOpen && (
                 <div
-                    className="fixed inset-0 bg-black/95 backdrop-blur-sm z-40 transition-all duration-300"
+                    className="fixed inset-0 bg-white/95 dark:bg-slate-950/95 backdrop-blur-sm z-40 transition-all duration-300 lg:hidden pt-20"
                     aria-hidden="false"
                     role="dialog"
                     aria-modal="true"
                     aria-labelledby="mobile-menu-heading"
                 >
-                    <div className="h-full flex flex-col justify-center items-center p-6">
+                    <div className="h-full flex flex-col items-center p-6 overflow-y-auto">
                         <h2 id="mobile-menu-heading" className="sr-only">Mobile navigation menu</h2>
 
-                        <nav className="flex flex-col items-center space-y-8">
+                        <nav className="flex flex-col items-center space-y-8 w-full">
                             <NavLinks isMobile={true} closeMenu={closeMenu} />
 
+                            <div className="w-full h-px bg-slate-200 dark:bg-slate-800 my-4"></div>
 
+                            <label className="flex w-full max-w-sm flex-col h-12">
+                                <div className="flex w-full flex-1 items-stretch rounded-lg h-full overflow-hidden border border-slate-200 dark:border-slate-700">
+                                    <div className="text-slate-500 bg-slate-50 dark:bg-slate-800 flex items-center justify-center px-3">
+                                        <span className="material-symbols-outlined text-[20px]">search</span>
+                                    </div>
+                                    <input className="w-full border-none bg-slate-50 dark:bg-slate-800 focus:ring-0 text-sm placeholder:text-slate-400 text-slate-900 dark:text-slate-100 outline-none" placeholder="Axtarış..." />
+                                </div>
+                            </label>
+
+                            <button className="flex w-full max-w-sm items-center justify-center rounded-lg h-12 px-6 bg-primary text-slate-900 text-base font-bold hover:brightness-105 transition-all">
+                                Bizimlə Əlaqə
+                            </button>
                         </nav>
                     </div>
                 </div>
@@ -161,14 +142,13 @@ const Navbar = () => {
     );
 };
 
-// Shared navigation links component
 interface NavLinksProps {
     isMobile?: boolean;
     closeMenu?: () => void;
 }
 
 const NavLinks = ({ isMobile = false, closeMenu = () => { } }: NavLinksProps) => {
-    const linkClasses = `text-white uppercase tracking-wider font-medium hover:text-yellow-500 transition-colors ${isMobile ? 'text-3xl' : 'text-sm'
+    const linkClasses = `text-slate-700 dark:text-slate-300 font-medium hover:text-primary transition-colors ${isMobile ? 'text-2xl font-bold' : 'text-sm'
         }`;
 
     const links = [
@@ -177,6 +157,7 @@ const NavLinks = ({ isMobile = false, closeMenu = () => { } }: NavLinksProps) =>
         { name: 'Preschool', path: '/preschool' },
         { name: 'Təlim Mərkəzi', path: '/training-center' },
         { name: 'Haqqımızda', path: '/about' },
+        { name: 'Blog', path: '/blog' },
     ];
 
     return (
