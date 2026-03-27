@@ -68,8 +68,8 @@ const Navbar = () => {
                         className="flex items-center gap-3"
                         onClick={closeMenu}
                     >
-                        <div className="flex items-center justify-center bg-primary rounded p-1">
-                            <Image className='w-8 h-auto object-contain' src={Logo} alt='Ingla School Logo' />
+                        <div>
+                            <Image className='h-12 w-auto object-contain' src={Logo} alt='Ingla School Logo' />
                         </div>
                         <h2 className="text-lg font-bold leading-tight tracking-tight text-slate-900 dark:text-slate-100">Ingla School</h2>
                     </Link>

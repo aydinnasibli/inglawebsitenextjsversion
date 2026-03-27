@@ -8,6 +8,7 @@ import { urlFor } from "@/sanity/lib/image";
 import { HOMEPAGE_CAROUSEL_QUERY, FAQ_QUERY, TESTIMONIALS_QUERY } from "@/sanity/lib/queries";
 import { SanityCarouselItem, CarouselItem } from "@/types/carousel";
 import { SanityFAQItem, SanityTestimonialItem, FAQItem, TestimonialItem } from "@/types/faq-testimonials";
+import Carousel from "./Carousel";
 
 interface HomeClientProps {
     initialCarouselData?: SanityCarouselItem[];
@@ -175,46 +176,26 @@ export default function HomeClient({ initialCarouselData, initialFaqData, initia
                 </div>
             </div>
 
-            {/* Categories */}
-            <section className="max-w-7xl mx-auto px-6 py-16">
-                <div className="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-4">
-                    <div>
-                        <h2 className="text-3xl font-bold tracking-tight mb-2 text-slate-900 dark:text-white">Tədris İstiqamətlərimiz</h2>
-                        <p className="text-slate-500 dark:text-slate-400">Gələcəyiniz üçün ən uyğun proqramı seçin.</p>
+            {/* CMS Carousel Replaces Static Tədris İstiqamətlərimiz */}
+            <section className="py-24">
+                <div className="container mx-auto px-4">
+                    <div className="text-center mb-12">
+                        <h2 className="text-4xl font-bold mb-4 text-slate-900 dark:text-white">
+                            Bizim <span className="text-primary">Təkliflərimiz</span>
+                        </h2>
+                        <p className="text-slate-500 dark:text-slate-400 text-lg max-w-2xl mx-auto">
+                            Ingla School-da təhsil təcrübənizi daha da zənginləşdirən proqramları kəşf edin
+                        </p>
                     </div>
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    {/* Course Card 1 */}
-                    <div onClick={() => router.push('/services')} className="cursor-pointer group bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 overflow-hidden hover:shadow-xl transition-all duration-300">
-                        <div className="h-48 overflow-hidden relative">
-                            <div className="absolute inset-0 bg-center bg-cover transition-transform duration-500 group-hover:scale-110" style={{ backgroundImage: "url('/assets/bg.webp')" }}></div>
-                        </div>
-                        <div className="p-6 flex flex-col gap-4">
-                            <h3 className="text-xl font-bold text-slate-900 dark:text-white group-hover:text-primary transition-colors">Ümumi İngilis Dili</h3>
-                            <p className="text-sm text-slate-500 line-clamp-2">Müasir metodika və peşəkar müəllimlərlə ingilis dilini mükəmməl öyrənin.</p>
-                        </div>
-                    </div>
-                    {/* Course Card 2 */}
-                    <div onClick={() => router.push('/studyabroad')} className="cursor-pointer group bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 overflow-hidden hover:shadow-xl transition-all duration-300">
-                        <div className="h-48 overflow-hidden relative">
-                            <div className="absolute inset-0 bg-center bg-cover transition-transform duration-500 group-hover:scale-110" style={{ backgroundImage: "url('/assets/bg.webp')" }}></div>
-                            <div className="absolute top-4 left-4 bg-primary text-slate-900 text-[10px] font-black px-2 py-1 rounded uppercase">Xaricdə</div>
-                        </div>
-                        <div className="p-6 flex flex-col gap-4">
-                            <h3 className="text-xl font-bold text-slate-900 dark:text-white group-hover:text-primary transition-colors">Xaricdə Təhsil</h3>
-                            <p className="text-sm text-slate-500 line-clamp-2">Dünyanın nüfuzlu universitetlərində təhsil almaq xəyalınızı bizimlə reallaşdırın.</p>
-                        </div>
-                    </div>
-                    {/* Course Card 3 */}
-                    <div onClick={() => router.push('/preschool')} className="cursor-pointer group bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 overflow-hidden hover:shadow-xl transition-all duration-300">
-                        <div className="h-48 overflow-hidden relative">
-                            <div className="absolute inset-0 bg-center bg-cover transition-transform duration-500 group-hover:scale-110" style={{ backgroundImage: "url('/assets/bg.webp')" }}></div>
-                        </div>
-                        <div className="p-6 flex flex-col gap-4">
-                            <h3 className="text-xl font-bold text-slate-900 dark:text-white group-hover:text-primary transition-colors">Preschool</h3>
-                            <p className="text-sm text-slate-500 line-clamp-2">Uşaqlarınızın parlaq gələcəyi üçün ən düzgün məktəbəqədər hazırlıq.</p>
-                        </div>
-                    </div>
+
+                    <Carousel
+                        items={carouselItems}
+                        autoPlay={true}
+                        autoPlayInterval={6000}
+                        showControls={true}
+                        showIndicators={true}
+                        className="shadow-2xl shadow-primary/10 border border-slate-200 dark:border-slate-800"
+                    />
                 </div>
             </section>
 
