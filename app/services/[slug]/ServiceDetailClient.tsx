@@ -1,24 +1,8 @@
 "use client";
 
-import { useRef, useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { motion, useScroll, useTransform } from "framer-motion";
-import { Button } from "@/components/ui/button";
-import {
-    ChevronRight,
-    Clock,
-    Users,
-    Phone,
-    Mail,
-    MessageCircle,
-    CheckCircle,
-    ArrowLeft,
-    Calendar,
-    DollarSign,
-    Target,
-    BookOpen
-} from "lucide-react";
 import { PortableText, PortableTextComponents } from '@portabletext/react';
 import { client } from "@/sanity/lib/client";
 import { urlFor } from "@/sanity/lib/image";
@@ -31,17 +15,61 @@ interface ServiceDetailClientProps {
     initialServiceData?: SanityServiceItem;
 }
 
-// Type definitions for Portable Text components
-interface PortableTextImageValue {
-    asset: {
-        _ref: string;
-        _type: 'reference';
-    };
-    alt?: string;
-    caption?: string;
-    _type: 'image';
-}
+// Portable text components configuration
+const portableTextComponents: PortableTextComponents = {
+    types: {
+        image: ({ value }) => {
+            if (!value?.asset?._ref) return null;
+            return (
+                <div className="relative w-full h-[400px] my-8 rounded-2xl overflow-hidden shadow-lg border border-slate-200 dark:border-slate-800">
+                    <Image
+                        src={urlFor(value).url()}
+                        alt={value.alt || 'Service Image'}
+                        fill
+                        className="object-cover"
+                    />
+                    {value.caption && (
+                        <div className="absolute bottom-0 left-0 right-0 bg-black/60 p-4 backdrop-blur-sm">
+                            <p className="text-sm text-white text-center">
+                                {value.caption}
+                            </p>
+                        </div>
+                    )}
+                </div>
+            );
+        },
+    },
+    block: {
+        h1: ({ children }) => <h1 className="text-4xl font-bold mt-12 mb-6 text-slate-900 dark:text-white leading-tight">{children}</h1>,
+        h2: ({ children }) => <h2 className="text-3xl font-bold mt-10 mb-5 text-slate-900 dark:text-white leading-tight">{children}</h2>,
+        h3: ({ children }) => <h3 className="text-2xl font-bold mt-8 mb-4 text-slate-900 dark:text-white leading-tight">{children}</h3>,
+        h4: ({ children }) => <h4 className="text-xl font-bold mt-6 mb-3 text-slate-900 dark:text-white leading-tight">{children}</h4>,
+        normal: ({ children }) => <p className="text-slate-600 dark:text-slate-400 mb-6 leading-relaxed text-lg">{children}</p>,
+        blockquote: ({ children }) => (
+            <blockquote className="border-l-4 border-primary pl-6 my-8 italic text-slate-700 dark:text-slate-300 bg-primary/5 py-4 pr-4 rounded-r-lg">
+                {children}
+            </blockquote>
+        ),
+    },
+    list: {
+        bullet: ({ children }) => <ul className="list-disc pl-6 mb-6 space-y-2 text-slate-600 dark:text-slate-400 text-lg marker:text-primary">{children}</ul>,
+        number: ({ children }) => <ol className="list-decimal pl-6 mb-6 space-y-2 text-slate-600 dark:text-slate-400 text-lg marker:text-primary font-bold">{children}</ol>,
+    },
+    marks: {
+        strong: ({ children }) => <strong className="font-bold text-slate-900 dark:text-white">{children}</strong>,
+        em: ({ children }) => <em className="italic">{children}</em>,
+        link: ({ children, value }) => {
+            const rel = !value.href.startsWith('/') ? 'noreferrer noopener' : undefined;
+            return (
+                <a href={value.href} rel={rel} className="text-primary hover:underline font-medium transition-colors">
+                    {children}
+                </a>
+            );
+        },
+    },
+};
 
+// Transform Sanity data to our app's interface
 const transformSanityData = (sanityItem: SanityServiceItem): ServiceItem => {
     return {
         id: sanityItem._id,
@@ -49,89 +77,32 @@ const transformSanityData = (sanityItem: SanityServiceItem): ServiceItem => {
         slug: sanityItem.slug?.current || '',
         shortDescription: sanityItem.shortDescription,
         fullDescription: sanityItem.fullDescription,
-        featuredImage: sanityItem.featuredImage ? urlFor(sanityItem.featuredImage).width(1200).height(600).quality(85).url() : '/assets/bg.webp',
+        featuredImage: sanityItem.featuredImage ? urlFor(sanityItem.featuredImage).width(1200).height(800).quality(90).url() : '/assets/bg.webp',
         gallery: sanityItem.gallery?.map(img => ({
             url: urlFor(img.asset).width(800).height(600).quality(85).url(),
             alt: img.alt,
             caption: img.caption,
         })),
-        keyFeatures: sanityItem.keyFeatures,
-        targetAudience: sanityItem.targetAudience,
-        duration: sanityItem.duration,
-        priceRange: sanityItem.priceRange,
-        contactInfo: sanityItem.contactInfo,
-        scheduleInfo: sanityItem.scheduleInfo,
-        requirements: sanityItem.requirements,
-        order: sanityItem.order,
-        isFeatured: sanityItem.isFeatured,
-        seoTitle: sanityItem.seoTitle,
-        seoDescription: sanityItem.seoDescription,
+        order: sanityItem.order || 0,
+        isFeatured: sanityItem.isFeatured || false,
+        duration: sanityItem.duration || 'Göstərilməyib',
+        priceRange: sanityItem.priceRange || 'Müraciət edin',
+        scheduleInfo: sanityItem.scheduleInfo || 'Müraciət edin',
     };
 };
-
-const portableTextComponents: PortableTextComponents = {
-    types: {
-        image: ({ value }: { value: PortableTextImageValue }) => (
-            <div className="my-8">
-                <Image
-                    src={urlFor(value).width(800).height(400).quality(85).url()}
-                    alt={value.alt || ''}
-                    width={800}
-                    height={400}
-                    className="rounded-lg shadow-lg"
-                />
-                {value.caption && (
-                    <p className="text-sm text-gray-400 text-center mt-2">{value.caption}</p>
-                )}
-            </div>
-        ),
-    },
-    block: {
-        h2: ({ children }) => (
-            <h2 className="text-3xl font-bold mt-12 mb-6 text-yellow-500">{children}</h2>
-        ),
-        h3: ({ children }) => (
-            <h3 className="text-2xl font-bold mt-8 mb-4 text-white">{children}</h3>
-        ),
-        normal: ({ children }) => (
-            <p className="text-gray-300 leading-relaxed mb-4">{children}</p>
-        ),
-    },
-    marks: {
-        strong: ({ children }) => (
-            <strong className="font-bold text-white">{children}</strong>
-        ),
-        em: ({ children }) => (
-            <em className="italic text-yellow-300">{children}</em>
-        ),
-    },
-};
-
 
 export default function ServiceDetailClient({ slug, initialServiceData }: ServiceDetailClientProps) {
     const [service, setService] = useState<ServiceItem | null>(null);
     const [isLoading, setIsLoading] = useState(!initialServiceData);
-    const [isRegistrationModalOpen, setIsRegistrationModalOpen] = useState(false);
+    const [error, setError] = useState<string | null>(null);
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
-    const containerRef = useRef<HTMLDivElement>(null);
-    const heroRef = useRef<HTMLDivElement>(null);
-
-    // Parallax effects
-    const { scrollYProgress } = useScroll({
-        target: containerRef,
-        offset: ["start start", "end end"],
-    });
-
-    const heroY = useTransform(scrollYProgress, [0, 0.3], [0, -100]);
-    const opacity = useTransform(scrollYProgress, [0, 0.3], [1, 0.3]);
-
-    // Load service data
     useEffect(() => {
         let isMounted = true;
 
-        const loadServiceData = async () => {
+        const loadService = async () => {
             try {
-                if (initialServiceData) {
+                if (initialServiceData && initialServiceData.title) {
                     if (isMounted) {
                         setService(transformSanityData(initialServiceData));
                         setIsLoading(false);
@@ -139,390 +110,212 @@ export default function ServiceDetailClient({ slug, initialServiceData }: Servic
                     return;
                 }
 
-                const controller = new AbortController();
-                const timeoutId = setTimeout(() => controller.abort(), 10000);
-
-                const data = await client.fetch<SanityServiceItem>(
-                    SERVICE_BY_SLUG_QUERY,
-                    { slug },
-                    {
-                        signal: controller.signal,
-                        cache: 'force-cache'
-                    }
-                );
-
-                clearTimeout(timeoutId);
+                const data = await client.fetch<SanityServiceItem>(SERVICE_BY_SLUG_QUERY, { slug });
 
                 if (isMounted) {
-                    if (data) {
+                    if (data && data.title) {
                         setService(transformSanityData(data));
+                    } else {
+                        setError("Xidmət tapılmadı");
                     }
                     setIsLoading(false);
                 }
-            } catch (error) {
-                console.error('Error fetching service data from Sanity:', error);
+            } catch (err) {
+                console.error("Error fetching service data:", err);
                 if (isMounted) {
+                    setError("Məlumatları yükləyərkən xəta baş verdi");
                     setIsLoading(false);
                 }
             }
         };
 
-        loadServiceData();
+        loadService();
 
         return () => {
             isMounted = false;
         };
-    }, [slug, initialServiceData]);
-
-    const sectionVariants = {
-        hidden: { opacity: 0, y: 50 },
-        visible: {
-            opacity: 1,
-            y: 0,
-            transition: {
-                duration: 0.8,
-            },
-        },
-    };
+    }, [initialServiceData, slug]);
 
     if (isLoading) {
         return (
-            <div className="min-h-screen bg-gray-900 flex items-center justify-center">
-                <div className="text-center">
-                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-yellow-500 mx-auto mb-4"></div>
-                    <p className="text-gray-300">Xidmət məlumatları yüklənir...</p>
-                </div>
+            <div className="flex-1 min-h-screen bg-background-light dark:bg-background-dark flex justify-center items-center">
+                <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-primary"></div>
             </div>
         );
     }
 
-    if (!service) {
+    if (error || !service) {
         return (
-            <div className="min-h-screen bg-gray-900 flex items-center justify-center">
-                <div className="text-center">
-                    <h1 className="text-4xl font-bold text-white mb-4">Xidmət Tapılmadı</h1>
-                    <p className="text-gray-300 mb-8">Axtardığınız xidmət mövcud deyil və ya silinmişdir.</p>
-                    <Link href="/services">
-                        <Button className="bg-yellow-500 hover:bg-yellow-600 text-black">
-                            <ArrowLeft className="w-4 h-4 mr-2" />
-                            Xidmətlərə qayıt
-                        </Button>
-                    </Link>
-                </div>
+            <div className="flex-1 min-h-screen bg-background-light dark:bg-background-dark flex flex-col justify-center items-center text-center px-4">
+                <span className="material-symbols-outlined text-6xl text-slate-400 mb-6">error_outline</span>
+                <h1 className="text-3xl font-bold text-slate-900 dark:text-white mb-4">
+                    {error || "Səhifə Tapılmadı"}
+                </h1>
+                <p className="text-slate-600 dark:text-slate-400 mb-8">
+                    Axtardığınız xidmət mövcud deyil və ya silinib.
+                </p>
+                <Link href="/services" className="bg-primary text-background-dark px-8 py-3 rounded-lg font-bold hover:brightness-105 transition-all">
+                    Xidmətlərə Qayıt
+                </Link>
             </div>
         );
     }
 
     return (
-        <div ref={containerRef} className="relative min-h-screen text-white">
+        <div className="flex-1 bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 min-h-screen pb-20">
             {/* Hero Section */}
-            <motion.div
-                ref={heroRef}
-                style={{ y: heroY, opacity }}
-                className="relative h-96 flex items-center justify-center overflow-hidden"
-            >
-                <div className="absolute inset-0 z-0">
-                    <div className="absolute inset-0 bg-black/60 z-10" />
-                    <Image
-                        src={service.featuredImage}
-                        alt={service.title}
-                        fill
-                        priority
-                        quality={100}
-                        className="object-cover"
-                    />
-                </div>
+            <div className="relative w-full h-[50vh] md:h-[60vh] bg-slate-900">
+                <Image
+                    src={service.featuredImage}
+                    alt={service.title}
+                    fill
+                    priority
+                    className="object-cover opacity-60 mix-blend-overlay"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-background-dark via-background-dark/50 to-transparent"></div>
 
-                <div className="container mx-auto px-4 relative z-20">
-                    <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.8 }}
-                        className="text-center"
-                    >
-                        {/* Breadcrumb */}
-                        <div className="flex items-center justify-center mb-6">
-                            <Link
-                                href="/services"
-                                className="text-gray-300 hover:text-yellow-500 transition-colors flex items-center"
-                            >
-                                <ArrowLeft className="w-4 h-4 mr-2" />
-                                Tədris İstiqamətləri
-                            </Link>
-                            <ChevronRight className="w-4 h-4 mx-2 text-gray-500" />
-                            <span className="text-yellow-500">{service.title}</span>
+                <div className="absolute inset-0 flex items-end">
+                    <div className="max-w-[1200px] mx-auto w-full px-6 md:px-10 pb-16">
+                        <Link
+                            href="/services"
+                            className="inline-flex items-center text-sm font-medium text-slate-300 hover:text-primary transition-colors mb-6 group"
+                        >
+                            <span className="material-symbols-outlined mr-2 group-hover:-translate-x-1 transition-transform">arrow_back</span>
+                            Bütün Xidmətlər
+                        </Link>
+
+                        <div className="flex items-center gap-3 mb-4">
+                            {service.isFeatured && (
+                                <span className="px-3 py-1 bg-white/10 text-white text-xs font-bold rounded-full flex items-center gap-1">
+                                    <span className="material-symbols-outlined text-[14px]">star</span> Populyar
+                                </span>
+                            )}
                         </div>
 
-                        <h1 className="text-5xl font-bold mb-6 text-white">
+                        <h1 className="text-4xl md:text-5xl lg:text-6xl font-black text-white leading-tight tracking-tight max-w-4xl">
                             {service.title}
                         </h1>
-                        <p className="text-xl mb-8 max-w-3xl mx-auto text-gray-200">
+                    </div>
+                </div>
+            </div>
+
+            {/* Content Section */}
+            <div className="max-w-[1200px] mx-auto px-6 md:px-10 mt-12 grid grid-cols-1 lg:grid-cols-3 gap-12 items-start">
+
+                {/* Main Content */}
+                <div className="lg:col-span-2">
+                    <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-8 md:p-10 shadow-sm mb-10">
+                        <h2 className="text-2xl font-bold mb-6 flex items-center gap-2">
+                            <span className="material-symbols-outlined text-primary">info</span>
+                            Xidmət Haqqında
+                        </h2>
+                        <p className="text-lg text-slate-600 dark:text-slate-400 leading-relaxed mb-8 font-medium">
                             {service.shortDescription}
                         </p>
-                    </motion.div>
-                </div>
-            </motion.div>
 
-            {/* Service Info Cards */}
-            <motion.section
-                initial="hidden"
-                whileInView="visible"
-                viewport={{ once: true }}
-                variants={sectionVariants}
-                className="py-16 -mt-16 relative z-10"
-            >
-                <div className="container mx-auto px-4">
-                    <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-                        {service.duration && (
-                            <div className="bg-gray-900/80 border border-gray-700 rounded-lg p-6 text-center backdrop-blur-sm">
-                                <Clock className="w-8 h-8 text-yellow-500 mx-auto mb-3" />
-                                <h3 className="font-semibold text-white mb-2">Müddət</h3>
-                                <p className="text-gray-300">{service.duration}</p>
-                            </div>
-                        )}
-                        {service.priceRange && (
-                            <div className="bg-gray-900/80 border border-gray-700 rounded-lg p-6 text-center backdrop-blur-sm">
-                                <DollarSign className="w-8 h-8 text-yellow-500 mx-auto mb-3" />
-                                <h3 className="font-semibold text-white mb-2">Qiymət</h3>
-                                <p className="text-gray-300">{service.priceRange}</p>
-                            </div>
-                        )}
-                        {service.targetAudience && service.targetAudience.length > 0 && (
-                            <div className="bg-gray-900/80 border border-gray-700 rounded-lg p-6 text-center backdrop-blur-sm">
-                                <Users className="w-8 h-8 text-yellow-500 mx-auto mb-3" />
-                                <h3 className="font-semibold text-white mb-2">Hədəf Qrup</h3>
-                                <p className="text-gray-300">{service.targetAudience[0]}</p>
-                            </div>
-                        )}
-                        {service.scheduleInfo && (
-                            <div className="bg-gray-900/80 border border-gray-700 rounded-lg p-6 text-center backdrop-blur-sm">
-                                <Calendar className="w-8 h-8 text-yellow-500 mx-auto mb-3" />
-                                <h3 className="font-semibold text-white mb-2">Cədvəl</h3>
-                                <p className="text-gray-300 text-sm">{service.scheduleInfo}</p>
-                            </div>
-                        )}
+                        <div className="w-full h-px bg-slate-100 dark:bg-slate-800 my-8"></div>
+
+                        <div className="prose prose-lg dark:prose-invert prose-slate max-w-none prose-headings:font-bold prose-a:text-primary hover:prose-a:text-yellow-600 prose-img:rounded-xl">
+                            {service.fullDescription ? (
+                                <PortableText
+                                    value={service.fullDescription}
+                                    components={portableTextComponents}
+                                />
+                            ) : (
+                                <p>Bu xidmət barədə ətraflı məlumat tezliklə əlavə olunacaq.</p>
+                            )}
+                        </div>
                     </div>
-                </div>
-            </motion.section>
 
-            {/* Main Content */}
-            <motion.section
-                initial="hidden"
-                whileInView="visible"
-                viewport={{ once: true }}
-                variants={sectionVariants}
-                className="py-24"
-            >
-                <div className="container mx-auto px-4">
-                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
-                        {/* Main Content */}
-                        <div className="lg:col-span-2">
-                            {/* Full Description */}
-                            {service.fullDescription && (
-                                <div className="mb-12">
-                                    <h2 className="text-3xl font-bold mb-6 text-yellow-500">
-                                        <BookOpen className="w-8 h-8 inline-block mr-3" />
-                                        Ətraflı Məlumat
-                                    </h2>
-                                    <div className="prose prose-invert max-w-none">
-                                        <PortableText
-                                            value={service.fullDescription}
-                                            components={portableTextComponents}
+                    {/* Gallery if exists */}
+                    {service.gallery && service.gallery.length > 0 && (
+                        <div className="mb-10">
+                            <h2 className="text-2xl font-bold mb-6">Qalereya</h2>
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                {service.gallery.map((img, idx) => (
+                                    <div key={idx} className="relative aspect-video rounded-xl overflow-hidden group border border-slate-200 dark:border-slate-800">
+                                        <Image
+                                            src={img.url}
+                                            alt={img.alt || `Gallery image ${idx}`}
+                                            fill
+                                            className="object-cover group-hover:scale-105 transition-transform duration-500"
                                         />
                                     </div>
-                                </div>
-                            )}
-
-                            {/* Key Features */}
-                            {service.keyFeatures && service.keyFeatures.length > 0 && (
-                                <div className="mb-12">
-                                    <h2 className="text-3xl font-bold mb-6 text-yellow-500">
-                                        <Target className="w-8 h-8 inline-block mr-3" />
-                                        Əsas Xüsusiyyətlər
-                                    </h2>
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                        {service.keyFeatures.map((feature, index) => (
-                                            <motion.div
-                                                key={index}
-                                                initial={{ opacity: 0, x: -20 }}
-                                                whileInView={{ opacity: 1, x: 0 }}
-                                                transition={{ delay: 0.1 * index }}
-                                                viewport={{ once: true }}
-                                                className="bg-gray-900/50 border border-gray-800 rounded-lg p-6"
-                                            >
-                                                <div className="flex items-start">
-                                                    <CheckCircle className="w-6 h-6 text-yellow-500 mr-3 mt-1 flex-shrink-0" />
-                                                    <div>
-                                                        <h3 className="font-semibold text-white mb-2">{feature.feature}</h3>
-                                                        {feature.description && (
-                                                            <p className="text-gray-300 text-sm">{feature.description}</p>
-                                                        )}
-                                                    </div>
-                                                </div>
-                                            </motion.div>
-                                        ))}
-                                    </div>
-                                </div>
-                            )}
-
-                            {/* Requirements */}
-                            {service.requirements && service.requirements.length > 0 && (
-                                <div className="mb-12">
-                                    <h2 className="text-3xl font-bold mb-6 text-yellow-500">Tələblər</h2>
-                                    <div className="bg-gray-900/50 border border-gray-800 rounded-lg p-6">
-                                        <ul className="space-y-3">
-                                            {service.requirements.map((requirement, index) => (
-                                                <li key={index} className="flex items-start">
-                                                    <div className="h-2 w-2 rounded-full bg-yellow-500 mr-3 mt-2 flex-shrink-0"></div>
-                                                    <span className="text-gray-300">{requirement}</span>
-                                                </li>
-                                            ))}
-                                        </ul>
-                                    </div>
-                                </div>
-                            )}
-
-                            {/* Gallery */}
-                            {service.gallery && service.gallery.length > 0 && (
-                                <div className="mb-12">
-                                    <h2 className="text-3xl font-bold mb-6 text-yellow-500">Qalereya</h2>
-                                    <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                                        {service.gallery.map((image, index) => (
-                                            <motion.div
-                                                key={index}
-                                                initial={{ opacity: 0, scale: 0.8 }}
-                                                whileInView={{ opacity: 1, scale: 1 }}
-                                                transition={{ delay: 0.1 * index }}
-                                                viewport={{ once: true }}
-                                                className="relative h-32 rounded-lg overflow-hidden cursor-pointer hover:shadow-lg hover:shadow-yellow-900/20 transition-all duration-300"
-                                            >
-                                                <Image
-                                                    src={image.url}
-                                                    alt={image.alt || service.title}
-                                                    fill
-                                                    className="object-cover hover:scale-105 transition-transform duration-300"
-                                                />
-                                            </motion.div>
-                                        ))}
-                                    </div>
-                                </div>
-                            )}
-                        </div>
-
-                        {/* Sidebar */}
-                        <div className="lg:col-span-1">
-                            <div className="sticky top-8">
-                                {/* Contact Card */}
-                                <div className="bg-gray-900/50 border border-gray-800 rounded-lg p-6 mb-8">
-                                    <h3 className="text-xl font-bold mb-6 text-yellow-500">Əlaqə</h3>
-
-                                    {service.contactInfo ? (
-                                        <div className="space-y-4 mb-6">
-                                            {service.contactInfo.phone && (
-                                                <div className="flex items-center">
-                                                    <Phone className="w-5 h-5 text-yellow-500 mr-3" />
-                                                    <a
-                                                        href={`tel:${service.contactInfo.phone}`}
-                                                        className="text-gray-300 hover:text-yellow-500 transition-colors"
-                                                    >
-                                                        {service.contactInfo.phone}
-                                                    </a>
-                                                </div>
-                                            )}
-                                            {service.contactInfo.email && (
-                                                <div className="flex items-center">
-                                                    <Mail className="w-5 h-5 text-yellow-500 mr-3" />
-                                                    <a
-                                                        href={`mailto:${service.contactInfo.email}`}
-                                                        className="text-gray-300 hover:text-yellow-500 transition-colors"
-                                                    >
-                                                        {service.contactInfo.email}
-                                                    </a>
-                                                </div>
-                                            )}
-                                            {service.contactInfo.whatsapp && (
-                                                <div className="flex items-center">
-                                                    <MessageCircle className="w-5 h-5 text-yellow-500 mr-3" />
-                                                    <a
-                                                        href={`https://wa.me/${service.contactInfo.whatsapp}`}
-                                                        target="_blank"
-                                                        rel="noopener noreferrer"
-                                                        className="text-gray-300 hover:text-yellow-500 transition-colors"
-                                                    >
-                                                        WhatsApp
-                                                    </a>
-                                                </div>
-                                            )}
-                                        </div>
-                                    ) : (
-                                        <p className="text-gray-300 mb-6">
-                                            Bu xidmət haqqında daha ətraflı məlumat almaq üçün bizimlə əlaqə saxlayın.
-                                        </p>
-                                    )}
-
-                                    <div className="space-y-3">
-                                        <Button
-                                            className="w-full bg-yellow-500 hover:bg-yellow-600 text-black"
-                                            onClick={() => setIsRegistrationModalOpen(true)}
-                                        >
-                                            Qeydiyyat
-                                        </Button>
-
-                                    </div>
-                                </div>
-
-                                {/* Target Audience */}
-                                {service.targetAudience && service.targetAudience.length > 1 && (
-                                    <div className="bg-gray-900/50 border border-gray-800 rounded-lg p-6">
-                                        <h3 className="text-xl font-bold mb-4 text-yellow-500">Hədəf Qrup</h3>
-                                        <ul className="space-y-2">
-                                            {service.targetAudience.map((audience, index) => (
-                                                <li key={index} className="flex items-center">
-                                                    <Users className="w-4 h-4 text-yellow-500 mr-3" />
-                                                    <span className="text-gray-300">{audience}</span>
-                                                </li>
-                                            ))}
-                                        </ul>
-                                    </div>
-                                )}
+                                ))}
                             </div>
+                        </div>
+                    )}
+                </div>
+
+                {/* Sidebar */}
+                <div className="lg:col-span-1 lg:sticky lg:top-28 space-y-6">
+                    <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm">
+                        <h3 className="text-xl font-bold mb-6">Xidmət Detalları</h3>
+
+                        <ul className="space-y-4 mb-8">
+                            <li className="flex items-start gap-4">
+                                <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary flex-shrink-0">
+                                    <span className="material-symbols-outlined text-[20px]">schedule</span>
+                                </div>
+                                <div>
+                                    <p className="text-xs text-slate-500 uppercase font-bold tracking-wider mb-1">Müddət</p>
+                                    <p className="font-medium text-slate-900 dark:text-white">{service.duration}</p>
+                                </div>
+                            </li>
+                            <li className="flex items-start gap-4">
+                                <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary flex-shrink-0">
+                                    <span className="material-symbols-outlined text-[20px]">payments</span>
+                                </div>
+                                <div>
+                                    <p className="text-xs text-slate-500 uppercase font-bold tracking-wider mb-1">Qiymət</p>
+                                    <p className="font-medium text-slate-900 dark:text-white">{service.priceRange}</p>
+                                </div>
+                            </li>
+                            <li className="flex items-start gap-4">
+                                <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary flex-shrink-0">
+                                    <span className="material-symbols-outlined text-[20px]">calendar_month</span>
+                                </div>
+                                <div>
+                                    <p className="text-xs text-slate-500 uppercase font-bold tracking-wider mb-1">Qrafik</p>
+                                    <p className="font-medium text-slate-900 dark:text-white">{service.scheduleInfo}</p>
+                                </div>
+                            </li>
+                        </ul>
+
+                        <button
+                            onClick={() => setIsModalOpen(true)}
+                            className="w-full bg-primary text-background-dark py-4 rounded-xl font-bold text-lg hover:brightness-105 transition-all shadow-lg shadow-primary/20 flex justify-center items-center gap-2 cursor-pointer"
+                        >
+                            Qeydiyyatdan Keç
+                            <span className="material-symbols-outlined">arrow_forward</span>
+                        </button>
+                    </div>
+
+                    <div className="bg-slate-900 text-white rounded-2xl p-6 shadow-lg border border-slate-800 relative overflow-hidden">
+                        <div className="absolute -top-6 -right-6 w-24 h-24 bg-primary/20 rounded-full blur-2xl"></div>
+                        <h3 className="text-lg font-bold mb-2 relative z-10">Sualınız var?</h3>
+                        <p className="text-slate-400 text-sm mb-6 relative z-10">
+                            Proqramlarımızla bağlı hər hansı sualınız varsa, mütəxəssislərimiz sizə kömək etməyə hazırdır.
+                        </p>
+                        <div className="flex flex-col gap-3 relative z-10">
+                            <a href="tel:+994103107117" className="flex items-center gap-3 bg-white/10 hover:bg-white/20 p-3 rounded-lg transition-colors text-sm font-medium">
+                                <span className="material-symbols-outlined text-primary">call</span>
+                                +994 10 310 71 17
+                            </a>
+                            <a href="https://wa.me/994103107117" className="flex items-center gap-3 bg-[#25D366]/10 hover:bg-[#25D366]/20 text-[#25D366] p-3 rounded-lg transition-colors text-sm font-medium">
+                                <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M16.6 14c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1-.2.2-.6.8-.8 1-.1.2-.3.2-.5.1-.7-.3-1.4-.7-2-1.2-.5-.5-1-1.1-1.4-1.7-.1-.2 0-.4.1-.5.1-.1.2-.3.4-.4.1-.1.2-.3.2-.4.1-.2 0-.4 0-.5C10 9.5 9.4 8 9.3 7.8c-.2-.2-.4-.2-.6-.2h-.5c-.2 0-.5.1-.7.3-.6.6-.9 1.3-.9 2.1.1 1.3.8 2.5 1.6 3.4 1 1.1 2.2 2 3.5 2.7 1.3.7 2.8 1.2 4.2 1.2.9.1 1.9-.2 2.6-.8.4-.3.7-.7.9-1.2.1-.2.1-.4.1-.6 0-.1-.1-.1-.3-.2M12 20.3c-1.5 0-3-.4-4.2-1.1l-.3-.2-3.1.8.8-3-.2-.3c-.8-1.2-1.2-2.7-1.2-4.2 0-4.6 3.7-8.3 8.3-8.3 4.6 0 8.3 3.7 8.3 8.3S16.6 20.3 12 20.3M12 2C6.5 2 2 6.5 2 12c0 1.8.5 3.5 1.3 5L2 22l5.1-1.3C8.6 21.5 10.3 22 12 22c5.5 0 10-4.5 10-10S17.5 2 12 2z"/></svg>
+                                WhatsApp ilə yaz
+                            </a>
                         </div>
                     </div>
                 </div>
-            </motion.section>
+            </div>
 
-            {/* Related Services CTA */}
-            <motion.div
-                className="py-24 bg-gradient-to-r from-gray-900 to-gray-800 relative"
-                initial={{ opacity: 0 }}
-                whileInView={{ opacity: 1 }}
-                transition={{ duration: 1 }}
-                viewport={{ once: true }}
-            >
-                <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-yellow-500 to-transparent"></div>
-                <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-yellow-500 to-transparent"></div>
-
-                <div className="container mx-auto px-4 text-center">
-                    <h2 className="text-4xl font-bold mb-6">
-                        Digər <span className="text-yellow-500">xidmətlərimizi</span> kəşf edin
-                    </h2>
-                    <p className="text-xl mb-10 max-w-3xl mx-auto text-gray-200">
-                        Ingla School-da təqdim olunan bütün təhsil proqramlarına nəzər salın
-                    </p>
-                    <Link href="/services">
-                        <Button size="lg" className="bg-yellow-600 hover:bg-yellow-700 text-white shadow-lg shadow-yellow-900/20">
-                            <ArrowLeft className="w-5 h-5 mr-2" />
-                            Bütün Xidmətlər
-                        </Button>
-                    </Link>
-                </div>
-            </motion.div>
-
-            {/* Registration Modal */}
             <RegistrationModal
-                isOpen={isRegistrationModalOpen}
-                onClose={() => setIsRegistrationModalOpen(false)}
+                isOpen={isModalOpen}
+                onClose={() => setIsModalOpen(false)}
                 serviceTitle={service.title}
+
             />
         </div>
     );

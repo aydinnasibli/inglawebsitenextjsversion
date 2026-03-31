@@ -10,7 +10,7 @@ import { SanityPreschoolServiceItem, PreschoolServiceItem } from "@/types/presch
 
 const transformSanityData = (sanityItems: SanityPreschoolServiceItem[]): PreschoolServiceItem[] => {
     return sanityItems
-        .filter(item => item && item._id && item.title && item.shortDescription)
+        .filter(item => item && item._id && item.title)
         .map((item) => ({
             id: item._id,
             title: item.title,
