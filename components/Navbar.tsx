@@ -71,7 +71,7 @@ const Navbar = () => {
                         <div>
                             <Image className='h-12 w-auto object-contain' src={Logo} alt='Ingla School Logo' />
                         </div>
-                        <h2 className="text-lg font-bold leading-tight tracking-tight text-slate-900 dark:text-slate-100">Ingla School</h2>
+
                     </Link>
 
                     <nav className="hidden lg:flex items-center gap-8">

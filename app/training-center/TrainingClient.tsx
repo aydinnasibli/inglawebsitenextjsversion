@@ -1,17 +1,41 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { urlFor } from "@/sanity/lib/image";
 import { Training } from "@/types/training";
+import { client } from "@/sanity/lib/client";
+import { trainingQueries } from "@/sanity/lib/queries";
 
 interface TrainingClientProps {
     initialTrainings: Training[];
 }
 
 export default function TrainingClient({ initialTrainings }: TrainingClientProps) {
-    const [trainings] = useState<Training[]>(initialTrainings);
+    const [trainings, setTrainings] = useState<Training[]>(initialTrainings);
+
+    useEffect(() => {
+        let isMounted = true;
+        const fetchTrainings = async () => {
+            try {
+                if (!initialTrainings || initialTrainings.length === 0) {
+                    const data = await client.fetch<Training[]>(trainingQueries.all);
+                    if (isMounted && data) {
+                        setTrainings(data);
+                    }
+                }
+            } catch (err) {
+                console.error("Error fetching trainings directly in client:", err);
+            }
+        };
+
+        fetchTrainings();
+
+        return () => {
+            isMounted = false;
+        };
+    }, [initialTrainings]);
 
     return (
         <div className="flex-1 bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 w-full max-w-[1200px] mx-auto px-6 py-8">

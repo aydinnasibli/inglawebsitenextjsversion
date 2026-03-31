@@ -14,10 +14,15 @@ interface Props {
 }
 
 export async function generateStaticParams() {
-    const slugs = await client.fetch<string[]>(postSlugsQuery)
-    return slugs.map((slug) => ({
-        slug,
-    }))
+    try {
+        const slugs = await client.fetch<string[]>(postSlugsQuery)
+        return (slugs || []).map((slug) => ({
+            slug,
+        }))
+    } catch (e) {
+        console.error("Failed to generate static params for blog", e);
+        return [];
+    }
 }
 
 export async function generateMetadata(

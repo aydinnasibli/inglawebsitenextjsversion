@@ -14,7 +14,7 @@ interface ServicesPageProps {
 
 const transformSanityData = (sanityItems: SanityServiceItem[]): ServiceItem[] => {
     return sanityItems
-        .filter(item => item && item._id && item.title && item.shortDescription)
+        .filter(item => item && item._id && item.title)
         .map((item) => ({
             id: item._id,
             title: item.title,
