@@ -73,7 +73,7 @@ export default function Footer() {
                         </li>
                         <li className="flex justify-between items-center p-2 rounded bg-slate-50 dark:bg-slate-900/50">
                             <span>Həftəiçi:</span>
-                            <span className="text-primary font-medium">09:00 - 18:00</span>
+                            <span className="text-primary font-medium">09:00 - 21:00</span>
                         </li>
                         <li className="flex justify-between items-center p-2 rounded bg-slate-50 dark:bg-slate-900/50">
                             <span>Bazar:</span>
