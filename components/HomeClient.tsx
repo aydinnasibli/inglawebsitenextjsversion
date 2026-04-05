@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { client } from "@/sanity/lib/client";
+import { urlFor } from "@/sanity/lib/image";
 import { FAQ_QUERY, TESTIMONIALS_QUERY, HOMEPAGE_BENTO_QUERY } from "@/sanity/lib/queries";
 import { SanityFAQItem, SanityTestimonialItem, FAQItem, TestimonialItem } from "@/types/faq-testimonials";
 import BentoBox, { BentoItem } from "@/components/BentoBox";
@@ -114,24 +115,26 @@ export default function HomeClient({ initialBentoData, initialFaqData, initialTe
                                 ))}
                             </div>
 
-                            {/* Program pills */}
-                            <div className="flex flex-col gap-2">
-                                <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">Proqramlarımız</p>
-                                <div className="flex flex-wrap gap-2">
+                            {/* Main program links */}
+                            <div className="flex flex-col gap-3">
+                                <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">Əsas İstiqamətlər</p>
+                                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                                     {[
-                                        { label: "İngilis Dili",   href: "/services"       },
-                                        { label: "IELTS Hazırlığı", href: "/services"      },
-                                        { label: "SAT Hazırlığı",  href: "/services"       },
-                                        { label: "Xaricdə Təhsil", href: "/studyabroad"    },
-                                        { label: "Preschool",      href: "/preschool"      },
-                                        { label: "Təlim Mərkəzi",  href: "/training-center"},
-                                    ].map(({ label, href }) => (
+                                        { icon: "school",            label: "Tədris İstiqamətləri", sub: "Dil, IELTS, SAT",      href: "/services"        },
+                                        { icon: "child_care",        label: "Preschool",             sub: "3–6 yaş proqramları", href: "/preschool"       },
+                                        { icon: "workspace_premium", label: "Təlim Mərkəzi",         sub: "Korporativ & sertifikat", href: "/training-center" },
+                                    ].map(({ icon, label, sub, href }) => (
                                         <Link
                                             key={label}
                                             href={href}
-                                            className="px-3.5 py-1.5 rounded-full border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 text-sm font-medium hover:border-primary hover:text-primary hover:bg-primary/5 transition-all"
+                                            className="group flex items-center gap-3 bg-white dark:bg-slate-800/60 border border-slate-100 dark:border-slate-700 rounded-xl px-4 py-3 hover:border-primary hover:shadow-md transition-all"
                                         >
-                                            {label}
+                                            <span className="material-symbols-outlined text-primary text-[22px] flex-shrink-0">{icon}</span>
+                                            <div className="min-w-0">
+                                                <p className="text-sm font-bold text-slate-900 dark:text-white leading-none truncate">{label}</p>
+                                                <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5 truncate">{sub}</p>
+                                            </div>
+                                            <span className="material-symbols-outlined text-slate-300 dark:text-slate-600 text-[16px] ml-auto flex-shrink-0 group-hover:text-primary transition-colors">chevron_right</span>
                                         </Link>
                                     ))}
                                 </div>
@@ -139,12 +142,12 @@ export default function HomeClient({ initialBentoData, initialFaqData, initialTe
 
                             {/* CTAs */}
                             <div className="flex flex-wrap gap-3 pt-1">
-                                <button
-                                    onClick={() => router.push("/services")}
+                                <Link
+                                    href="/studyabroad"
                                     className="px-8 py-3.5 bg-primary text-slate-900 rounded-xl font-bold text-base hover:shadow-xl hover:shadow-primary/25 hover:-translate-y-0.5 transition-all flex items-center gap-2"
                                 >
-                                    Bütün Proqramlar <span className="material-symbols-outlined text-[20px]">arrow_forward</span>
-                                </button>
+                                    Xaricdə Təhsil <span className="material-symbols-outlined text-[20px]">public</span>
+                                </Link>
                                 <button
                                     onClick={() => router.push("/about")}
                                     className="px-8 py-3.5 border-2 border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white rounded-xl font-bold text-base hover:border-primary hover:text-primary transition-all"
