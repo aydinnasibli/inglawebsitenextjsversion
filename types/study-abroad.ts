@@ -25,6 +25,7 @@ export interface SanityCountry {
         visaRequirements?: string[];
     };
     popularPrograms?: string[];
+    universitiesCount?: number;
     order: number;
     isActive: boolean;
     isFeatured?: boolean;
@@ -76,6 +77,7 @@ export interface Country {
         visaRequirements?: string[];
     };
     popularPrograms?: string[];
+    universitiesCount?: number;
     isFeatured?: boolean;
 }
 

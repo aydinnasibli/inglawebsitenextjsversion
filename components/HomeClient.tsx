@@ -5,26 +5,15 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { client } from "@/sanity/lib/client";
 import { urlFor } from "@/sanity/lib/image";
-import { HOMEPAGE_CAROUSEL_QUERY, FAQ_QUERY, TESTIMONIALS_QUERY } from "@/sanity/lib/queries";
-import { SanityCarouselItem, CarouselItem } from "@/types/carousel";
+import { HOMEPAGE_BENTO_QUERY, FAQ_QUERY, TESTIMONIALS_QUERY } from "@/sanity/lib/queries";
 import { SanityFAQItem, SanityTestimonialItem, FAQItem, TestimonialItem } from "@/types/faq-testimonials";
-import Carousel from "./Carousel";
+import BentoBox, { BentoItem } from "./BentoBox";
 
 interface HomeClientProps {
-    initialCarouselData?: SanityCarouselItem[];
+    initialBentoData?: BentoItem[];
     initialFaqData?: SanityFAQItem[];
     initialTestimonialsData?: SanityTestimonialItem[];
 }
-
-const fallbackCarouselItems: CarouselItem[] = [
-    {
-        id: "1",
-        title: "Dünya Səviyyəsində Təhsil",
-        description: "Beynəlxalq standartlara uyğun təhsil proqramları və müasir tədris metodları ilə gələcəyinizi formalaşdırın.",
-        image: "/assets/bg.webp",
-        buttonText: "Daha Ətraflı",
-    }
-];
 
 const transformFaqData = (sanityItems: SanityFAQItem[]): FAQItem[] => {
     return sanityItems
@@ -53,29 +42,8 @@ const transformTestimonialsData = (sanityItems: SanityTestimonialItem[]): Testim
         }));
 };
 
-const transformSanityData = (sanityItems: SanityCarouselItem[]): CarouselItem[] => {
-    return sanityItems
-        .filter(item => item && item._id && item.title && item.description)
-        .map((item) => {
-            return {
-                id: item._id,
-                title: item.title,
-                description: item.description,
-                image: item.image ? urlFor(item.image).width(1920).height(1080).quality(85).url() : '/assets/bg.webp',
-                buttonText: item.buttonText,
-                buttonAction: item.buttonLink ? () => {
-                    if (item.buttonLink?.startsWith('http')) {
-                        window.open(item.buttonLink, '_blank', 'noopener,noreferrer');
-                    } else {
-                        window.location.href = item.buttonLink || '#';
-                    }
-                } : undefined,
-            };
-        });
-};
-
-export default function HomeClient({ initialCarouselData, initialFaqData, initialTestimonialsData }: HomeClientProps) {
-    const [carouselItems, setCarouselItems] = useState<CarouselItem[]>(fallbackCarouselItems);
+export default function HomeClient({ initialBentoData, initialFaqData, initialTestimonialsData }: HomeClientProps) {
+    const [bentoItems, setBentoItems] = useState<BentoItem[]>(initialBentoData || []);
     const [faqItems, setFaqItems] = useState<FAQItem[]>([]);
     const [activeFaq, setActiveFaq] = useState<string | null>(null);
     const [testimonialItems, setTestimonialItems] = useState<TestimonialItem[]>([]);
@@ -83,14 +51,12 @@ export default function HomeClient({ initialCarouselData, initialFaqData, initia
     const router = useRouter();
 
     useEffect(() => {
-        if (initialCarouselData && initialCarouselData.length > 0) {
-            setCarouselItems(transformSanityData(initialCarouselData));
-        } else {
-            client.fetch<SanityCarouselItem[]>(HOMEPAGE_CAROUSEL_QUERY).then(data => {
-                if (data && data.length > 0) setCarouselItems(transformSanityData(data));
+        if (!initialBentoData || initialBentoData.length === 0) {
+            client.fetch<BentoItem[]>(HOMEPAGE_BENTO_QUERY).then(data => {
+                if (data && data.length > 0) setBentoItems(data);
             }).catch(console.error);
         }
-    }, [initialCarouselData]);
+    }, [initialBentoData]);
 
     useEffect(() => {
         if (initialFaqData && initialFaqData.length > 0) {
@@ -110,8 +76,6 @@ export default function HomeClient({ initialCarouselData, initialFaqData, initia
         }
     }, [initialFaqData, initialTestimonialsData]);
 
-    const activeCarouselItem = carouselItems[0];
-
     return (
         <div className="flex-1 bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100">
             {/* Hero Section */}
@@ -130,7 +94,7 @@ export default function HomeClient({ initialCarouselData, initialFaqData, initia
                                 Gələcəyiniz üçün <span className="text-primary">Ən Yaxşı</span> Başlanğıc.
                             </h1>
                             <p className="text-lg text-slate-600 dark:text-slate-400 max-w-xl leading-relaxed">
-                                {activeCarouselItem?.description || "Beynəlxalq standartlara uyğun təhsil proqramları və müasir tədris metodları ilə gələcəyinizi formalaşdırın."}
+                                Beynəlxalq standartlara uyğun təhsil proqramları və müasir tədris metodları ilə gələcəyinizi formalaşdırın.
                             </p>
                         </div>
                         <div className="flex flex-wrap gap-4">
@@ -143,7 +107,7 @@ export default function HomeClient({ initialCarouselData, initialFaqData, initia
                         </div>
                     </div>
                     <div className="relative">
-                        <div className="w-full aspect-[4/3] bg-center bg-cover rounded-2xl shadow-2xl relative z-10 overflow-hidden" style={{ backgroundImage: `url(${activeCarouselItem?.image || '/assets/bg.webp'})` }}></div>
+                        <div className="w-full aspect-[4/3] bg-center bg-cover rounded-2xl shadow-2xl relative z-10 overflow-hidden" style={{ backgroundImage: "url('/assets/bg.webp')" }}></div>
                         <div className="absolute -bottom-6 -right-6 w-48 h-48 bg-primary/20 rounded-full blur-3xl -z-0"></div>
                         <div className="absolute -top-6 -left-6 w-32 h-32 bg-primary rounded-2xl -z-0 opacity-20 rotate-12"></div>
                     </div>
@@ -176,9 +140,9 @@ export default function HomeClient({ initialCarouselData, initialFaqData, initia
                 </div>
             </div>
 
-            {/* CMS Carousel Replaces Static Tədris İstiqamətlərimiz */}
-            <section className="py-24">
-                <div className="container mx-auto px-4">
+            {/* Bento Box Section */}
+            <section className="py-16 md:py-24">
+                <div className="max-w-7xl mx-auto px-6">
                     <div className="text-center mb-12">
                         <h2 className="text-4xl font-bold mb-4 text-slate-900 dark:text-white">
                             Bizim <span className="text-primary">Təkliflərimiz</span>
@@ -188,14 +152,47 @@ export default function HomeClient({ initialCarouselData, initialFaqData, initia
                         </p>
                     </div>
 
-                    <Carousel
-                        items={carouselItems}
-                        autoPlay={true}
-                        autoPlayInterval={6000}
-                        showControls={true}
-                        showIndicators={true}
-                        className="shadow-2xl shadow-primary/10 border border-slate-200 dark:border-slate-800"
-                    />
+                    {bentoItems.length > 0 ? (
+                        <BentoBox items={bentoItems} />
+                    ) : (
+                        /* Fallback static bento when CMS is empty */
+                        <div className="grid grid-cols-2 md:grid-cols-4 auto-rows-[220px] gap-4">
+                            {/* Large card */}
+                            <div className="col-span-2 row-span-2 relative rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition-all group bg-slate-900 text-white cursor-pointer" onClick={() => router.push('/services')}>
+                                <Image src="/assets/bg.webp" alt="Tədris İstiqamətləri" fill className="object-cover opacity-40 group-hover:opacity-50 transition-opacity" />
+                                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+                                <div className="relative z-10 p-8 h-full flex flex-col">
+                                    <span className="material-symbols-outlined text-primary text-4xl mb-auto">school</span>
+                                    <div>
+                                        <h3 className="text-3xl font-bold mb-2">Tədris İstiqamətləri</h3>
+                                        <p className="text-slate-300 text-sm mb-4 line-clamp-2">İngilis dili, IELTS hazırlığı, SAT və digər peşəkar kurslar.</p>
+                                        <span className="inline-flex items-center gap-1 text-primary text-sm font-bold group-hover:gap-2 transition-all">Ətraflı Bax <span className="material-symbols-outlined text-[16px]">arrow_forward</span></span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Wide card */}
+                            <div className="col-span-2 row-span-1 rounded-2xl bg-primary text-slate-900 p-6 flex flex-col justify-between shadow-sm hover:shadow-lg transition-all cursor-pointer group" onClick={() => router.push('/studyabroad')}>
+                                <span className="material-symbols-outlined text-4xl text-slate-900/70">public</span>
+                                <div>
+                                    <h3 className="text-2xl font-bold">Xaricdə Təhsil</h3>
+                                    <p className="text-slate-800 text-sm">Dünyanın qabaqcıl universitetlərinde oxu.</p>
+                                </div>
+                            </div>
+
+                            {/* Small card */}
+                            <div className="col-span-1 row-span-1 rounded-2xl bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 text-slate-900 dark:text-white p-6 flex flex-col justify-between shadow-sm hover:shadow-lg transition-all cursor-pointer group" onClick={() => router.push('/preschool')}>
+                                <span className="material-symbols-outlined text-primary text-4xl">child_care</span>
+                                <h3 className="text-lg font-bold">Preschool</h3>
+                            </div>
+
+                            {/* Small card */}
+                            <div className="col-span-1 row-span-1 rounded-2xl bg-slate-900 dark:bg-black text-white p-6 flex flex-col justify-between shadow-sm hover:shadow-lg transition-all cursor-pointer group" onClick={() => router.push('/training-center')}>
+                                <span className="material-symbols-outlined text-primary text-4xl">workspace_premium</span>
+                                <h3 className="text-lg font-bold">Təlim Mərkəzi</h3>
+                            </div>
+                        </div>
+                    )}
                 </div>
             </section>
 
@@ -218,7 +215,7 @@ export default function HomeClient({ initialCarouselData, initialFaqData, initia
                                         ))}
                                     </div>
                                     <p className="text-slate-600 dark:text-slate-300 italic mb-6 line-clamp-4">
-                                        "{testimonial.testimonial}"
+                                        &ldquo;{testimonial.testimonial}&rdquo;
                                     </p>
                                     <div className="flex items-center gap-4 mt-auto">
                                         <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-slate-100 dark:border-slate-700 bg-slate-200">
@@ -271,10 +268,10 @@ export default function HomeClient({ initialCarouselData, initialFaqData, initia
                         </div>
                         <div className="grid grid-cols-2 gap-4">
                             <div className="aspect-square bg-slate-800 rounded-2xl overflow-hidden border border-slate-700">
-                                <img className="w-full h-full object-cover opacity-60 hover:opacity-100 transition-opacity" src="/assets/bg.webp" />
+                                <img className="w-full h-full object-cover opacity-60 hover:opacity-100 transition-opacity" src="/assets/bg.webp" alt="Training center" />
                             </div>
                             <div className="aspect-square bg-slate-800 rounded-2xl overflow-hidden border border-slate-700 translate-y-8">
-                                <img className="w-full h-full object-cover opacity-60 hover:opacity-100 transition-opacity" src="/assets/bg.webp" />
+                                <img className="w-full h-full object-cover opacity-60 hover:opacity-100 transition-opacity" src="/assets/bg.webp" alt="Training center" />
                             </div>
                         </div>
                     </div>

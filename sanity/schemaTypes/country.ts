@@ -173,6 +173,13 @@ export const country = defineType({
             description: 'Most popular study programs in this country',
         }),
         defineField({
+            name: 'universitiesCount',
+            title: 'Partner Universities Count',
+            type: 'number',
+            description: 'Number to display under the country card (e.g. 12 → "12+ Tərəfdaş Universitet")',
+            initialValue: 5,
+        }),
+        defineField({
             name: 'order',
             title: 'Display Order',
             type: 'number',

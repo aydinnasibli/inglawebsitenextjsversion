@@ -45,17 +45,21 @@ export default function Footer() {
                         <li className="flex items-start gap-3">
                             <span className="material-symbols-outlined text-[18px] text-primary mt-0.5 flex-shrink-0">location_on</span>
                             <div>
-                                <span className="block">Grand Hayat Yaşayış Kompleksi</span>
-                                <span className="block">9-cu bina, 4-cü mərtəbə</span>
+                                <span className="block">Zahid Xəlilov 59</span>
+                                <span className="block">Baku, Azerbaijan</span>
                             </div>
                         </li>
                         <li className="flex items-center gap-3">
                             <span className="material-symbols-outlined text-[18px] text-primary">call</span>
-                            <a href="tel:+994103107117" className="hover:text-primary transition-colors">+994 10 310 71 17</a>
+                            <div className="flex flex-col gap-1">
+                                <a href="tel:+994103107117" className="hover:text-primary transition-colors">+994 10 310 71 17</a>
+                                <a href="tel:0103106116" className="hover:text-primary transition-colors">010 310 61 16</a>
+                                <a href="tel:0103104114" className="hover:text-primary transition-colors">010 310 41 14</a>
+                            </div>
                         </li>
                         <li className="flex items-center gap-3">
                             <span className="material-symbols-outlined text-[18px] text-primary">mail</span>
-                            <a href="mailto:info@inglaschool.az" className="hover:text-primary transition-colors">info@inglaschool.az</a>
+                            <a href="mailto:inglabaku@gmail.com" className="hover:text-primary transition-colors">inglabaku@gmail.com</a>
                         </li>
                     </ul>
                 </div>
@@ -65,7 +69,7 @@ export default function Footer() {
                     <ul className="flex flex-col gap-4 text-sm text-slate-500">
                         <li className="flex items-center gap-3">
                             <span className="material-symbols-outlined text-[18px] text-primary">schedule</span>
-                            Əmək vaxtı
+                            İş saatı
                         </li>
                         <li className="flex justify-between items-center p-2 rounded bg-slate-50 dark:bg-slate-900/50">
                             <span>Həftəiçi:</span>
