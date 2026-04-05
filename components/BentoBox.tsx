@@ -153,11 +153,11 @@ export default function BentoBox({ items }: BentoBoxProps) {
                     : null;
 
                 return item.link ? (
-                    <Link key={item._id} href={item.link} className={sizeClass(item.size)}>
+                    <Link key={item._id} href={item.link} className={`${sizeClass(item.size)} block h-full`}>
                         <CardContent item={item} imageUrl={imageUrl} />
                     </Link>
                 ) : (
-                    <div key={item._id} className={sizeClass(item.size)}>
+                    <div key={item._id} className={`${sizeClass(item.size)} h-full`}>
                         <CardContent item={item} imageUrl={imageUrl} />
                     </div>
                 );
