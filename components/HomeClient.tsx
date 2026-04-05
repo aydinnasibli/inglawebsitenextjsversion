@@ -63,14 +63,19 @@ export default function HomeClient({ initialBentoData, initialFaqData, initialTe
         <div className="flex-1 bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100">
 
             {/* ── HERO ─────────────────────────────────────────────────── */}
-            <section className="relative overflow-hidden">
-                {/* subtle grid pattern */}
-                <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffd90008_1px,transparent_1px),linear-gradient(to_bottom,#ffd90008_1px,transparent_1px)] bg-[size:40px_40px] pointer-events-none" />
+            <section className="relative overflow-hidden bg-background-light dark:bg-background-dark">
+                {/* Grid pattern */}
+                <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffd90009_1px,transparent_1px),linear-gradient(to_bottom,#ffd90009_1px,transparent_1px)] bg-[size:44px_44px] pointer-events-none" />
+                {/* Top-right glow */}
+                <div className="absolute -top-32 -right-32 w-[500px] h-[500px] bg-primary/8 rounded-full blur-3xl pointer-events-none" />
 
-                <div className="max-w-7xl mx-auto px-6 py-16 md:py-24 relative z-10">
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-                        {/* Left copy */}
-                        <div className="flex flex-col gap-7">
+                <div className="max-w-7xl mx-auto px-6 py-14 md:py-20 relative z-10">
+                    <div className="grid grid-cols-1 lg:grid-cols-[1fr_480px] gap-10 xl:gap-16 items-center">
+
+                        {/* ── LEFT ── */}
+                        <div className="flex flex-col gap-6">
+
+                            {/* Live badge */}
                             <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-slate-800 dark:text-primary text-xs font-bold uppercase tracking-widest w-fit">
                                 <span className="relative flex h-2 w-2">
                                     <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75" />
@@ -79,68 +84,143 @@ export default function HomeClient({ initialBentoData, initialFaqData, initialTe
                                 Yeni Qəbul Davam Edir
                             </span>
 
-                            <div className="flex flex-col gap-4">
-                                <h1 className="text-4xl md:text-5xl lg:text-6xl font-black leading-[1.08] tracking-tight text-slate-900 dark:text-white">
-                                    Gələcəyiniz üçün{" "}
-                                    <span className="relative inline-block">
-                                        <span className="text-primary">Ən Yaxşı</span>
-                                        <span className="absolute -bottom-1 left-0 right-0 h-1 bg-primary/30 rounded-full" />
+                            {/* Headline */}
+                            <div className="flex flex-col gap-3">
+                                <h1 className="text-4xl md:text-5xl xl:text-6xl font-black leading-[1.06] tracking-tight text-slate-900 dark:text-white">
+                                    Bakıda{" "}
+                                    <span className="relative whitespace-nowrap">
+                                        <span className="text-primary">Beynəlxalq</span>
+                                        <svg className="absolute -bottom-1 left-0 w-full" viewBox="0 0 200 8" preserveAspectRatio="none" height="6">
+                                            <path d="M0 6 Q100 0 200 6" stroke="#ffd900" strokeWidth="2.5" fill="none" strokeLinecap="round"/>
+                                        </svg>
                                     </span>{" "}
-                                    Başlanğıc.
+                                    Standartlarda Təhsil
                                 </h1>
-                                <p className="text-lg text-slate-600 dark:text-slate-400 max-w-lg leading-relaxed">
-                                    Beynəlxalq standartlara uyğun dil kursları, preschool, xaricdə təhsil proqramları və peşəkar təlimlər — hamısı bir çatı altında.
+                                <p className="text-base md:text-lg text-slate-600 dark:text-slate-400 max-w-xl leading-relaxed">
+                                    Dil kurslarından xaricdə təhsilə, preschooldan peşəkar sertifikat proqramlarına qədər — hər ehtiyacınız üçün doğru proqram burada.
                                 </p>
                             </div>
 
-                            <div className="flex flex-wrap gap-3">
+                            {/* Key advantages */}
+                            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                                {[
+                                    { icon: "school",     text: "Sertifikatlı Müəllimlər" },
+                                    { icon: "public",     text: "Beynəlxalq Proqramlar"   },
+                                    { icon: "person",     text: "Fərdi Yanaşma"            },
+                                ].map(({ icon, text }) => (
+                                    <div key={text} className="flex items-center gap-2.5 bg-white dark:bg-slate-800/60 border border-slate-100 dark:border-slate-700 rounded-xl px-4 py-3">
+                                        <span className="material-symbols-outlined text-primary text-[20px] flex-shrink-0">{icon}</span>
+                                        <span className="text-sm font-semibold text-slate-800 dark:text-slate-200">{text}</span>
+                                    </div>
+                                ))}
+                            </div>
+
+                            {/* Program pills */}
+                            <div className="flex flex-col gap-2">
+                                <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">Proqramlarımız</p>
+                                <div className="flex flex-wrap gap-2">
+                                    {[
+                                        { label: "İngilis Dili",   href: "/services"       },
+                                        { label: "IELTS Hazırlığı", href: "/services"      },
+                                        { label: "SAT Hazırlığı",  href: "/services"       },
+                                        { label: "Xaricdə Təhsil", href: "/studyabroad"    },
+                                        { label: "Preschool",      href: "/preschool"      },
+                                        { label: "Təlim Mərkəzi",  href: "/training-center"},
+                                    ].map(({ label, href }) => (
+                                        <Link
+                                            key={label}
+                                            href={href}
+                                            className="px-3.5 py-1.5 rounded-full border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 text-sm font-medium hover:border-primary hover:text-primary hover:bg-primary/5 transition-all"
+                                        >
+                                            {label}
+                                        </Link>
+                                    ))}
+                                </div>
+                            </div>
+
+                            {/* CTAs */}
+                            <div className="flex flex-wrap gap-3 pt-1">
                                 <button
                                     onClick={() => router.push("/services")}
-                                    className="h-13 px-8 py-3.5 bg-primary text-slate-900 rounded-xl font-bold text-base hover:shadow-xl hover:shadow-primary/30 hover:-translate-y-0.5 transition-all flex items-center gap-2"
+                                    className="px-8 py-3.5 bg-primary text-slate-900 rounded-xl font-bold text-base hover:shadow-xl hover:shadow-primary/25 hover:-translate-y-0.5 transition-all flex items-center gap-2"
                                 >
-                                    Proqramlarımız <span className="material-symbols-outlined text-[20px]">arrow_forward</span>
+                                    Bütün Proqramlar <span className="material-symbols-outlined text-[20px]">arrow_forward</span>
                                 </button>
                                 <button
                                     onClick={() => router.push("/about")}
-                                    className="h-13 px-8 py-3.5 border-2 border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white rounded-xl font-bold text-base hover:border-primary hover:text-primary transition-all"
+                                    className="px-8 py-3.5 border-2 border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white rounded-xl font-bold text-base hover:border-primary hover:text-primary transition-all"
                                 >
                                     Haqqımızda
                                 </button>
                             </div>
 
-                            {/* Trust badges */}
-                            <div className="flex items-center gap-4 pt-2">
-                                <div className="flex -space-x-2">
-                                    {[1,2,3,4].map(i => (
-                                        <div key={i} className="size-8 rounded-full border-2 border-white dark:border-slate-900 bg-primary/20 flex items-center justify-center text-xs font-bold text-primary">
-                                            {i}
-                                        </div>
-                                    ))}
+                            {/* Rating + student count */}
+                            <div className="flex items-center gap-5 pt-1 border-t border-slate-100 dark:border-slate-800">
+                                <div className="flex items-center gap-2">
+                                    <div className="flex text-primary gap-0.5">
+                                        {[...Array(5)].map((_, i) => (
+                                            <span key={i} className="material-symbols-outlined text-[16px]">star</span>
+                                        ))}
+                                    </div>
+                                    <span className="text-sm font-bold text-slate-900 dark:text-white">4.9</span>
+                                    <span className="text-sm text-slate-500">(500+ rəy)</span>
                                 </div>
-                                <p className="text-sm text-slate-500 dark:text-slate-400">
-                                    <span className="font-bold text-slate-900 dark:text-white">5,000+</span> tələbə bizimlə öyrənir
-                                </p>
+                                <div className="h-4 w-px bg-slate-200 dark:bg-slate-700" />
+                                <div className="flex items-center gap-2">
+                                    <div className="flex -space-x-1.5">
+                                        {[1,2,3].map(i => (
+                                            <div key={i} className="size-6 rounded-full border-2 border-white dark:border-slate-900 bg-gradient-to-br from-primary/60 to-primary" />
+                                        ))}
+                                    </div>
+                                    <span className="text-sm text-slate-500 dark:text-slate-400">
+                                        <span className="font-bold text-slate-900 dark:text-white">5,000+</span> aktiv tələbə
+                                    </span>
+                                </div>
                             </div>
                         </div>
 
-                        {/* Right image */}
-                        <div className="relative hidden lg:block">
-                            <div className="relative w-full aspect-[4/3] rounded-3xl overflow-hidden shadow-2xl z-10">
+                        {/* ── RIGHT ── */}
+                        <div className="relative hidden lg:flex flex-col gap-3">
+                            {/* Main image */}
+                            <div className="relative w-full aspect-[4/3] rounded-2xl overflow-hidden shadow-2xl">
                                 <Image src="/assets/bg.webp" alt="Ingla School" fill className="object-cover" priority />
-                                <div className="absolute inset-0 bg-gradient-to-tr from-primary/10 to-transparent" />
-                            </div>
-                            {/* Decorative elements */}
-                            <div className="absolute -bottom-8 -right-8 w-56 h-56 bg-primary/15 rounded-full blur-3xl -z-10" />
-                            <div className="absolute -top-8 -left-8 w-40 h-40 bg-primary rounded-3xl -z-10 opacity-15 rotate-12" />
-                            {/* Floating stat card */}
-                            <div className="absolute -bottom-4 -left-4 bg-white dark:bg-slate-900 rounded-2xl shadow-xl px-5 py-4 flex items-center gap-3 border border-slate-100 dark:border-slate-800 z-20">
-                                <span className="material-symbols-outlined text-primary text-3xl">verified</span>
-                                <div>
-                                    <p className="text-2xl font-black text-slate-900 dark:text-white leading-none">98%</p>
-                                    <p className="text-xs text-slate-500 mt-0.5">Uğurlu qəbul</p>
+                                <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
+                                {/* Overlay chip inside image */}
+                                <div className="absolute top-4 left-4 flex items-center gap-2 bg-white/90 dark:bg-slate-900/90 backdrop-blur-sm rounded-xl px-3 py-2 shadow-lg">
+                                    <span className="material-symbols-outlined text-primary text-[18px]">location_on</span>
+                                    <span className="text-xs font-bold text-slate-800 dark:text-slate-200">Zahid Xəlilov 59, Bakı</span>
                                 </div>
                             </div>
+
+                            {/* Bottom info cards row */}
+                            <div className="grid grid-cols-2 gap-3">
+                                {/* Achievement card */}
+                                <div className="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-2xl px-5 py-4 shadow-md flex items-center gap-3">
+                                    <div className="size-10 rounded-xl bg-primary flex items-center justify-center flex-shrink-0">
+                                        <span className="material-symbols-outlined text-slate-900 text-[20px]">emoji_events</span>
+                                    </div>
+                                    <div>
+                                        <p className="text-lg font-black text-slate-900 dark:text-white leading-none">98%</p>
+                                        <p className="text-[11px] text-slate-500 mt-0.5 leading-tight">IELTS məzunları<br/>hədəf bala çatır</p>
+                                    </div>
+                                </div>
+                                {/* Next intake card */}
+                                <div className="bg-slate-900 dark:bg-slate-800 border border-slate-800 rounded-2xl px-5 py-4 shadow-md flex items-center gap-3">
+                                    <div className="size-10 rounded-xl bg-primary/15 flex items-center justify-center flex-shrink-0">
+                                        <span className="material-symbols-outlined text-primary text-[20px]">calendar_month</span>
+                                    </div>
+                                    <div>
+                                        <p className="text-[11px] text-slate-400 mb-0.5 leading-tight">Növbəti Başlanğıc</p>
+                                        <p className="text-sm font-black text-white leading-none">Hər Ay</p>
+                                        <p className="text-[10px] text-primary font-semibold mt-0.5">Yer sayı məhduddur</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Decorative glow */}
+                            <div className="absolute -bottom-10 -right-10 w-48 h-48 bg-primary/10 rounded-full blur-3xl -z-10 pointer-events-none" />
                         </div>
+
                     </div>
                 </div>
             </section>
