@@ -6,6 +6,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import WhatsAppButton from "@/components/WhatsAppButton";
 import { GoogleAnalytics } from "@next/third-parties/google";
+import { Toaster } from "sonner";
 
 const lexend = Lexend({
   subsets: ["latin"],
@@ -80,6 +81,7 @@ export default function RootLayout({
         <main className="grow flex flex-col">{children}</main>
         <WhatsAppButton />
         <Footer />
+        <Toaster richColors position="top-right" />
       </body>
     </html>
   );

@@ -226,11 +226,11 @@ export default function HomeClient({ initialBentoData, initialFaqData, initialTe
             {/* ── BENTO BOX ────────────────────────────────────────────── */}
             {(() => {
                 const STATIC_BENTO: BentoItem[] = [
-                    { _id: "b1", title: "İngilis Dili Kursları", description: "Başlanğıc səviyyədən C1-ə qədər bütün yaş qrupları üçün intensiv dil proqramları.", icon: "language", link: "/services", linkLabel: "Proqramlara bax", size: "large",  variant: "dark",    order: 1 },
-                    { _id: "b2", title: "IELTS & SAT Hazırlığı", description: "Hədəf bala çatmaq üçün sübut edilmiş metodika ilə intensiv hazırlıq.",              icon: "history_edu", link: "/services", linkLabel: "Ətraflı",          size: "wide",  variant: "primary", order: 2 },
-                    { _id: "b3", title: "Xaricdə Təhsil",        description: "50+ aparıcı universitetə qəbul, viza dəstəyi və tam müşayiət.",                       icon: "public",      link: "/studyabroad", linkLabel: "Ölkələrə bax",   size: "tall",  variant: "dark",    order: 3 },
-                    { _id: "b4", title: "Preschool",              description: "3–6 yaş uşaqlar üçün oyun əsaslı erkən inkişaf proqramları.",                          icon: "child_care",  link: "/preschool",   linkLabel: "Ətraflı",         size: "small", variant: "light",   order: 4 },
-                    { _id: "b5", title: "Təlim Mərkəzi",          description: "Korporativ sertifikat proqramları.",                                                   icon: "workspace_premium", link: "/training-center", linkLabel: "Bax", size: "small", variant: "primary", order: 5 },
+                    { _id: "b1", title: "İngilis Dili Kursları", description: "Başlanğıc səviyyədən C1-ə qədər bütün yaş qrupları üçün intensiv dil proqramları.", icon: "language",          image: "/assets/bg.webp", link: "/services",        linkLabel: "Proqramlara bax", size: "large",  variant: "dark",    order: 1 },
+                    { _id: "b2", title: "IELTS & SAT Hazırlığı", description: "Hədəf bala çatmaq üçün sübut edilmiş metodika ilə intensiv hazırlıq.",              icon: "history_edu",       image: "/assets/bg.webp", link: "/services",        linkLabel: "Ətraflı",         size: "wide",  variant: "dark",    order: 2 },
+                    { _id: "b3", title: "Xaricdə Təhsil",        description: "50+ aparıcı universitetə qəbul, viza dəstəyi və tam müşayiət.",                       icon: "public",            image: "/assets/bg.webp", link: "/studyabroad",     linkLabel: "Ölkələrə bax",   size: "tall",  variant: "dark",    order: 3 },
+                    { _id: "b4", title: "Preschool",              description: "3–6 yaş uşaqlar üçün oyun əsaslı erkən inkişaf proqramları.",                          icon: "child_care",        image: "/assets/bg.webp", link: "/preschool",       linkLabel: "Ətraflı",         size: "small", variant: "dark",    order: 4 },
+                    { _id: "b5", title: "Təlim Mərkəzi",          description: "Korporativ sertifikat proqramları.",                                                   icon: "workspace_premium", image: "/assets/bg.webp", link: "/training-center", linkLabel: "Bax",             size: "small", variant: "dark",    order: 5 },
                 ];
                 const displayItems = bentoItems.length > 0 ? bentoItems : STATIC_BENTO;
                 return (
@@ -299,45 +299,6 @@ export default function HomeClient({ initialBentoData, initialFaqData, initialTe
                     </div>
                 </section>
             )}
-
-            {/* ── TRAINING CTA ─────────────────────────────────────────── */}
-            <section className="py-20 bg-slate-900 dark:bg-black text-white">
-                <div className="max-w-7xl mx-auto px-6">
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-                        <div>
-                            <p className="text-primary text-sm font-bold uppercase tracking-widest mb-3">Korporativ Həllər</p>
-                            <h2 className="text-3xl md:text-4xl font-black mb-6 leading-tight">Təlim Mərkəzimiz</h2>
-                            <p className="text-slate-400 text-base mb-8 leading-relaxed">
-                                Şirkətiniz və işçiləriniz üçün xüsusi hazırlanmış korporativ təlimlər. Biznesinizin inkişafı üçün peşəkar kadrların yetişdirilməsi.
-                            </p>
-                            <ul className="flex flex-col gap-3 mb-10">
-                                {["İxtisaslaşmış biznes təlimləri", "Kommunikasiya və liderlik üzrə kurslar", "Beynəlxalq sertifikat proqramları"].map(item => (
-                                    <li key={item} className="flex items-center gap-3 text-slate-300">
-                                        <span className="size-5 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0">
-                                            <span className="material-symbols-outlined text-primary text-[14px]">check</span>
-                                        </span>
-                                        {item}
-                                    </li>
-                                ))}
-                            </ul>
-                            <button
-                                onClick={() => router.push("/training-center")}
-                                className="px-8 py-4 bg-primary text-slate-900 rounded-xl font-bold text-base hover:brightness-105 hover:-translate-y-0.5 transition-all flex items-center gap-2 w-fit"
-                            >
-                                Daha Ətraflı <span className="material-symbols-outlined text-[18px]">arrow_forward</span>
-                            </button>
-                        </div>
-                        <div className="grid grid-cols-2 gap-4">
-                            <div className="aspect-square rounded-2xl overflow-hidden relative">
-                                <Image src="/assets/bg.webp" alt="Təlim Mərkəzi" fill className="object-cover opacity-60 hover:opacity-90 transition-opacity" />
-                            </div>
-                            <div className="aspect-square rounded-2xl overflow-hidden relative translate-y-8">
-                                <Image src="/assets/bg.webp" alt="Təlim Mərkəzi" fill className="object-cover opacity-60 hover:opacity-90 transition-opacity" />
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
 
             {/* ── FAQ ──────────────────────────────────────────────────── */}
             {(() => {

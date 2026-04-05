@@ -147,7 +147,9 @@ export default function BentoBox({ items }: BentoBoxProps) {
         <div className="grid grid-cols-2 md:grid-cols-4 auto-rows-[260px] gap-4">
             {items.map((item) => {
                 const imageUrl = item.image
-                    ? urlFor(item.image).width(900).height(900).quality(85).url()
+                    ? (typeof item.image === "string"
+                        ? item.image
+                        : urlFor(item.image).width(900).height(900).quality(85).url())
                     : null;
 
                 return item.link ? (
