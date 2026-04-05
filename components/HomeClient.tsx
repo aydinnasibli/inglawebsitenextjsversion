@@ -154,29 +154,6 @@ export default function HomeClient({ initialServicesData, initialFaqData, initia
                                 </button>
                             </div>
 
-                            {/* Rating + student count */}
-                            <div className="flex items-center gap-5 pt-1 border-t border-slate-100 dark:border-slate-800">
-                                <div className="flex items-center gap-2">
-                                    <div className="flex text-primary gap-0.5">
-                                        {[...Array(5)].map((_, i) => (
-                                            <span key={i} className="material-symbols-outlined text-[16px]">star</span>
-                                        ))}
-                                    </div>
-                                    <span className="text-sm font-bold text-slate-900 dark:text-white">4.9</span>
-                                    <span className="text-sm text-slate-500">(500+ rəy)</span>
-                                </div>
-                                <div className="h-4 w-px bg-slate-200 dark:bg-slate-700" />
-                                <div className="flex items-center gap-2">
-                                    <div className="flex -space-x-1.5">
-                                        {[1,2,3].map(i => (
-                                            <div key={i} className="size-6 rounded-full border-2 border-white dark:border-slate-900 bg-gradient-to-br from-primary/60 to-primary" />
-                                        ))}
-                                    </div>
-                                    <span className="text-sm text-slate-500 dark:text-slate-400">
-                                        <span className="font-bold text-slate-900 dark:text-white">5,000+</span> aktiv tələbə
-                                    </span>
-                                </div>
-                            </div>
                         </div>
 
                         {/* ── RIGHT ── */}

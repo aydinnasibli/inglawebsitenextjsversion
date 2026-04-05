@@ -38,42 +38,29 @@ const transformSanityData = (sanityItems: SanityServiceItem[]): ServiceItem[] =>
         }));
 };
 
+const FALLBACK_SERVICES: ServiceItem[] = [
+    { id: "f1", title: "İngilis Dili Kursları", slug: "", shortDescription: "Başlanğıc səviyyədən C1-ə qədər bütün səviyyələr üçün intensiv dil proqramları.", featuredImage: "/assets/bg.webp", order: 1, isFeatured: true, category: "Dil Kursları", duration: "3–12 ay" },
+    { id: "f2", title: "IELTS & SAT Hazırlığı", slug: "", shortDescription: "Beynəlxalq imtahanlara hədəfli hazırlıq — yüksək bal, qısa müddət.", featuredImage: "/assets/bg.webp", order: 2, isFeatured: false, category: "İmtahan Hazırlığı", duration: "2–4 ay" },
+    { id: "f3", title: "Xaricdə Təhsil", slug: "/studyabroad", shortDescription: "Dünyanın 50+ aparıcı universitetinə qəbul, viza dəstəyi və tam müşayiət.", featuredImage: "/assets/bg.webp", order: 3, isFeatured: false, category: "Xaricdə Təhsil", duration: "Fərdi" },
+    { id: "f4", title: "Preschool", slug: "/preschool", shortDescription: "3–6 yaş uşaqlar üçün erkən inkişaf, ingilis dili və yaradıcı fəaliyyət proqramları.", featuredImage: "/assets/bg.webp", order: 4, isFeatured: false, category: "Preschool", duration: "İllik" },
+    { id: "f5", title: "Təlim Mərkəzi", slug: "/training-center", shortDescription: "Korporativ müştərilər və peşəkarlar üçün ixtisaslaşmış sertifikat proqramları.", featuredImage: "/assets/bg.webp", order: 5, isFeatured: false, category: "Biznes Təlimi", duration: "1–3 ay" },
+    { id: "f6", title: "Korporativ Həllər", slug: "/training-center", shortDescription: "Şirkətinizin ehtiyaclarına uyğun qrup təlimlər — ofisdə və ya online format.", featuredImage: "/assets/bg.webp", order: 6, isFeatured: false, category: "Korporativ", duration: "Fərdi" },
+];
+
 export default function ServicesPage({ initialServicesData }: ServicesPageProps) {
-    const [services, setServices] = useState<ServiceItem[]>([]);
-    const [isLoading, setIsLoading] = useState(!initialServicesData);
+    const [services, setServices] = useState<ServiceItem[]>(initialServicesData ? transformSanityData(initialServicesData) : []);
+    const [isLoading, setIsLoading] = useState(!initialServicesData?.length);
 
     useEffect(() => {
-        let isMounted = true;
-
-        const loadServices = async () => {
-            try {
-                if (initialServicesData && initialServicesData.length > 0) {
-                    if (isMounted) {
-                        setServices(transformSanityData(initialServicesData));
-                        setIsLoading(false);
-                    }
-                    return;
-                }
-
-                const data = await client.fetch<SanityServiceItem[]>(SERVICES_QUERY);
-
-                if (isMounted) {
-                    if (data && data.length > 0) {
-                        setServices(transformSanityData(data));
-                    }
-                    setIsLoading(false);
-                }
-            } catch (error) {
-                console.error("Error fetching services data:", error);
-                if (isMounted) setIsLoading(false);
-            }
-        };
-
-        loadServices();
-
-        return () => {
-            isMounted = false;
-        };
+        if (initialServicesData?.length) {
+            setServices(transformSanityData(initialServicesData));
+            setIsLoading(false);
+            return;
+        }
+        client.fetch<SanityServiceItem[]>(SERVICES_QUERY)
+            .then(data => { if (data?.length) setServices(transformSanityData(data)); })
+            .catch(console.error)
+            .finally(() => setIsLoading(false));
     }, [initialServicesData]);
 
     return (
@@ -124,94 +111,71 @@ export default function ServicesPage({ initialServicesData }: ServicesPageProps)
             </div>
 
             {/* Services Section */}
-            <section className="bg-white dark:bg-slate-900/50 py-20">
+            <section className="py-16 md:py-20">
                 <div className="max-w-[1200px] mx-auto px-6 md:px-10">
-                    <div className="flex flex-col gap-4 mb-12">
-                        <h2 className="text-primary font-bold text-sm tracking-widest uppercase">Təkliflərimiz</h2>
-                        <h3 className="text-slate-900 dark:text-white text-3xl md:text-4xl font-bold leading-tight max-w-2xl">
-                            Hər Yaş və Səviyyə üçün Kompleks Təhsil Həlləri
-                        </h3>
-                    </div>
-
                     {isLoading ? (
                         <div className="flex justify-center items-center py-20">
                             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
                         </div>
                     ) : (
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                            {services.length > 0 ? services.map((service, index) => {
-                                // Default icon logic based on category/title
-                                let iconName = "workspace_premium";
-                                const title = service.title.toLowerCase();
-                                if (title.includes('dil') || title.includes('language')) iconName = "language";
-                                else if (title.includes('xaric')) iconName = "public";
-                                else if (title.includes('preschool') || title.includes('uşaq')) iconName = "child_care";
-                                else if (title.includes('təlim') || title.includes('biznes')) iconName = "business_center";
-                                else if (title.includes('imtahan')) iconName = "history_edu";
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                            {(services.length > 0 ? services : FALLBACK_SERVICES).map((service) => (
+                                <Link
+                                    key={service.id}
+                                    href={`/services/${service.slug}`}
+                                    className="group flex flex-col bg-white dark:bg-slate-900 rounded-2xl overflow-hidden border border-slate-100 dark:border-slate-800 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300"
+                                >
+                                    {/* Image */}
+                                    <div className="relative h-52 overflow-hidden bg-slate-100 dark:bg-slate-800">
+                                        <Image
+                                            src={service.featuredImage || "/assets/bg.webp"}
+                                            alt={service.title}
+                                            fill
+                                            className="object-cover group-hover:scale-105 transition-transform duration-500"
+                                        />
+                                        <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
+                                        {service.category && (
+                                            <span className="absolute top-3 left-3 px-2.5 py-1 bg-primary text-slate-900 text-[10px] font-bold uppercase tracking-wider rounded-full">
+                                                {service.category}
+                                            </span>
+                                        )}
+                                        {service.isFeatured && (
+                                            <span className="absolute top-3 right-3 px-2 py-1 bg-slate-900/80 text-primary text-[10px] font-bold uppercase tracking-wider rounded-full flex items-center gap-1">
+                                                <span className="material-symbols-outlined text-[12px]">star</span>
+                                                Seçilmiş
+                                            </span>
+                                        )}
+                                    </div>
 
-                                return (
-                                    <div key={service.id} className="group flex flex-col gap-5 rounded-2xl border border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900 p-8 hover:border-primary transition-all shadow-sm hover:shadow-md">
-                                        <div className="w-14 h-14 rounded-xl bg-primary/10 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-slate-900 transition-colors">
-                                            <span className="material-symbols-outlined text-[32px]">{iconName}</span>
+                                    {/* Body */}
+                                    <div className="flex flex-col gap-3 p-6 grow">
+                                        <h3 className="text-lg font-black text-slate-900 dark:text-white group-hover:text-primary transition-colors leading-snug">
+                                            {service.title}
+                                        </h3>
+                                        <p className="text-sm text-slate-600 dark:text-slate-400 line-clamp-2 leading-relaxed">
+                                            {service.shortDescription}
+                                        </p>
+
+                                        <div className="flex flex-wrap gap-3 mt-auto pt-3 border-t border-slate-100 dark:border-slate-800">
+                                            {service.duration && (
+                                                <span className="flex items-center gap-1 text-xs text-slate-500 dark:text-slate-400">
+                                                    <span className="material-symbols-outlined text-[14px] text-primary">schedule</span>
+                                                    {service.duration}
+                                                </span>
+                                            )}
+                                            {service.priceRange && (
+                                                <span className="flex items-center gap-1 text-xs text-slate-500 dark:text-slate-400">
+                                                    <span className="material-symbols-outlined text-[14px] text-primary">payments</span>
+                                                    {service.priceRange}
+                                                </span>
+                                            )}
+                                            <span className="ml-auto flex items-center gap-1 text-xs font-bold text-primary group-hover:gap-2 transition-all">
+                                                Ətraflı <span className="material-symbols-outlined text-[14px]">arrow_forward</span>
+                                            </span>
                                         </div>
-                                        <div className="flex flex-col gap-2">
-                                            <h4 className="text-slate-900 dark:text-white text-xl font-bold">{service.title}</h4>
-                                            <p className="text-slate-800 dark:text-slate-200 leading-relaxed line-clamp-3">
-                                                {service.shortDescription}
-                                            </p>
-                                        </div>
-                                        <Link href={`/services/${service.slug}`} className="mt-auto text-primary text-sm font-bold flex items-center gap-2 group-hover:gap-3 transition-all">
-                                            Ətraflı Bax <span className="material-symbols-outlined text-[18px]">arrow_forward</span>
-                                        </Link>
                                     </div>
-                                );
-                            }) : (
-                                // Fallback services if CMS is empty
-                                <>
-                                    <div className="group flex flex-col gap-5 rounded-2xl border border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900 p-8 hover:border-primary transition-all shadow-sm hover:shadow-md">
-                                        <div className="w-14 h-14 rounded-xl bg-primary/10 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-slate-900 transition-colors">
-                                            <span className="material-symbols-outlined text-[32px]">public</span>
-                                        </div>
-                                        <div className="flex flex-col gap-2">
-                                            <h4 className="text-slate-900 dark:text-white text-xl font-bold">Xaricdə Təhsil</h4>
-                                            <p className="text-slate-800 dark:text-slate-200 leading-relaxed">
-                                                Dünyanın nüfuzlu universitetlərinə qəbul prosesində, viza dəstəyində və mədəniyyətə uyğunlaşmaqda mütəxəssis dəstəyi.
-                                            </p>
-                                        </div>
-                                        <Link href="/studyabroad" className="mt-auto text-primary text-sm font-bold flex items-center gap-2 group-hover:gap-3 transition-all">
-                                            Ətraflı Bax <span className="material-symbols-outlined text-[18px]">arrow_forward</span>
-                                        </Link>
-                                    </div>
-                                    <div className="group flex flex-col gap-5 rounded-2xl border border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900 p-8 hover:border-primary transition-all shadow-sm hover:shadow-md">
-                                        <div className="w-14 h-14 rounded-xl bg-primary/10 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-slate-900 transition-colors">
-                                            <span className="material-symbols-outlined text-[32px]">child_care</span>
-                                        </div>
-                                        <div className="flex flex-col gap-2">
-                                            <h4 className="text-slate-900 dark:text-white text-xl font-bold">Preschool (Məktəbəqədər)</h4>
-                                            <p className="text-slate-800 dark:text-slate-200 leading-relaxed">
-                                                Uşaqların erkən yaşdan idrak, sosial bacarıqlarını və dünyagörüşünü inkişaf etdirən təhlükəsiz və əyləncəli mühit.
-                                            </p>
-                                        </div>
-                                        <Link href="/preschool" className="mt-auto text-primary text-sm font-bold flex items-center gap-2 group-hover:gap-3 transition-all">
-                                            Ətraflı Bax <span className="material-symbols-outlined text-[18px]">arrow_forward</span>
-                                        </Link>
-                                    </div>
-                                    <div className="group flex flex-col gap-5 rounded-2xl border border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900 p-8 hover:border-primary transition-all shadow-sm hover:shadow-md">
-                                        <div className="w-14 h-14 rounded-xl bg-primary/10 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-slate-900 transition-colors">
-                                            <span className="material-symbols-outlined text-[32px]">workspace_premium</span>
-                                        </div>
-                                        <div className="flex flex-col gap-2">
-                                            <h4 className="text-slate-900 dark:text-white text-xl font-bold">Təlim Mərkəzi</h4>
-                                            <p className="text-slate-800 dark:text-slate-200 leading-relaxed">
-                                                Müasir iş dünyasının tələblərinə uyğunlaşdırılmış, karyera inkişafı üçün nəzərdə tutulan peşəkar sertifikatlı təlimlər.
-                                            </p>
-                                        </div>
-                                        <Link href="/training-center" className="mt-auto text-primary text-sm font-bold flex items-center gap-2 group-hover:gap-3 transition-all">
-                                            Ətraflı Bax <span className="material-symbols-outlined text-[18px]">arrow_forward</span>
-                                        </Link>
-                                    </div>
-                                </>
-                            )}
+                                </Link>
+                            ))}
                         </div>
                     )}
                 </div>
