@@ -30,13 +30,44 @@ function sizeClass(size: BentoItem["size"]): string {
     }
 }
 
-function bgClass(variant: BentoItem["variant"]): string {
+// Base background when no image (or image overlay colour)
+function baseBg(variant: BentoItem["variant"], hasImage: boolean): string {
+    if (hasImage) return "bg-slate-900"; // image cards always dark base
     switch (variant) {
-        case "primary": return "bg-primary text-slate-900";
-        case "dark":    return "bg-slate-900 dark:bg-black text-white";
-        case "image":   return "bg-slate-900 text-white";
-        default:        return "bg-white dark:bg-slate-800 text-slate-900 dark:text-white border border-slate-100 dark:border-slate-700";
+        case "primary": return "bg-primary";
+        case "dark":    return "bg-slate-900 dark:bg-black";
+        default:        return "bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700";
     }
+}
+
+function textColor(variant: BentoItem["variant"], hasImage: boolean): string {
+    if (hasImage) return "text-white";
+    switch (variant) {
+        case "primary": return "text-slate-900";
+        case "dark":    return "text-white";
+        default:        return "text-slate-900 dark:text-white";
+    }
+}
+
+function descColor(variant: BentoItem["variant"], hasImage: boolean): string {
+    if (hasImage) return "text-slate-300";
+    switch (variant) {
+        case "primary": return "text-slate-800";
+        case "dark":    return "text-slate-300";
+        default:        return "text-slate-600 dark:text-slate-400";
+    }
+}
+
+function iconColor(variant: BentoItem["variant"], hasImage: boolean): string {
+    if (hasImage || variant === "dark") return "text-primary";
+    if (variant === "primary") return "text-slate-900/60";
+    return "text-primary";
+}
+
+function ctaColor(variant: BentoItem["variant"], hasImage: boolean): string {
+    if (hasImage || variant === "dark") return "text-primary";
+    if (variant === "primary") return "text-slate-900";
+    return "text-primary";
 }
 
 interface CardProps {
@@ -45,29 +76,30 @@ interface CardProps {
 }
 
 function CardContent({ item, imageUrl }: CardProps) {
+    const hasImage = !!imageUrl;
+
     return (
-        <div className={`relative w-full h-full rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 group p-6 flex flex-col justify-between ${bgClass(item.variant)}`}>
-            {/* Background image for image variant */}
-            {item.variant === "image" && imageUrl && (
+        <div
+            className={`relative w-full h-full rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 group p-6 flex flex-col justify-between ${baseBg(item.variant, hasImage)}`}
+        >
+            {/* Background image — shown for ALL cards that have an image */}
+            {hasImage && (
                 <>
                     <Image
-                        src={imageUrl}
+                        src={imageUrl!}
                         alt={item.title}
                         fill
-                        className="object-cover opacity-40 group-hover:opacity-55 transition-opacity duration-500"
+                        className="object-cover opacity-50 group-hover:opacity-60 group-hover:scale-105 transition-all duration-500"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+                    {/* Gradient overlay for readability */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/30 to-black/10" />
                 </>
             )}
 
-            <div className="relative z-10 flex flex-col h-full">
+            <div className={`relative z-10 flex flex-col h-full ${textColor(item.variant, hasImage)}`}>
                 {/* Icon at top */}
                 {item.icon && (
-                    <span
-                        className={`material-symbols-outlined text-4xl mb-auto ${
-                            item.variant === "primary" ? "text-slate-900/70" : "text-primary"
-                        }`}
-                    >
+                    <span className={`material-symbols-outlined text-4xl mb-auto ${iconColor(item.variant, hasImage)}`}>
                         {item.icon}
                     </span>
                 )}
@@ -88,11 +120,7 @@ function CardContent({ item, imageUrl }: CardProps) {
                         <p
                             className={`text-sm leading-relaxed ${
                                 item.size === "small" ? "line-clamp-2" : "line-clamp-3"
-                            } ${
-                                item.variant === "primary" ? "text-slate-800"
-                                : item.variant === "dark" || item.variant === "image" ? "text-slate-300"
-                                : "text-slate-600 dark:text-slate-400"
-                            }`}
+                            } ${descColor(item.variant, hasImage)}`}
                         >
                             {item.description}
                         </p>
@@ -100,9 +128,7 @@ function CardContent({ item, imageUrl }: CardProps) {
 
                     {item.link && item.linkLabel && (
                         <span
-                            className={`mt-1 inline-flex items-center gap-1 text-sm font-bold group-hover:gap-2 transition-all ${
-                                item.variant === "primary" ? "text-slate-900" : "text-primary"
-                            }`}
+                            className={`mt-1 inline-flex items-center gap-1 text-sm font-bold group-hover:gap-2 transition-all ${ctaColor(item.variant, hasImage)}`}
                         >
                             {item.linkLabel}
                             <span className="material-symbols-outlined text-[16px]">arrow_forward</span>
@@ -121,15 +147,11 @@ export default function BentoBox({ items }: BentoBoxProps) {
         <div className="grid grid-cols-2 md:grid-cols-4 auto-rows-[220px] gap-4">
             {items.map((item) => {
                 const imageUrl = item.image
-                    ? urlFor(item.image).width(800).height(800).quality(85).url()
+                    ? urlFor(item.image).width(900).height(900).quality(85).url()
                     : null;
 
                 return item.link ? (
-                    <Link
-                        href={item.link}
-                        key={item._id}
-                        className={sizeClass(item.size)}
-                    >
+                    <Link key={item._id} href={item.link} className={sizeClass(item.size)}>
                         <CardContent item={item} imageUrl={imageUrl} />
                     </Link>
                 ) : (
