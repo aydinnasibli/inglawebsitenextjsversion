@@ -19,14 +19,14 @@ const OFFICES = [
         icon: "location_on",
     },
     {
-        name: "Grand Hayat (Köhnə Ünvan)",
+        name: "Grand Hayat (İkinci Ofis)",
         address: "Neftçilər pr. 153, Bakı (Grand Hayat yanı), Azərbaycan",
         phones: ["010 310 71 17"],
         email: "inglabaku@gmail.com",
         hours: "09:00 – 18:00",
         mapQuery: "Grand+Hayat+Baku",
-        badge: "Əvvəlki Ünvan",
-        icon: "history",
+        badge: "İkinci Ofis",
+        icon: "apartment",
     },
 ];
 
