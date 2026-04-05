@@ -491,39 +491,81 @@ export default function HomeClient({ initialServicesData, initialFaqData, initia
             </section>
 
             {/* ── FAQ ──────────────────────────────────────────────────── */}
-            {faqItems.length > 0 && (
-                <section className="py-20">
-                    <div className="max-w-3xl mx-auto px-6">
-                        <div className="text-center mb-12">
-                            <p className="text-primary font-bold text-sm uppercase tracking-widest mb-2">Suallar</p>
-                            <h2 className="text-3xl font-black text-slate-900 dark:text-white">Tez-tez Verilən Suallar</h2>
-                        </div>
-                        <div className="flex flex-col gap-3">
-                            {faqItems.slice(0, 6).map(faq => (
-                                <div key={faq.id} className="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-xl overflow-hidden shadow-sm">
-                                    <button
-                                        className="w-full px-6 py-4 flex justify-between items-center text-left hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors gap-4"
-                                        onClick={() => setActiveFaq(activeFaq === faq.id ? null : faq.id)}
-                                    >
-                                        <span className="font-semibold text-slate-900 dark:text-white text-sm">{faq.question}</span>
-                                        <span
-                                            className="material-symbols-outlined text-primary flex-shrink-0 transition-transform duration-300"
-                                            style={{ transform: activeFaq === faq.id ? "rotate(180deg)" : "rotate(0deg)" }}
+            {(() => {
+                const STATIC_FAQ: FAQItem[] = [
+                    {
+                        id: "s1",
+                        question: "Ingla School-da hansı yaş qrupları üçün proqramlar var?",
+                        answer: "3 yaşdan yetkinlərə qədər hər kəs üçün proqramımız mövcuddur. Preschool (3–6 yaş), uşaq dil kursları (7–14 yaş), yeniyetmə qrupları (15–17 yaş) və yetkin tələbələr üçün ayrıca proqramlar keçirilir.",
+                        category: "general",
+                    },
+                    {
+                        id: "s2",
+                        question: "IELTS hazırlıq kursunun müddəti nə qədərdir?",
+                        answer: "Başlanğıc səviyyənizə görə dəyişir — adətən 2 aydan 4 aya qədər sürür. İntensiv proqramla daha qısa müddətdə hədəf bala çatmaq mümkündür. Pulsuz ilkin qiymətləndirmə üçün bizimlə əlaqə saxlayın.",
+                        category: "ielts",
+                    },
+                    {
+                        id: "s3",
+                        question: "Dərslər qrup şəklindədir, yoxsa fərdi?",
+                        answer: "Hər iki formatı təklif edirik. Qrup dərsləri (8–12 nəfər) daha əlverişli qiymətə daha çox sosial öyrənmə mühiti yaradır. Fərdi dərslər isə şəxsi cədvəlinizə və sürətinizə tam uyğunlaşır.",
+                        category: "general",
+                    },
+                    {
+                        id: "s4",
+                        question: "Xaricdə təhsil üçün nə vaxt müraciət etmək lazımdır?",
+                        answer: "Əksər universitetlər üçün qəbul müddəti sona 12–18 ay qalmış başlamaq tövsiyə olunur. Sənəd hazırlığı, dil imtahanları və viza prosesi nəzərə alınmaqla erkən müraciət üstünlük verir. İlk məsləhət üçün bu gün bizimlə əlaqə saxlaya bilərsiniz.",
+                        category: "studyabroad",
+                    },
+                    {
+                        id: "s5",
+                        question: "Sertifikatlar beynəlxalq səviyyədə tanınırmı?",
+                        answer: "IELTS, SAT və digər beynəlxalq imtahanlara hazırlıq proqramlarımız dünya standartlarına uyğundur. Buraxılış sertifikatlarımız isə Azərbaycanda tanınan bir sıra tərəfdaş qurumlar tərəfindən qəbul edilir.",
+                        category: "general",
+                    },
+                    {
+                        id: "s6",
+                        question: "Qeydiyyat üçün nə etmək lazımdır?",
+                        answer: "Bizimlə telefon, WhatsApp və ya e-poçt vasitəsilə əlaqə saxlaya bilərsiniz. Pulsuz ilkin məsləhət və yerləşdirmə testi keçirdikdən sonra sizə ən uyğun proqram tövsiyə ediləcək.",
+                        category: "general",
+                    },
+                ];
+                const displayFaqs = faqItems.length > 0 ? faqItems.slice(0, 6) : STATIC_FAQ;
+                return (
+                    <section className="py-20 bg-white dark:bg-slate-900">
+                        <div className="max-w-3xl mx-auto px-6">
+                            <div className="text-center mb-12">
+                                <p className="text-primary font-bold text-sm uppercase tracking-widest mb-2">Suallar</p>
+                                <h2 className="text-3xl font-black text-slate-900 dark:text-white">Tez-tez Verilən Suallar</h2>
+                                <p className="text-slate-500 dark:text-slate-400 mt-3 text-base">Ən çox soruşulan suallara burada cavab tapacaqsınız.</p>
+                            </div>
+                            <div className="flex flex-col gap-3">
+                                {displayFaqs.map(faq => (
+                                    <div key={faq.id} className="bg-background-light dark:bg-slate-800 border border-slate-100 dark:border-slate-700 rounded-xl overflow-hidden">
+                                        <button
+                                            className="w-full px-6 py-4 flex justify-between items-center text-left hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors gap-4"
+                                            onClick={() => setActiveFaq(activeFaq === faq.id ? null : faq.id)}
                                         >
-                                            expand_more
-                                        </span>
-                                    </button>
-                                    {activeFaq === faq.id && (
-                                        <div className="px-6 pb-5 pt-1 text-slate-600 dark:text-slate-400 text-sm leading-relaxed border-t border-slate-100 dark:border-slate-800">
-                                            {faq.answer}
-                                        </div>
-                                    )}
-                                </div>
-                            ))}
+                                            <span className="font-semibold text-slate-900 dark:text-white text-sm">{faq.question}</span>
+                                            <span
+                                                className="material-symbols-outlined text-primary flex-shrink-0 transition-transform duration-300"
+                                                style={{ transform: activeFaq === faq.id ? "rotate(180deg)" : "rotate(0deg)" }}
+                                            >
+                                                expand_more
+                                            </span>
+                                        </button>
+                                        {activeFaq === faq.id && (
+                                            <div className="px-6 pb-5 pt-1 text-slate-600 dark:text-slate-400 text-sm leading-relaxed border-t border-slate-100 dark:border-slate-700">
+                                                {faq.answer}
+                                            </div>
+                                        )}
+                                    </div>
+                                ))}
+                            </div>
                         </div>
-                    </div>
-                </section>
-            )}
+                    </section>
+                );
+            })()}
 
             {/* ── BOTTOM CTA BANNER ────────────────────────────────────── */}
             <section className="py-16">

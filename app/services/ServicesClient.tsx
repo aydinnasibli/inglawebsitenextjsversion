@@ -78,42 +78,47 @@ export default function ServicesPage({ initialServicesData }: ServicesPageProps)
 
     return (
         <div className="flex-1 bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100">
-            {/* Hero Section */}
-            <div className="max-w-[1200px] mx-auto px-6 md:px-10 py-12 md:py-20">
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-                    <div className="flex flex-col gap-6 md:gap-8">
-                        <div className="flex flex-col gap-4">
-                            <span className="inline-block px-3 py-1 bg-primary/20 text-slate-900 dark:text-primary text-xs font-bold uppercase tracking-widest rounded-full w-fit">
+            {/* Page Header */}
+            <div className="relative overflow-hidden bg-slate-900 dark:bg-black">
+                {/* Subtle grid pattern */}
+                <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffd90008_1px,transparent_1px),linear-gradient(to_bottom,#ffd90008_1px,transparent_1px)] bg-[size:40px_40px] pointer-events-none" />
+                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-primary/5 rounded-full blur-3xl pointer-events-none" />
+
+                <div className="relative z-10 max-w-[1200px] mx-auto px-6 md:px-10 py-14 md:py-20">
+                    {/* Breadcrumb */}
+                    <div className="flex items-center gap-2 text-slate-500 text-xs font-medium mb-6">
+                        <Link href="/" className="hover:text-primary transition-colors">Ana Səhifə</Link>
+                        <span className="material-symbols-outlined text-[14px]">chevron_right</span>
+                        <span className="text-primary">Tədris İstiqamətləri</span>
+                    </div>
+
+                    <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-8">
+                        <div className="flex flex-col gap-4 max-w-2xl">
+                            <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs font-bold uppercase tracking-widest w-fit">
+                                <span className="material-symbols-outlined text-[14px]">school</span>
                                 Peşəkar Təhsil
                             </span>
-                            <h1 className="text-slate-900 dark:text-white text-4xl md:text-6xl font-extrabold leading-[1.1] tracking-tight">
-                                Gələcəyiniz üçün <span className="text-primary bg-slate-900 px-2 dark:bg-transparent">Doğru Seçim</span>
+                            <h1 className="text-white text-3xl md:text-5xl font-black leading-tight tracking-tight">
+                                Tədris İstiqamətləri
                             </h1>
-                            <p className="text-slate-600 dark:text-slate-400 text-lg md:text-xl leading-relaxed">
-                                Ingla School olaraq uşaqlardan yetkinlərə qədər hər kəs üçün fərdiləşdirilmiş və beynəlxalq standartlara uyğun təhsil proqramları təklif edirik.
+                            <p className="text-slate-400 text-base md:text-lg leading-relaxed">
+                                Uşaqlardan yetkinlərə qədər hər kəs üçün — dil kurslarından beynəlxalq imtahan hazırlığına, preschooldan korporativ təlimlərə qədər geniş proqram seçimi.
                             </p>
                         </div>
-                        <div className="flex flex-col sm:flex-row gap-4">
-                            <button className="flex min-w-[160px] cursor-pointer items-center justify-center rounded-lg h-14 px-8 bg-primary text-slate-900 text-base font-bold hover:shadow-lg transition-all">
-                                İndi Müraciət Et
-                            </button>
-                            <button className="flex min-w-[160px] cursor-pointer items-center justify-center rounded-lg h-14 px-8 border-2 border-slate-200 dark:border-slate-700 text-slate-900 dark:text-slate-100 text-base font-bold hover:bg-slate-50 dark:hover:bg-slate-800 transition-all">
-                                Bütün Proqramlar
-                            </button>
+
+                        {/* Quick stats */}
+                        <div className="flex gap-6 md:gap-8 flex-shrink-0">
+                            {[
+                                { value: "6+", label: "Proqram" },
+                                { value: "5000+", label: "Tələbə" },
+                                { value: "98%", label: "Məmnuniyyət" },
+                            ].map(({ value, label }) => (
+                                <div key={label} className="text-center">
+                                    <p className="text-2xl font-black text-primary leading-none">{value}</p>
+                                    <p className="text-xs text-slate-500 mt-1 uppercase tracking-wide">{label}</p>
+                                </div>
+                            ))}
                         </div>
-                    </div>
-                    <div className="relative">
-                        <div className="w-full aspect-square md:aspect-video lg:aspect-square bg-slate-200 dark:bg-slate-800 rounded-2xl overflow-hidden shadow-2xl relative z-10">
-                            <div className="absolute inset-0 bg-gradient-to-tr from-primary/20 to-transparent z-10"></div>
-                            <Image
-                                src="/assets/bg.webp"
-                                alt="Students learning"
-                                fill
-                                className="object-cover"
-                            />
-                        </div>
-                        <div className="absolute -bottom-6 -right-6 w-32 h-32 bg-primary rounded-2xl -z-0"></div>
-                        <div className="absolute -top-6 -left-6 w-24 h-24 border-4 border-primary rounded-full -z-0"></div>
                     </div>
                 </div>
             </div>
