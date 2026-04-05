@@ -225,12 +225,12 @@ export default function HomeClient({ initialBentoData, initialFaqData, initialTe
 
             {/* ── BENTO BOX ────────────────────────────────────────────── */}
             {(() => {
+                // 4 items: large + tall + small + small fills a 4-col × 2-row grid perfectly
                 const STATIC_BENTO: BentoItem[] = [
-                    { _id: "b1", title: "İngilis Dili Kursları", description: "Başlanğıc səviyyədən C1-ə qədər bütün yaş qrupları üçün intensiv dil proqramları.", icon: "language",          image: "/assets/bg.webp", link: "/services",        linkLabel: "Proqramlara bax", size: "large",  variant: "dark",    order: 1 },
-                    { _id: "b2", title: "IELTS & SAT Hazırlığı", description: "Hədəf bala çatmaq üçün sübut edilmiş metodika ilə intensiv hazırlıq.",              icon: "history_edu",       image: "/assets/bg.webp", link: "/services",        linkLabel: "Ətraflı",         size: "wide",  variant: "dark",    order: 2 },
-                    { _id: "b3", title: "Xaricdə Təhsil",        description: "50+ aparıcı universitetə qəbul, viza dəstəyi və tam müşayiət.",                       icon: "public",            image: "/assets/bg.webp", link: "/studyabroad",     linkLabel: "Ölkələrə bax",   size: "tall",  variant: "dark",    order: 3 },
-                    { _id: "b4", title: "Preschool",              description: "3–6 yaş uşaqlar üçün oyun əsaslı erkən inkişaf proqramları.",                          icon: "child_care",        image: "/assets/bg.webp", link: "/preschool",       linkLabel: "Ətraflı",         size: "small", variant: "dark",    order: 4 },
-                    { _id: "b5", title: "Təlim Mərkəzi",          description: "Korporativ sertifikat proqramları.",                                                   icon: "workspace_premium", image: "/assets/bg.webp", link: "/training-center", linkLabel: "Bax",             size: "small", variant: "dark",    order: 5 },
+                    { _id: "b1", title: "Dil Kursları & IELTS",  description: "Başlanğıcdan C1-ə qədər intensiv dil proqramları və sınaq hazırlığı.",    icon: "language",          link: "/services",        linkLabel: "Proqramlara bax", size: "large",  variant: "dark",    order: 1 },
+                    { _id: "b2", title: "Xaricdə Təhsil",         description: "50+ aparıcı universitetə qəbul, viza dəstəyi və tam müşayiət.",            icon: "public",            link: "/studyabroad",     linkLabel: "Ölkələrə bax",   size: "tall",   variant: "dark",    order: 2 },
+                    { _id: "b3", title: "Preschool",               description: "3–6 yaş uşaqlar üçün oyun əsaslı erkən inkişaf proqramları.",             icon: "child_care",        link: "/preschool",       linkLabel: "Ətraflı",         size: "small",  variant: "primary", order: 3 },
+                    { _id: "b4", title: "Təlim Mərkəzi",           description: "Peşəkar sertifikat proqramları.",                                          icon: "workspace_premium", link: "/training-center", linkLabel: "Bax",             size: "small",  variant: "dark",    order: 4 },
                 ];
                 const displayItems = bentoItems.length > 0 ? bentoItems : STATIC_BENTO;
                 return (
