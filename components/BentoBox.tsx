@@ -80,7 +80,8 @@ function CardContent({ item, imageUrl }: CardProps) {
 
     return (
         <div
-            className={`relative w-full h-full rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 group p-6 flex flex-col justify-between ${baseBg(item.variant, hasImage)}`}
+            className={`relative w-full rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 group p-6 flex flex-col justify-between ${baseBg(item.variant, hasImage)}`}
+            style={{ height: "100%" }}
         >
             {/* Background image — shown for ALL cards that have an image */}
             {hasImage && (
@@ -144,7 +145,10 @@ export default function BentoBox({ items }: BentoBoxProps) {
     if (!items || items.length === 0) return null;
 
     return (
-        <div className="grid grid-cols-2 md:grid-cols-4 auto-rows-[260px] gap-4">
+        <div
+            className="grid grid-cols-2 md:grid-cols-4 gap-4"
+            style={{ gridAutoRows: "260px", gridAutoFlow: "dense" }}
+        >
             {items.map((item) => {
                 const imageUrl = item.image
                     ? (typeof item.image === "string"
@@ -152,12 +156,14 @@ export default function BentoBox({ items }: BentoBoxProps) {
                         : urlFor(item.image).width(900).height(900).quality(85).url())
                     : null;
 
+                const cls = `${sizeClass(item.size)}`;
+
                 return item.link ? (
-                    <Link key={item._id} href={item.link} className={`${sizeClass(item.size)} block h-full`}>
+                    <Link key={item._id} href={item.link} className={cls} style={{ display: "block" }}>
                         <CardContent item={item} imageUrl={imageUrl} />
                     </Link>
                 ) : (
-                    <div key={item._id} className={`${sizeClass(item.size)} h-full`}>
+                    <div key={item._id} className={cls}>
                         <CardContent item={item} imageUrl={imageUrl} />
                     </div>
                 );

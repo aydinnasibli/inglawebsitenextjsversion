@@ -1,5 +1,13 @@
 import { groq } from 'next-sanity'
 
+// Fetch one representative image from each major category for the homepage bento fallback
+export const BENTO_CATEGORY_IMAGES_QUERY = groq`{
+    "services":    *[_type == "services"        && isActive == true && defined(featuredImage)] | order(isFeatured desc) [0] { "img": featuredImage },
+    "studyabroad": *[_type == "country"          && defined(coverImage)]                        | order(isFeatured desc) [0] { "img": coverImage    },
+    "preschool":   *[_type == "preschoolService" && defined(featuredImage)]                     | order(order asc)       [0] { "img": featuredImage },
+    "training":    *[_type == "training"         && isActive == true && defined(featuredImage)] | order(startDate desc)  [0] { "img": featuredImage }
+}`
+
 // Homepage Bento Box
 export const HOMEPAGE_BENTO_QUERY = groq`
   *[_type == "homepageBento" && isActive == true] | order(order asc) {
