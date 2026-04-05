@@ -224,24 +224,34 @@ export default function HomeClient({ initialBentoData, initialFaqData, initialTe
             </section>
 
             {/* ── BENTO BOX ────────────────────────────────────────────── */}
-            {bentoItems.length > 0 && (
-            <section className="py-20 md:py-28">
-                <div className="max-w-7xl mx-auto px-6">
-                    <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-10">
-                        <div>
-                            <p className="text-primary font-bold text-sm uppercase tracking-widest mb-2">Proqramlarımız</p>
-                            <h2 className="text-3xl md:text-4xl font-black text-slate-900 dark:text-white leading-tight">
-                                Hər ehtiyac üçün <span className="text-primary">doğru proqram</span>
-                            </h2>
+            {(() => {
+                const STATIC_BENTO: BentoItem[] = [
+                    { _id: "b1", title: "İngilis Dili Kursları", description: "Başlanğıc səviyyədən C1-ə qədər bütün yaş qrupları üçün intensiv dil proqramları.", icon: "language", link: "/services", linkLabel: "Proqramlara bax", size: "large",  variant: "dark",    order: 1 },
+                    { _id: "b2", title: "IELTS & SAT Hazırlığı", description: "Hədəf bala çatmaq üçün sübut edilmiş metodika ilə intensiv hazırlıq.",              icon: "history_edu", link: "/services", linkLabel: "Ətraflı",          size: "wide",  variant: "primary", order: 2 },
+                    { _id: "b3", title: "Xaricdə Təhsil",        description: "50+ aparıcı universitetə qəbul, viza dəstəyi və tam müşayiət.",                       icon: "public",      link: "/studyabroad", linkLabel: "Ölkələrə bax",   size: "tall",  variant: "dark",    order: 3 },
+                    { _id: "b4", title: "Preschool",              description: "3–6 yaş uşaqlar üçün oyun əsaslı erkən inkişaf proqramları.",                          icon: "child_care",  link: "/preschool",   linkLabel: "Ətraflı",         size: "small", variant: "light",   order: 4 },
+                    { _id: "b5", title: "Təlim Mərkəzi",          description: "Korporativ sertifikat proqramları.",                                                   icon: "workspace_premium", link: "/training-center", linkLabel: "Bax", size: "small", variant: "primary", order: 5 },
+                ];
+                const displayItems = bentoItems.length > 0 ? bentoItems : STATIC_BENTO;
+                return (
+                    <section className="py-20 md:py-28">
+                        <div className="max-w-7xl mx-auto px-6">
+                            <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-10">
+                                <div>
+                                    <p className="text-primary font-bold text-sm uppercase tracking-widest mb-2">Proqramlarımız</p>
+                                    <h2 className="text-3xl md:text-4xl font-black text-slate-900 dark:text-white leading-tight">
+                                        Hər ehtiyac üçün <span className="text-primary">doğru proqram</span>
+                                    </h2>
+                                </div>
+                                <Link href="/services" className="inline-flex items-center gap-2 text-sm font-bold text-primary hover:underline">
+                                    Bütün proqramlara bax <span className="material-symbols-outlined text-[18px]">arrow_forward</span>
+                                </Link>
+                            </div>
+                            <BentoBox items={displayItems} />
                         </div>
-                        <Link href="/services" className="inline-flex items-center gap-2 text-sm font-bold text-primary hover:underline">
-                            Bütün proqramlara bax <span className="material-symbols-outlined text-[18px]">arrow_forward</span>
-                        </Link>
-                    </div>
-                    <BentoBox items={bentoItems} />
-                </div>
-            </section>
-            )}
+                    </section>
+                );
+            })()}
 
             {/* ── TESTIMONIALS ─────────────────────────────────────────── */}
             {testimonials.length > 0 && (
