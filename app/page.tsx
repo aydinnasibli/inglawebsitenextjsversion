@@ -1,22 +1,30 @@
 import { Suspense } from 'react';
 import HomeClient from "@/components/HomeClient";
 import { client } from "@/sanity/lib/client";
-import { HOMEPAGE_BENTO_QUERY } from "@/sanity/lib/queries";
-import { BentoItem } from "@/components/BentoBox";
+import { FEATURED_SERVICES_QUERY } from "@/sanity/lib/queries";
 
-async function getBentoData(): Promise<BentoItem[]> {
+export interface HomeService {
+  _id: string;
+  title: string;
+  slug: { current: string };
+  shortDescription?: string;
+  featuredImage?: any;
+  duration?: string;
+  priceRange?: string;
+  category?: string;
+  isFeatured?: boolean;
+}
+
+async function getHomeData(): Promise<HomeService[]> {
   try {
-    const data = await client.fetch<BentoItem[]>(
-      HOMEPAGE_BENTO_QUERY,
+    const data = await client.fetch<HomeService[]>(
+      FEATURED_SERVICES_QUERY,
       {},
-      {
-        cache: 'force-cache',
-        next: { revalidate: 3600 }
-      }
+      { cache: 'force-cache', next: { revalidate: 3600 } }
     );
     return Array.isArray(data) ? data : [];
   } catch (error) {
-    console.error('Error fetching bento data:', error);
+    console.error('Error fetching services for homepage:', error);
     return [];
   }
 }
@@ -25,7 +33,7 @@ function LoadingFallback() {
   return (
     <div className="min-h-screen bg-background-light dark:bg-background-dark flex items-center justify-center">
       <div className="text-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4" />
         <p className="text-slate-500">Yüklənir...</p>
       </div>
     </div>
@@ -33,11 +41,11 @@ function LoadingFallback() {
 }
 
 export default async function Home() {
-  const bentoData = await getBentoData();
+  const services = await getHomeData();
 
   return (
     <Suspense fallback={<LoadingFallback />}>
-      <HomeClient initialBentoData={bentoData} />
+      <HomeClient initialServicesData={services} />
     </Suspense>
   );
 }

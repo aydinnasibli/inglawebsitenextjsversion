@@ -6,12 +6,12 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { client } from "@/sanity/lib/client";
 import { urlFor } from "@/sanity/lib/image";
-import { HOMEPAGE_BENTO_QUERY, FAQ_QUERY, TESTIMONIALS_QUERY } from "@/sanity/lib/queries";
+import { FAQ_QUERY, TESTIMONIALS_QUERY, FEATURED_SERVICES_QUERY } from "@/sanity/lib/queries";
 import { SanityFAQItem, SanityTestimonialItem, FAQItem, TestimonialItem } from "@/types/faq-testimonials";
-import BentoBox, { BentoItem } from "./BentoBox";
+import { HomeService } from "@/app/page";
 
 interface HomeClientProps {
-    initialBentoData?: BentoItem[];
+    initialServicesData?: HomeService[];
     initialFaqData?: SanityFAQItem[];
     initialTestimonialsData?: SanityTestimonialItem[];
 }
@@ -38,18 +38,18 @@ const STATS = [
     { icon: "star",           label: "Məmnuniyyət",     value: "4.9/5"  },
 ];
 
-export default function HomeClient({ initialBentoData, initialFaqData, initialTestimonialsData }: HomeClientProps) {
-    const [bentoItems, setBentoItems] = useState<BentoItem[]>(initialBentoData || []);
+export default function HomeClient({ initialServicesData, initialFaqData, initialTestimonialsData }: HomeClientProps) {
+    const [services, setServices] = useState<HomeService[]>(initialServicesData || []);
     const [faqItems, setFaqItems] = useState<FAQItem[]>([]);
     const [activeFaq, setActiveFaq] = useState<string | null>(null);
     const [testimonials, setTestimonials] = useState<TestimonialItem[]>([]);
     const router = useRouter();
 
     useEffect(() => {
-        if (!initialBentoData?.length) {
-            client.fetch<BentoItem[]>(HOMEPAGE_BENTO_QUERY).then(d => { if (d?.length) setBentoItems(d); }).catch(console.error);
+        if (!initialServicesData?.length) {
+            client.fetch<HomeService[]>(FEATURED_SERVICES_QUERY).then(d => { if (d?.length) setServices(d); }).catch(console.error);
         }
-    }, [initialBentoData]);
+    }, [initialServicesData]);
 
     useEffect(() => {
         if (initialFaqData?.length) setFaqItems(transformFaqData(initialFaqData));
@@ -244,135 +244,161 @@ export default function HomeClient({ initialBentoData, initialFaqData, initialTe
                 </div>
             </section>
 
-            {/* ── BENTO BOX ────────────────────────────────────────────── */}
+            {/* ── FEATURED PROGRAMS ────────────────────────────────────── */}
             <section className="py-20 md:py-28">
                 <div className="max-w-7xl mx-auto px-6">
+                    {/* Heading */}
                     <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-12">
                         <div>
-                            <p className="text-primary font-bold text-sm uppercase tracking-widest mb-2">Nə Təklif Edirik</p>
+                            <p className="text-primary font-bold text-sm uppercase tracking-widest mb-2">Proqramlarımız</p>
                             <h2 className="text-3xl md:text-4xl font-black text-slate-900 dark:text-white leading-tight">
-                                Hər yaş üçün <br className="hidden md:block" />
-                                <span className="text-primary">keyfiyyətli təhsil</span>
+                                Hər ehtiyac üçün <br className="hidden md:block" />
+                                <span className="text-primary">doğru proqram</span>
                             </h2>
                         </div>
-                        <p className="text-slate-500 dark:text-slate-400 max-w-sm text-sm leading-relaxed">
-                            Uşaqlardan peşəkarlara qədər hər kəs üçün beynəlxalq standartlarda proqramlar.
-                        </p>
+                        <Link
+                            href="/services"
+                            className="inline-flex items-center gap-2 text-sm font-bold text-primary hover:underline"
+                        >
+                            Bütün proqramlara bax <span className="material-symbols-outlined text-[18px]">arrow_forward</span>
+                        </Link>
                     </div>
 
-                    {bentoItems.length > 0 ? (
-                        <BentoBox items={bentoItems} />
+                    {/* CMS services or static fallback */}
+                    {services.length > 0 ? (
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                            {services.map((svc) => (
+                                <Link
+                                    key={svc._id}
+                                    href={`/services/${svc.slug.current}`}
+                                    className="group flex flex-col bg-white dark:bg-slate-900 rounded-2xl overflow-hidden border border-slate-100 dark:border-slate-800 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300"
+                                >
+                                    {/* Image */}
+                                    <div className="relative h-52 overflow-hidden bg-slate-100 dark:bg-slate-800">
+                                        {svc.featuredImage ? (
+                                            <Image
+                                                src={urlFor(svc.featuredImage).width(640).height(420).quality(85).url()}
+                                                alt={svc.title}
+                                                fill
+                                                className="object-cover group-hover:scale-105 transition-transform duration-500"
+                                            />
+                                        ) : (
+                                            <div className="w-full h-full flex items-center justify-center">
+                                                <span className="material-symbols-outlined text-slate-300 dark:text-slate-600 text-6xl">school</span>
+                                            </div>
+                                        )}
+                                        <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
+                                        {svc.category && (
+                                            <span className="absolute top-3 left-3 px-2.5 py-1 bg-primary text-slate-900 text-[10px] font-bold uppercase tracking-wider rounded-full">
+                                                {svc.category}
+                                            </span>
+                                        )}
+                                    </div>
+
+                                    {/* Body */}
+                                    <div className="flex flex-col gap-3 p-6 grow">
+                                        <h3 className="text-lg font-black text-slate-900 dark:text-white group-hover:text-primary transition-colors leading-snug">
+                                            {svc.title}
+                                        </h3>
+                                        {svc.shortDescription && (
+                                            <p className="text-sm text-slate-600 dark:text-slate-400 line-clamp-2 leading-relaxed">
+                                                {svc.shortDescription}
+                                            </p>
+                                        )}
+
+                                        {/* Meta tags */}
+                                        <div className="flex flex-wrap gap-2 mt-auto pt-3 border-t border-slate-100 dark:border-slate-800">
+                                            {svc.duration && (
+                                                <span className="flex items-center gap-1 text-xs text-slate-500 dark:text-slate-400">
+                                                    <span className="material-symbols-outlined text-[14px] text-primary">schedule</span>
+                                                    {svc.duration}
+                                                </span>
+                                            )}
+                                            {svc.priceRange && (
+                                                <span className="flex items-center gap-1 text-xs text-slate-500 dark:text-slate-400">
+                                                    <span className="material-symbols-outlined text-[14px] text-primary">payments</span>
+                                                    {svc.priceRange}
+                                                </span>
+                                            )}
+                                            <span className="ml-auto flex items-center gap-1 text-xs font-bold text-primary group-hover:gap-2 transition-all">
+                                                Ətraflı <span className="material-symbols-outlined text-[14px]">arrow_forward</span>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </Link>
+                            ))}
+                        </div>
                     ) : (
-                        /* ── Fallback static bento (7 cards) ── */
-                        <div className="grid grid-cols-2 md:grid-cols-4 auto-rows-[260px] gap-4">
-
-                            {/* 1 — Large 2×2: Tədris İstiqamətləri */}
-                            <div
-                                onClick={() => router.push("/services")}
-                                className="col-span-2 row-span-2 relative rounded-2xl overflow-hidden cursor-pointer group"
-                            >
-                                <Image src="/assets/bg.webp" alt="Tədris İstiqamətləri" fill className="object-cover opacity-50 group-hover:opacity-60 group-hover:scale-105 transition-all duration-500" />
-                                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-black/10" />
-                                <div className="relative z-10 p-8 h-full flex flex-col text-white">
-                                    <span className="material-symbols-outlined text-primary text-5xl mb-auto">school</span>
-                                    <div>
-                                        <p className="text-primary text-xs font-bold uppercase tracking-widest mb-2">Əsas Proqram</p>
-                                        <h3 className="text-3xl font-black mb-3 leading-tight">Tədris İstiqamətləri</h3>
-                                        <p className="text-slate-300 text-sm mb-5 line-clamp-2">İngilis dili, IELTS, SAT hazırlığı və digər beynəlxalq sertifikat proqramları.</p>
-                                        <span className="inline-flex items-center gap-2 bg-primary text-slate-900 px-4 py-2 rounded-xl text-sm font-bold group-hover:gap-3 transition-all">
-                                            Ətraflı Bax <span className="material-symbols-outlined text-[16px]">arrow_forward</span>
+                        /* ── Static fallback when CMS is empty ── */
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                            {[
+                                {
+                                    icon: "language", title: "İngilis Dili Kursları",
+                                    desc: "Başlanğıc səviyyədən C1-ə qədər bütün səviyyələr üçün intensiv dil proqramları.",
+                                    duration: "3–12 ay", href: "/services", tag: "Dil Kursları",
+                                },
+                                {
+                                    icon: "history_edu", title: "IELTS & SAT Hazırlığı",
+                                    desc: "Beynəlxalq imtahanlara hədəfli hazırlıq — yüksək bal, qısa müddət.",
+                                    duration: "2–4 ay", href: "/services", tag: "İmtahan Hazırlığı",
+                                },
+                                {
+                                    icon: "public", title: "Xaricdə Təhsil",
+                                    desc: "Dünyanın 50+ aparıcı universitetinə qəbul, viza dəstəyi və tam müşayiət.",
+                                    duration: "Fərdi", href: "/studyabroad", tag: "Xaricdə Təhsil",
+                                },
+                                {
+                                    icon: "child_care", title: "Preschool",
+                                    desc: "3–6 yaş uşaqlar üçün erkən inkişaf, ingilis dili və yaradıcı fəaliyyət proqramları.",
+                                    duration: "İllik", href: "/preschool", tag: "Preschool",
+                                },
+                                {
+                                    icon: "workspace_premium", title: "Təlim Mərkəzi",
+                                    desc: "Korporativ müştərilər və peşəkarlar üçün ixtisaslaşmış sertifikat proqramları.",
+                                    duration: "1–3 ay", href: "/training-center", tag: "Biznes Təlimi",
+                                },
+                                {
+                                    icon: "groups", title: "Korporativ Həllər",
+                                    desc: "Şirkətinizin ehtiyaclarına uyğun qrup təlimlər — ofisdə və ya online format.",
+                                    duration: "Fərdi", href: "/training-center", tag: "Korporativ",
+                                },
+                            ].map(({ icon, title, desc, duration, href, tag }) => (
+                                <Link
+                                    key={title}
+                                    href={href}
+                                    className="group flex flex-col bg-white dark:bg-slate-900 rounded-2xl overflow-hidden border border-slate-100 dark:border-slate-800 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300"
+                                >
+                                    {/* Icon header */}
+                                    <div className="h-40 bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-800 dark:to-slate-900 flex items-center justify-center relative overflow-hidden">
+                                        <span className="material-symbols-outlined text-primary text-7xl opacity-20 absolute -right-4 -bottom-4 select-none">
+                                            {icon}
                                         </span>
+                                        <div className="size-16 rounded-2xl bg-white dark:bg-slate-800 shadow-md flex items-center justify-center relative z-10">
+                                            <span className="material-symbols-outlined text-primary text-4xl">{icon}</span>
+                                        </div>
                                     </div>
-                                </div>
-                            </div>
 
-                            {/* 2 — Tall 1×2: Preschool */}
-                            <div
-                                onClick={() => router.push("/preschool")}
-                                className="col-span-1 row-span-2 relative rounded-2xl overflow-hidden cursor-pointer group bg-slate-900"
-                            >
-                                <Image src="/assets/bg.webp" alt="Preschool" fill className="object-cover opacity-30 group-hover:opacity-40 group-hover:scale-105 transition-all duration-500" />
-                                <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent" />
-                                <div className="relative z-10 p-6 h-full flex flex-col text-white">
-                                    <span className="material-symbols-outlined text-primary text-4xl mb-auto">child_care</span>
-                                    <div>
-                                        <h3 className="text-xl font-black mb-2">Preschool</h3>
-                                        <p className="text-slate-400 text-xs line-clamp-3">Erkən yaşdan uşaqların inkişafı üçün xüsusi proqram.</p>
-                                        <span className="mt-3 inline-flex items-center gap-1 text-primary text-xs font-bold group-hover:gap-2 transition-all">
-                                            Bax <span className="material-symbols-outlined text-[14px]">arrow_forward</span>
-                                        </span>
+                                    {/* Body */}
+                                    <div className="flex flex-col gap-3 p-6 grow">
+                                        <span className="text-[10px] font-bold text-primary uppercase tracking-widest">{tag}</span>
+                                        <h3 className="text-lg font-black text-slate-900 dark:text-white group-hover:text-primary transition-colors leading-snug">
+                                            {title}
+                                        </h3>
+                                        <p className="text-sm text-slate-600 dark:text-slate-400 line-clamp-2 leading-relaxed">
+                                            {desc}
+                                        </p>
+                                        <div className="flex items-center justify-between mt-auto pt-3 border-t border-slate-100 dark:border-slate-800">
+                                            <span className="flex items-center gap-1 text-xs text-slate-500">
+                                                <span className="material-symbols-outlined text-[14px] text-primary">schedule</span>
+                                                {duration}
+                                            </span>
+                                            <span className="flex items-center gap-1 text-xs font-bold text-primary group-hover:gap-2 transition-all">
+                                                Ətraflı <span className="material-symbols-outlined text-[14px]">arrow_forward</span>
+                                            </span>
+                                        </div>
                                     </div>
-                                </div>
-                            </div>
-
-                            {/* 3 — Small 1×1: Xaricdə Təhsil */}
-                            <div
-                                onClick={() => router.push("/studyabroad")}
-                                className="col-span-1 row-span-1 rounded-2xl bg-primary cursor-pointer group p-6 flex flex-col justify-between hover:brightness-105 transition-all"
-                            >
-                                <span className="material-symbols-outlined text-slate-900/60 text-4xl">public</span>
-                                <div>
-                                    <h3 className="text-lg font-black text-slate-900 leading-tight">Xaricdə Təhsil</h3>
-                                    <span className="mt-1 inline-flex items-center gap-1 text-slate-900/70 text-xs font-bold group-hover:gap-2 transition-all">
-                                        Kəşf et <span className="material-symbols-outlined text-[13px]">arrow_forward</span>
-                                    </span>
-                                </div>
-                            </div>
-
-                            {/* 4 — Small 1×1: Təlim Mərkəzi */}
-                            <div
-                                onClick={() => router.push("/training-center")}
-                                className="col-span-1 row-span-1 rounded-2xl bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 cursor-pointer group p-6 flex flex-col justify-between hover:border-primary hover:shadow-md transition-all"
-                            >
-                                <span className="material-symbols-outlined text-primary text-4xl">workspace_premium</span>
-                                <div>
-                                    <h3 className="text-lg font-black text-slate-900 dark:text-white leading-tight">Təlim Mərkəzi</h3>
-                                    <span className="mt-1 inline-flex items-center gap-1 text-primary text-xs font-bold group-hover:gap-2 transition-all">
-                                        Bax <span className="material-symbols-outlined text-[13px]">arrow_forward</span>
-                                    </span>
-                                </div>
-                            </div>
-
-                            {/* 5 — Wide 2×1: Blog */}
-                            <div
-                                onClick={() => router.push("/blog")}
-                                className="col-span-2 row-span-1 rounded-2xl bg-slate-900 dark:bg-black cursor-pointer group p-8 flex items-center justify-between hover:ring-2 hover:ring-primary transition-all"
-                            >
-                                <div className="text-white">
-                                    <p className="text-primary text-xs font-bold uppercase tracking-widest mb-2">Yeniliklər</p>
-                                    <h3 className="text-2xl font-black leading-tight">Blog & Məqalələr</h3>
-                                    <p className="text-slate-400 text-sm mt-1">Təhsil, dil öyrənmə və karyera məsləhətləri.</p>
-                                </div>
-                                <span className="material-symbols-outlined text-primary text-6xl opacity-60 group-hover:opacity-100 group-hover:scale-110 transition-all flex-shrink-0">article</span>
-                            </div>
-
-                            {/* 6 — Small 1×1: Haqqımızda */}
-                            <div
-                                onClick={() => router.push("/about")}
-                                className="col-span-1 row-span-1 rounded-2xl bg-primary/10 dark:bg-primary/5 border border-primary/20 cursor-pointer group p-6 flex flex-col justify-between hover:bg-primary/20 transition-all"
-                            >
-                                <span className="material-symbols-outlined text-primary text-4xl">info</span>
-                                <div>
-                                    <h3 className="text-lg font-black text-slate-900 dark:text-white leading-tight">Haqqımızda</h3>
-                                    <span className="mt-1 inline-flex items-center gap-1 text-primary text-xs font-bold group-hover:gap-2 transition-all">
-                                        Bax <span className="material-symbols-outlined text-[13px]">arrow_forward</span>
-                                    </span>
-                                </div>
-                            </div>
-
-                            {/* 7 — Small 1×1: Müraciət */}
-                            <div className="col-span-1 row-span-1 rounded-2xl bg-primary cursor-pointer group p-6 flex flex-col justify-between hover:brightness-105 transition-all"
-                                onClick={() => router.push("/services")}
-                            >
-                                <span className="material-symbols-outlined text-slate-900/60 text-4xl">edit_note</span>
-                                <div>
-                                    <h3 className="text-lg font-black text-slate-900 leading-tight">İndi Müraciət Et</h3>
-                                    <span className="mt-1 inline-flex items-center gap-1 text-slate-900/70 text-xs font-bold group-hover:gap-2 transition-all">
-                                        Başla <span className="material-symbols-outlined text-[13px]">arrow_forward</span>
-                                    </span>
-                                </div>
-                            </div>
-
+                                </Link>
+                            ))}
                         </div>
                     )}
                 </div>
