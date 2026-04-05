@@ -6,7 +6,7 @@ export const structure: StructureResolver = (S) =>
   S.list()
     .title('Content Management')
     .items([
-      S.documentTypeListItem('homepageCarousel').title('Homepage Carousel'),
+      S.documentTypeListItem('homepageBento').title('Homepage Bento Box'),
       S.documentTypeListItem('services').title('Services (Tədris İstiqamətləri)'),
       S.divider(),
 
@@ -50,7 +50,7 @@ export const structure: StructureResolver = (S) =>
       S.divider(),
       ...S.documentTypeListItems().filter(
         (item) => item.getId() && ![
-          'homepageCarousel',
+          'homepageBento',
           'faq',
           'testimonials',
           'services',

@@ -25,10 +25,8 @@ export default function StudyAbroadClient({ initialCountriesData }: StudyAbroadC
                     if (isMounted) {
                         setCountries(initialCountriesData.map(c => ({
                              id: c._id, name: c.name, slug: c.slug.current, shortDescription: c.shortDescription || "", nameAz: c.nameAz || "", flagImage: c.flagImage ? urlFor(c.flagImage).url() : "", coverImage: c.coverImage ? urlFor(c.coverImage).url() : "",
-
-                            // Handle image mapping if it exists
-                            image: (c as any).image ? urlFor((c as any).image).width(800).height(600).url() : '/assets/bg.webp',
-                            universitiesCount: (c as any).universitiesCount || 0
+                            image: c.coverImage ? urlFor(c.coverImage).width(800).height(600).url() : '/assets/bg.webp',
+                            universitiesCount: c.universitiesCount ?? 5
                         })));
                         setIsLoading(false);
                     }
@@ -110,7 +108,7 @@ export default function StudyAbroadClient({ initialCountriesData }: StudyAbroadC
                                     </div>
                                 </div>
                                 <h3 className="font-bold text-lg group-hover:text-primary transition-colors">{country.name}</h3>
-                                <p className="text-slate-500 text-sm">{(country as any).universitiesCount || 5}+ Tərəfdaş Universitet</p>
+                                <p className="text-slate-500 text-sm">{country.universitiesCount ?? 5}+ Tərəfdaş Universitet</p>
                             </Link>
                         )) : (
                             // Fallback items if CMS is empty

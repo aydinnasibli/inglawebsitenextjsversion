@@ -1,5 +1,22 @@
 import { groq } from 'next-sanity'
 
+// Homepage Bento Box
+export const HOMEPAGE_BENTO_QUERY = groq`
+  *[_type == "homepageBento" && isActive == true] | order(order asc) {
+    _id,
+    title,
+    description,
+    image,
+    icon,
+    link,
+    linkLabel,
+    size,
+    variant,
+    order,
+    isActive
+  }
+`
+
 // Get all active services for the services listing page
 export const SERVICES_QUERY = groq`
   *[_type == "services" && isActive == true] | order(isFeatured desc, order asc) {
@@ -162,6 +179,7 @@ export const COUNTRIES_QUERY = `*[_type == "country" && isActive == true] | orde
   highlights,
   studyInfo,
   popularPrograms,
+  universitiesCount,
   order,
   isActive,
   isFeatured,

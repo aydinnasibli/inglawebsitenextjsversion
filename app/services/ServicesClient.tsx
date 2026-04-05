@@ -151,7 +151,7 @@ export default function ServicesPage({ initialServicesData }: ServicesPageProps)
                                         </div>
                                         <div className="flex flex-col gap-2">
                                             <h4 className="text-slate-900 dark:text-white text-xl font-bold">{service.title}</h4>
-                                            <p className="text-slate-600 dark:text-slate-400 leading-relaxed line-clamp-3">
+                                            <p className="text-slate-800 dark:text-slate-200 leading-relaxed line-clamp-3">
                                                 {service.shortDescription}
                                             </p>
                                         </div>
@@ -169,7 +169,7 @@ export default function ServicesPage({ initialServicesData }: ServicesPageProps)
                                         </div>
                                         <div className="flex flex-col gap-2">
                                             <h4 className="text-slate-900 dark:text-white text-xl font-bold">Xaricdə Təhsil</h4>
-                                            <p className="text-slate-600 dark:text-slate-400 leading-relaxed">
+                                            <p className="text-slate-800 dark:text-slate-200 leading-relaxed">
                                                 Dünyanın nüfuzlu universitetlərinə qəbul prosesində, viza dəstəyində və mədəniyyətə uyğunlaşmaqda mütəxəssis dəstəyi.
                                             </p>
                                         </div>
@@ -183,7 +183,7 @@ export default function ServicesPage({ initialServicesData }: ServicesPageProps)
                                         </div>
                                         <div className="flex flex-col gap-2">
                                             <h4 className="text-slate-900 dark:text-white text-xl font-bold">Preschool (Məktəbəqədər)</h4>
-                                            <p className="text-slate-600 dark:text-slate-400 leading-relaxed">
+                                            <p className="text-slate-800 dark:text-slate-200 leading-relaxed">
                                                 Uşaqların erkən yaşdan idrak, sosial bacarıqlarını və dünyagörüşünü inkişaf etdirən təhlükəsiz və əyləncəli mühit.
                                             </p>
                                         </div>
@@ -197,7 +197,7 @@ export default function ServicesPage({ initialServicesData }: ServicesPageProps)
                                         </div>
                                         <div className="flex flex-col gap-2">
                                             <h4 className="text-slate-900 dark:text-white text-xl font-bold">Təlim Mərkəzi</h4>
-                                            <p className="text-slate-600 dark:text-slate-400 leading-relaxed">
+                                            <p className="text-slate-800 dark:text-slate-200 leading-relaxed">
                                                 Müasir iş dünyasının tələblərinə uyğunlaşdırılmış, karyera inkişafı üçün nəzərdə tutulan peşəkar sertifikatlı təlimlər.
                                             </p>
                                         </div>

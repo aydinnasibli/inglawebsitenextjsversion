@@ -13,8 +13,44 @@ const lexend = Lexend({
 });
 
 export const metadata: Metadata = {
-  title: "Ingla School | Azərbaycan",
-  description: "Ingla School - Təhsil mərkəzi, Preschool, Xaricdə təhsil",
+  metadataBase: new URL('https://inglaschool.az'),
+  title: {
+    default: "Ingla School | Azərbaycan",
+    template: "%s | Ingla School",
+  },
+  description: "Ingla School — Bakıda beynəlxalq standartlarda dil kursları, preschool, xaricdə təhsil və peşəkar təlim mərkəzi. Uşaqlardan yetkinlərə qədər keyfiyyətli təhsil həlləri.",
+  keywords: [
+    "ingla school", "dil kursu baku", "ingilis dili kursu", "xaricdə təhsil",
+    "preschool baku", "təlim mərkəzi", "IELTS hazırlıq", "SAT hazırlıq",
+    "Bakı dil kursu", "ingla school baku", "azerbaycan dil kursu"
+  ],
+  authors: [{ name: "Ingla School" }],
+  creator: "Ingla School",
+  publisher: "Ingla School",
+  formatDetection: { email: false, address: false, telephone: false },
+  openGraph: {
+    type: "website",
+    locale: "az_AZ",
+    url: "https://inglaschool.az",
+    siteName: "Ingla School",
+    title: "Ingla School | Azərbaycan",
+    description: "Bakıda beynəlxalq standartlarda dil kursları, preschool, xaricdə təhsil və peşəkar təlim mərkəzi.",
+    images: [{ url: "/assets/logoingla.png", width: 800, height: 600, alt: "Ingla School" }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Ingla School | Azərbaycan",
+    description: "Bakıda beynəlxalq standartlarda dil kursları, preschool, xaricdə təhsil və peşəkar təlim mərkəzi.",
+    images: ["/assets/logoingla.png"],
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: { index: true, follow: true, "max-video-preview": -1, "max-image-preview": "large", "max-snippet": -1 },
+  },
+  verification: {
+    google: "",
+  },
 };
 
 export default function RootLayout({
