@@ -97,47 +97,57 @@ export default function TrainingClient({ initialTrainings }: TrainingClientProps
                     const items = trainings.length > 0 ? trainings : FALLBACK;
                     return (
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                            {items.map((t) => (
-                                <Link
-                                    key={t._id}
-                                    href={t.slug?.current ? `/training-center/${t.slug.current}` : "#"}
-                                    className="group flex flex-col bg-white dark:bg-slate-900 rounded-2xl overflow-hidden border border-slate-100 dark:border-slate-800 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300"
-                                >
-                                    <div className="relative h-52 overflow-hidden bg-slate-100 dark:bg-slate-800">
-                                        <Image
-                                            src={t.featuredImage ? urlFor(t.featuredImage).width(600).height(400).url() : '/assets/bg.webp'}
-                                            alt={t.title}
-                                            fill
-                                            className="object-cover group-hover:scale-105 transition-transform duration-500"
-                                        />
-                                        <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
-                                        {t.category && (
-                                            <span className="absolute top-3 left-3 px-2.5 py-1 bg-primary text-slate-900 text-[10px] font-bold uppercase tracking-wider rounded-full">
-                                                {t.category}
-                                            </span>
-                                        )}
-                                    </div>
-                                    <div className="flex flex-col gap-3 p-6 grow">
-                                        <h3 className="text-lg font-black text-slate-900 dark:text-white group-hover:text-primary transition-colors leading-snug line-clamp-2">
-                                            {t.title}
-                                        </h3>
-                                        <p className="text-sm text-slate-600 dark:text-slate-400 line-clamp-2 leading-relaxed flex-1">
-                                            {t.description || 'Proqram haqqında ətraflı məlumat üçün klikləyin.'}
-                                        </p>
-                                        <div className="flex items-center justify-between mt-auto pt-3 border-t border-slate-100 dark:border-slate-800">
-                                            {t.level && (
-                                                <span className="flex items-center gap-1 text-xs text-slate-500">
-                                                    <span className="material-symbols-outlined text-[14px] text-primary">bar_chart</span>
-                                                    {t.level}
+                            {items.map((t) => {
+                                const hasSlug = !!t.slug?.current;
+                                const cardBody = (
+                                    <>
+                                        <div className="relative h-52 overflow-hidden bg-slate-100 dark:bg-slate-800">
+                                            <Image
+                                                src={t.featuredImage ? urlFor(t.featuredImage).width(600).height(400).url() : '/assets/bg.webp'}
+                                                alt={t.title}
+                                                fill
+                                                className={`object-cover transition-transform duration-500${hasSlug ? " group-hover:scale-105" : ""}`}
+                                            />
+                                            <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
+                                            {t.category && (
+                                                <span className="absolute top-3 left-3 px-2.5 py-1 bg-primary text-slate-900 text-[10px] font-bold uppercase tracking-wider rounded-full">
+                                                    {t.category}
                                                 </span>
                                             )}
-                                            <span className="ml-auto flex items-center gap-1 text-xs font-bold text-primary group-hover:gap-2 transition-all">
-                                                Ətraflı <span className="material-symbols-outlined text-[14px]">arrow_forward</span>
-                                            </span>
                                         </div>
+                                        <div className="flex flex-col gap-3 p-6 grow">
+                                            <h3 className={`text-lg font-black text-slate-900 dark:text-white leading-snug line-clamp-2${hasSlug ? " group-hover:text-primary transition-colors" : ""}`}>
+                                                {t.title}
+                                            </h3>
+                                            <p className="text-sm text-slate-600 dark:text-slate-400 line-clamp-2 leading-relaxed flex-1">
+                                                {t.description || 'Proqram haqqında ətraflı məlumat.'}
+                                            </p>
+                                            <div className="flex items-center justify-between mt-auto pt-3 border-t border-slate-100 dark:border-slate-800">
+                                                {t.level && (
+                                                    <span className="flex items-center gap-1 text-xs text-slate-500">
+                                                        <span className="material-symbols-outlined text-[14px] text-primary">bar_chart</span>
+                                                        {t.level}
+                                                    </span>
+                                                )}
+                                                {hasSlug && (
+                                                    <span className="ml-auto flex items-center gap-1 text-xs font-bold text-primary group-hover:gap-2 transition-all">
+                                                        Ətraflı <span className="material-symbols-outlined text-[14px]">arrow_forward</span>
+                                                    </span>
+                                                )}
+                                            </div>
+                                        </div>
+                                    </>
+                                );
+                                return hasSlug ? (
+                                    <Link key={t._id} href={`/training-center/${t.slug.current}`} className="group flex flex-col bg-white dark:bg-slate-900 rounded-2xl overflow-hidden border border-slate-100 dark:border-slate-800 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+                                        {cardBody}
+                                    </Link>
+                                ) : (
+                                    <div key={t._id} className="flex flex-col bg-white dark:bg-slate-900 rounded-2xl overflow-hidden border border-slate-100 dark:border-slate-800 shadow-sm">
+                                        {cardBody}
                                     </div>
-                                </Link>
-                            ))}
+                                );
+                            })}
                         </div>
                     );
                 })()}

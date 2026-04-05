@@ -266,10 +266,9 @@ export default function CountryClient({ initialCountryData, initialUniversitiesD
                     ) : (
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                             {universities.map(uni => (
-                                <Link
+                                <div
                                     key={uni.id}
-                                    href={`/universities/${uni.slug}`}
-                                    className="group flex flex-col bg-white dark:bg-slate-900 rounded-2xl overflow-hidden border border-slate-100 dark:border-slate-800 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300"
+                                    className="flex flex-col bg-white dark:bg-slate-900 rounded-2xl overflow-hidden border border-slate-100 dark:border-slate-800 shadow-sm"
                                 >
                                     {/* Logo area */}
                                     <div className="relative h-44 bg-slate-50 dark:bg-slate-800 flex items-center justify-center overflow-hidden px-8">
@@ -279,7 +278,7 @@ export default function CountryClient({ initialCountryData, initialUniversitiesD
                                                 alt={uni.name}
                                                 width={240}
                                                 height={120}
-                                                className="object-contain max-h-28 group-hover:scale-105 transition-transform duration-500"
+                                                className="object-contain max-h-28"
                                             />
                                         ) : (
                                             <span className="material-symbols-outlined text-slate-300 dark:text-slate-600 text-[64px]">school</span>
@@ -287,13 +286,12 @@ export default function CountryClient({ initialCountryData, initialUniversitiesD
                                     </div>
 
                                     {/* Body */}
-                                    <div className="flex items-center justify-between p-5 border-t border-slate-100 dark:border-slate-800">
-                                        <h3 className="font-black text-slate-900 dark:text-white text-sm group-hover:text-primary transition-colors leading-snug line-clamp-2">
+                                    <div className="p-5 border-t border-slate-100 dark:border-slate-800">
+                                        <h3 className="font-black text-slate-900 dark:text-white text-sm leading-snug line-clamp-2">
                                             {uni.name}
                                         </h3>
-                                        <span className="material-symbols-outlined text-primary text-[18px] flex-shrink-0 ml-3 group-hover:translate-x-0.5 transition-transform">arrow_forward</span>
                                     </div>
-                                </Link>
+                                </div>
                             ))}
                         </div>
                     )}

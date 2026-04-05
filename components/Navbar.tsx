@@ -80,15 +80,6 @@ const Navbar = () => {
                 </div>
 
                 <div className="flex flex-1 justify-end gap-4 items-center">
-                    <label className="hidden md:flex flex-col min-w-40 h-10 max-w-64">
-                        <div className="flex w-full flex-1 items-stretch rounded-lg h-full overflow-hidden border border-slate-200 dark:border-slate-700">
-                            <div className="text-slate-500 bg-slate-50 dark:bg-slate-800 flex items-center justify-center px-3">
-                                <span className="material-symbols-outlined text-[20px]">search</span>
-                            </div>
-                            <input className="w-full border-none bg-slate-50 dark:bg-slate-800 focus:ring-0 text-sm placeholder:text-slate-400 text-slate-900 dark:text-slate-100 outline-none" placeholder="Axtarış..." />
-                        </div>
-                    </label>
-
                     <Link href="/contact" className="hidden sm:flex items-center justify-center rounded-lg h-10 px-6 bg-primary text-slate-900 text-sm font-bold hover:brightness-105 transition-all">
                         Bizimlə Əlaqə
                     </Link>
@@ -121,15 +112,6 @@ const Navbar = () => {
                             <NavLinks isMobile={true} closeMenu={closeMenu} />
 
                             <div className="w-full h-px bg-slate-200 dark:bg-slate-800 my-4"></div>
-
-                            <label className="flex w-full max-w-sm flex-col h-12">
-                                <div className="flex w-full flex-1 items-stretch rounded-lg h-full overflow-hidden border border-slate-200 dark:border-slate-700">
-                                    <div className="text-slate-500 bg-slate-50 dark:bg-slate-800 flex items-center justify-center px-3">
-                                        <span className="material-symbols-outlined text-[20px]">search</span>
-                                    </div>
-                                    <input className="w-full border-none bg-slate-50 dark:bg-slate-800 focus:ring-0 text-sm placeholder:text-slate-400 text-slate-900 dark:text-slate-100 outline-none" placeholder="Axtarış..." />
-                                </div>
-                            </label>
 
                             <Link href="/contact" onClick={closeMenu} className="flex w-full max-w-sm items-center justify-center rounded-lg h-12 px-6 bg-primary text-slate-900 text-base font-bold hover:brightness-105 transition-all">
                                 Bizimlə Əlaqə
