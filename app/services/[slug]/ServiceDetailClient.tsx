@@ -96,6 +96,7 @@ export default function ServiceDetailClient({ slug, initialServiceData }: Servic
     const [isLoading, setIsLoading] = useState(!initialServiceData);
     const [error, setError] = useState<string | null>(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [lightboxIdx, setLightboxIdx] = useState<number | null>(null);
 
     useEffect(() => {
         let isMounted = true;
@@ -233,16 +234,81 @@ export default function ServiceDetailClient({ slug, initialServiceData }: Servic
                             <h2 className="text-2xl font-bold mb-6">Qalereya</h2>
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                 {service.gallery.map((img, idx) => (
-                                    <div key={idx} className="relative aspect-video rounded-xl overflow-hidden group border border-slate-200 dark:border-slate-800">
+                                    <button
+                                        key={idx}
+                                        onClick={() => setLightboxIdx(idx)}
+                                        className="relative aspect-video rounded-xl overflow-hidden group border border-slate-200 dark:border-slate-800 cursor-zoom-in"
+                                    >
                                         <Image
                                             src={img.url}
                                             alt={img.alt || `Gallery image ${idx}`}
                                             fill
                                             className="object-cover group-hover:scale-105 transition-transform duration-500"
                                         />
-                                    </div>
+                                        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors flex items-center justify-center">
+                                            <span className="material-symbols-outlined text-white text-4xl opacity-0 group-hover:opacity-100 transition-opacity drop-shadow-lg">zoom_in</span>
+                                        </div>
+                                    </button>
                                 ))}
                             </div>
+                        </div>
+                    )}
+
+                    {/* Lightbox */}
+                    {lightboxIdx !== null && service.gallery && (
+                        <div
+                            className="fixed inset-0 z-50 bg-black/90 backdrop-blur-sm flex items-center justify-center p-4"
+                            onClick={() => setLightboxIdx(null)}
+                        >
+                            {/* Close */}
+                            <button
+                                className="absolute top-4 right-4 text-white bg-white/10 hover:bg-white/20 rounded-full p-2 transition-colors"
+                                onClick={() => setLightboxIdx(null)}
+                            >
+                                <span className="material-symbols-outlined text-[28px]">close</span>
+                            </button>
+
+                            {/* Prev */}
+                            {lightboxIdx > 0 && (
+                                <button
+                                    className="absolute left-4 text-white bg-white/10 hover:bg-white/20 rounded-full p-3 transition-colors"
+                                    onClick={(e) => { e.stopPropagation(); setLightboxIdx(lightboxIdx - 1); }}
+                                >
+                                    <span className="material-symbols-outlined text-[28px]">chevron_left</span>
+                                </button>
+                            )}
+
+                            {/* Image */}
+                            <div
+                                className="relative max-w-5xl w-full max-h-[85vh] rounded-2xl overflow-hidden"
+                                onClick={(e) => e.stopPropagation()}
+                            >
+                                <Image
+                                    src={service.gallery[lightboxIdx].url}
+                                    alt={service.gallery[lightboxIdx].alt || `Image ${lightboxIdx + 1}`}
+                                    width={1200}
+                                    height={800}
+                                    className="object-contain w-full h-full max-h-[85vh]"
+                                />
+                                {service.gallery[lightboxIdx].caption && (
+                                    <p className="absolute bottom-0 left-0 right-0 bg-black/60 text-white text-sm text-center py-2 px-4">
+                                        {service.gallery[lightboxIdx].caption}
+                                    </p>
+                                )}
+                                <div className="absolute top-3 right-3 bg-black/50 text-white text-xs px-2 py-1 rounded-full">
+                                    {lightboxIdx + 1} / {service.gallery.length}
+                                </div>
+                            </div>
+
+                            {/* Next */}
+                            {lightboxIdx < service.gallery.length - 1 && (
+                                <button
+                                    className="absolute right-4 text-white bg-white/10 hover:bg-white/20 rounded-full p-3 transition-colors"
+                                    onClick={(e) => { e.stopPropagation(); setLightboxIdx(lightboxIdx + 1); }}
+                                >
+                                    <span className="material-symbols-outlined text-[28px]">chevron_right</span>
+                                </button>
+                            )}
                         </div>
                     )}
                 </div>
