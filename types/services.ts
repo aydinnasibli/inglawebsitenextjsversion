@@ -11,6 +11,7 @@ export interface ServiceItem {
     gallery?: ServiceGalleryImage[];
     keyFeatures?: ServiceFeature[];
     targetAudience?: string[];
+    category?: string;
     duration?: string;
     priceRange?: string;
     contactInfo?: ServiceContactInfo;

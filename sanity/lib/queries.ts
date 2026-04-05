@@ -106,20 +106,6 @@ export const SERVICE_SLUGS_QUERY = groq`
 `
 
 
-export const HOMEPAGE_CAROUSEL_QUERY = groq`
-  *[_type == "homepageCarousel" && isActive == true] | order(order asc) {
-    _id,
-    title,
-    description,
-    image,
-    buttonText,
-    buttonLink,
-    order,
-    isActive
-  }
-`
-
-// Add these queries to your existing sanity/lib/queries.ts file:
 
 export const FAQ_QUERY = groq`
   *[_type == "faq" && isActive == true] | order(order asc) {
