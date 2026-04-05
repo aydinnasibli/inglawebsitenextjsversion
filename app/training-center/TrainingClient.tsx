@@ -38,21 +38,48 @@ export default function TrainingClient({ initialTrainings }: TrainingClientProps
     }, [initialTrainings]);
 
     return (
-        <div className="flex-1 bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 w-full max-w-[1200px] mx-auto px-6 py-8">
-            {/* Hero Section */}
-            <section className="mb-12 overflow-hidden rounded-xl relative group">
-                <div className="bg-cover bg-center min-h-[400px] flex flex-col justify-end p-8 md:p-12 relative" style={{ backgroundImage: "linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.2) 60%), url('/assets/bg.webp')" }}>
-                    <div className="max-w-2xl relative z-10 text-white">
-                        <span className="inline-block bg-primary text-background-dark px-3 py-1 rounded text-xs font-bold uppercase tracking-wider mb-4">Yeni Qəbul Başladı</span>
-                        <h1 className="text-4xl md:text-5xl font-extrabold leading-tight mb-4">Hər Bir Öyrənən Üçün Təhsil</h1>
-                        <p className="text-slate-200 text-lg mb-8">Akademik mükəmməlliyi, yaradıcı düşüncəni və ömür boyu davam edən uğuru təşviq etmək üçün hazırlanmış fərdiləşdirilmiş təlim yolları.</p>
-                        <div className="flex flex-wrap gap-4">
-                            <button className="bg-primary text-background-dark px-8 py-3 rounded-lg font-bold hover:scale-105 transition-transform">Proqramları Kəşf Et</button>
-                            <button className="bg-white/10 backdrop-blur-md text-white border border-white/20 px-8 py-3 rounded-lg font-bold hover:bg-white/20 transition-all">Bizim Hekayəmiz</button>
+        <div className="flex-1 bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100">
+
+            {/* ── PAGE HEADER ── */}
+            <div className="relative overflow-hidden bg-slate-900 dark:bg-black">
+                <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffd90008_1px,transparent_1px),linear-gradient(to_bottom,#ffd90008_1px,transparent_1px)] bg-[size:40px_40px] pointer-events-none" />
+                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-primary/5 rounded-full blur-3xl pointer-events-none" />
+
+                <div className="relative z-10 max-w-[1200px] mx-auto px-6 md:px-10 py-14 md:py-20">
+                    <div className="flex items-center gap-2 text-slate-500 text-xs font-medium mb-6">
+                        <Link href="/" className="hover:text-primary transition-colors">Ana Səhifə</Link>
+                        <span className="material-symbols-outlined text-[14px]">chevron_right</span>
+                        <span className="text-primary">Təlim Mərkəzi</span>
+                    </div>
+
+                    <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-8">
+                        <div className="flex flex-col gap-4 max-w-2xl">
+                            <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs font-bold uppercase tracking-widest w-fit">
+                                <span className="material-symbols-outlined text-[14px]">workspace_premium</span>
+                                Peşəkar Inkişaf
+                            </span>
+                            <h1 className="text-white text-3xl md:text-5xl font-black leading-tight tracking-tight">Təlim Mərkəzi</h1>
+                            <p className="text-slate-400 text-base md:text-lg leading-relaxed">
+                                Korporativ müştərilər, peşəkarlar və şirkətlər üçün ixtisaslaşmış sertifikat proqramları. Akademik mükəmməlliyi, yaradıcı düşüncəni və ömür boyu davam edən uğuru dəstəkləyirik.
+                            </p>
+                        </div>
+                        <div className="flex gap-6 md:gap-8 flex-shrink-0">
+                            {[
+                                { value: "20+", label: "Proqram" },
+                                { value: "500+", label: "Məzun" },
+                                { value: "95%", label: "Məmnuniyyət" },
+                            ].map(({ value, label }) => (
+                                <div key={label} className="text-center">
+                                    <p className="text-2xl font-black text-primary leading-none">{value}</p>
+                                    <p className="text-xs text-slate-500 mt-1 uppercase tracking-wide">{label}</p>
+                                </div>
+                            ))}
                         </div>
                     </div>
                 </div>
-            </section>
+            </div>
+
+            <div className="max-w-[1200px] mx-auto px-6 md:px-10 py-8">
 
             {/* Navigation Tabs */}
             <nav className="flex border-b border-slate-200 dark:border-slate-800 mb-10 overflow-x-auto no-scrollbar">
@@ -221,17 +248,26 @@ export default function TrainingClient({ initialTrainings }: TrainingClientProps
                 </div>
             </section>
 
-            {/* Newsletter */}
-            <section className="bg-background-dark text-white rounded-2xl p-10 flex flex-col items-center text-center relative overflow-hidden mb-8">
-                <div className="absolute top-0 right-0 w-64 h-64 bg-primary/20 rounded-full blur-3xl -mr-32 -mt-32"></div>
-                <div className="absolute bottom-0 left-0 w-48 h-48 bg-primary/10 rounded-full blur-2xl -ml-24 -mb-24"></div>
-                <h3 className="text-2xl font-bold mb-4 relative z-10">Təhsil trendlərindən xəbərdar olun</h3>
-                <p className="text-slate-400 max-w-md mb-8 relative z-10">Həftəlik məlumat və resurs bələdçilərimizi alan 10,000+ şəxsə qoşulun.</p>
-                <form className="flex flex-col sm:flex-row gap-3 w-full max-w-md relative z-10">
-                    <input className="flex-1 bg-slate-800 border-none rounded-lg px-4 py-3 focus:ring-2 focus:ring-primary text-sm outline-none text-white" placeholder="E-poçt ünvanınız" type="email" />
-                    <button className="bg-primary text-background-dark font-bold px-6 py-3 rounded-lg hover:brightness-105 transition-all" type="submit">Abunə ol</button>
-                </form>
+            {/* CTA */}
+            <section className="mt-8 mb-8">
+                <div className="relative bg-primary rounded-3xl px-8 md:px-16 py-14 overflow-hidden flex flex-col md:flex-row items-center justify-between gap-8">
+                    <div className="absolute inset-0 bg-[linear-gradient(135deg,#ffffff20_0%,transparent_60%)] pointer-events-none" />
+                    <div className="relative z-10">
+                        <h2 className="text-2xl md:text-3xl font-black text-slate-900 mb-2">Şirkətiniz üçün xüsusi təlim hazırlayaq</h2>
+                        <p className="text-slate-800 max-w-md">Korporativ ehtiyaclarınıza uyğun fərdi proqram üçün bizimlə əlaqə saxlayın.</p>
+                    </div>
+                    <div className="relative z-10 flex gap-3 flex-shrink-0">
+                        <Link
+                            href="/contact"
+                            className="px-7 py-3.5 bg-slate-900 text-white rounded-xl font-bold text-sm hover:bg-slate-800 transition-colors flex items-center gap-2"
+                        >
+                            Əlaqə saxla <span className="material-symbols-outlined text-[16px]">arrow_forward</span>
+                        </Link>
+                    </div>
+                </div>
             </section>
+
+            </div>
         </div>
     );
 }

@@ -1,30 +1,19 @@
 import { Suspense } from 'react';
 import HomeClient from "@/components/HomeClient";
 import { client } from "@/sanity/lib/client";
-import { FEATURED_SERVICES_QUERY } from "@/sanity/lib/queries";
+import { HOMEPAGE_BENTO_QUERY } from "@/sanity/lib/queries";
+import { BentoItem } from "@/components/BentoBox";
 
-export interface HomeService {
-  _id: string;
-  title: string;
-  slug: { current: string };
-  shortDescription?: string;
-  featuredImage?: any;
-  duration?: string;
-  priceRange?: string;
-  category?: string;
-  isFeatured?: boolean;
-}
-
-async function getHomeData(): Promise<HomeService[]> {
+async function getBentoData(): Promise<BentoItem[]> {
   try {
-    const data = await client.fetch<HomeService[]>(
-      FEATURED_SERVICES_QUERY,
+    const data = await client.fetch<BentoItem[]>(
+      HOMEPAGE_BENTO_QUERY,
       {},
       { cache: 'force-cache', next: { revalidate: 3600 } }
     );
     return Array.isArray(data) ? data : [];
   } catch (error) {
-    console.error('Error fetching services for homepage:', error);
+    console.error('Error fetching bento data for homepage:', error);
     return [];
   }
 }
@@ -41,11 +30,11 @@ function LoadingFallback() {
 }
 
 export default async function Home() {
-  const services = await getHomeData();
+  const bentoItems = await getBentoData();
 
   return (
     <Suspense fallback={<LoadingFallback />}>
-      <HomeClient initialServicesData={services} />
+      <HomeClient initialBentoData={bentoItems} />
     </Suspense>
   );
 }
