@@ -130,7 +130,7 @@ export default function StudyAbroadClient({ initialCountriesData }: StudyAbroadC
                                             className="object-cover group-hover:scale-105 transition-transform duration-500"
                                         />
                                         <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
-                                        {country.universitiesCount > 0 && (
+                                        {(country.universitiesCount ?? 0) > 0 && (
                                             <span className="absolute top-3 left-3 px-2.5 py-1 bg-primary text-slate-900 text-[10px] font-bold uppercase tracking-wider rounded-full">
                                                 {country.universitiesCount}+ Universitet
                                             </span>

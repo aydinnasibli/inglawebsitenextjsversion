@@ -89,9 +89,9 @@ const Navbar = () => {
                         </div>
                     </label>
 
-                    <button className="hidden sm:flex items-center justify-center rounded-lg h-10 px-6 bg-primary text-slate-900 text-sm font-bold hover:brightness-105 transition-all">
+                    <Link href="/contact" className="hidden sm:flex items-center justify-center rounded-lg h-10 px-6 bg-primary text-slate-900 text-sm font-bold hover:brightness-105 transition-all">
                         Bizimlə Əlaqə
-                    </button>
+                    </Link>
 
                     <button
                         onClick={toggleMobileMenu}
@@ -131,9 +131,9 @@ const Navbar = () => {
                                 </div>
                             </label>
 
-                            <button className="flex w-full max-w-sm items-center justify-center rounded-lg h-12 px-6 bg-primary text-slate-900 text-base font-bold hover:brightness-105 transition-all">
+                            <Link href="/contact" onClick={closeMenu} className="flex w-full max-w-sm items-center justify-center rounded-lg h-12 px-6 bg-primary text-slate-900 text-base font-bold hover:brightness-105 transition-all">
                                 Bizimlə Əlaqə
-                            </button>
+                            </Link>
                         </nav>
                     </div>
                 </div>
