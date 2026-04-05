@@ -1,544 +1,326 @@
 "use client";
 
-import { useRef, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { motion, useScroll, useTransform } from "framer-motion";
-import {
-    Globe,
-    Calendar,
-    DollarSign,
-    FileText,
-    Building2
-} from "lucide-react";
 import { client } from "@/sanity/lib/client";
 import { urlFor } from "@/sanity/lib/image";
-import { PortableText } from '@portabletext/react';
-import {
-    UNIVERSITIES_BY_COUNTRY_QUERY,
-} from "@/sanity/lib/queries";
-import {
-    SanityCountry,
-    SanityUniversity,
-    Country,
-    University,
-} from "@/types/study-abroad";
+import { PortableText } from "@portabletext/react";
+import { UNIVERSITIES_BY_COUNTRY_QUERY } from "@/sanity/lib/queries";
+import { SanityCountry, SanityUniversity, Country, University } from "@/types/study-abroad";
 
 interface CountryClientProps {
     initialCountryData: SanityCountry;
     initialUniversitiesData?: SanityUniversity[];
 }
 
-export default function CountryClient({
-    initialCountryData,
-    initialUniversitiesData,
-}: CountryClientProps) {
-    // State management
-    const [country, setCountry] = useState<Country | null>(null);
-    const [universities, setUniversities] = useState<University[]>([]);
-    const [universitiesLoading, setUniversitiesLoading] = useState(!initialUniversitiesData);
+const transformCountry = (c: SanityCountry): Country => ({
+    id: c._id,
+    name: c.name,
+    nameAz: c.nameAz,
+    slug: c.slug.current,
+    shortDescription: c.shortDescription,
+    fullDescription: c.fullDescription,
+    flagImage: c.flagImage ? urlFor(c.flagImage).width(120).height(90).quality(90).url() : "",
+    coverImage: c.coverImage ? urlFor(c.coverImage).width(1400).height(600).quality(85).url() : "",
+    gallery: c.gallery?.map(img => urlFor(img).width(800).height(600).quality(85).url()),
+    highlights: c.highlights,
+    studyInfo: c.studyInfo,
+    popularPrograms: c.popularPrograms,
+    isFeatured: c.isFeatured,
+});
 
-    // Refs for scroll effects
-    const containerRef = useRef<HTMLDivElement>(null);
-    const heroRef = useRef<HTMLDivElement>(null);
-
-    // Parallax effects
-    const { scrollYProgress } = useScroll({
-        target: containerRef,
-        offset: ["start start", "end end"],
-    });
-
-    const heroY = useTransform(scrollYProgress, [0, 0.3], [0, -100]);
-    const opacity = useTransform(scrollYProgress, [0, 0.3], [1, 0.3]);
-
-    // Animation variants
-    const sectionVariants = {
-        hidden: { opacity: 0, y: 50 },
-        visible: {
-            opacity: 1,
-            y: 0,
-            transition: {
-                duration: 0.8,
-                staggerChildren: 0.1,
+const transformUniversities = (list: SanityUniversity[]): University[] =>
+    list
+        .filter(u => u && u._id && u.name)
+        .map(u => ({
+            id: u._id,
+            name: u.name,
+            slug: u.slug.current,
+            country: {
+                id: u.country._id,
+                name: u.country.name,
+                nameAz: u.country.nameAz,
+                slug: u.country.slug.current,
             },
-        },
-    };
+            logo: u.logo ? urlFor(u.logo).width(400).height(300).quality(90).url() : "",
+        }));
 
-    // Transform functions
-    const transformCountryData = (sanityCountry: SanityCountry): Country => {
-        return {
-            id: sanityCountry._id,
-            name: sanityCountry.name,
-            nameAz: sanityCountry.nameAz,
-            slug: sanityCountry.slug.current,
-            shortDescription: sanityCountry.shortDescription,
-            fullDescription: sanityCountry.fullDescription,
-            flagImage: sanityCountry.flagImage ? urlFor(sanityCountry.flagImage).width(120).height(90).quality(90).url() : '',
-            coverImage: sanityCountry.coverImage ? urlFor(sanityCountry.coverImage).width(1200).height(600).quality(85).url() : '',
-            gallery: sanityCountry.gallery?.map(img => urlFor(img).width(800).height(600).quality(85).url()),
-            highlights: sanityCountry.highlights,
-            studyInfo: sanityCountry.studyInfo,
-            popularPrograms: sanityCountry.popularPrograms,
-            isFeatured: sanityCountry.isFeatured,
-        };
-    };
+export default function CountryClient({ initialCountryData, initialUniversitiesData }: CountryClientProps) {
+    const [country] = useState<Country>(() => transformCountry(initialCountryData));
+    const [universities, setUniversities] = useState<University[]>(
+        initialUniversitiesData?.length ? transformUniversities(initialUniversitiesData) : []
+    );
+    const [uniLoading, setUniLoading] = useState(!initialUniversitiesData?.length);
 
-    const transformUniversitiesData = (sanityUniversities: SanityUniversity[]): University[] => {
-        return sanityUniversities
-            .filter(uni => uni && uni._id && uni.name)
-            .map((uni) => ({
-                id: uni._id,
-                name: uni.name,
-                slug: uni.slug.current,
-                country: {
-                    id: uni.country._id,
-                    name: uni.country.name,
-                    nameAz: uni.country.nameAz,
-                    slug: uni.country.slug.current,
-                },
-                logo: uni.logo ? urlFor(uni.logo).width(200).height(200).quality(90).url() : '',
-            }));
-    };
-
-    // Load data
     useEffect(() => {
-        let isMounted = true;
-
-        const loadData = async () => {
-            try {
-                // Transform initial country data
-                if (initialCountryData && isMounted) {
-                    setCountry(transformCountryData(initialCountryData));
-                }
-
-                // Load universities
-                if (initialUniversitiesData && initialUniversitiesData.length > 0) {
-                    if (isMounted) {
-                        setUniversities(transformUniversitiesData(initialUniversitiesData));
-                        setUniversitiesLoading(false);
-                    }
-                } else if (initialCountryData) {
-                    const universitiesData = await client.fetch<SanityUniversity[]>(
-                        UNIVERSITIES_BY_COUNTRY_QUERY,
-                        { countryId: initialCountryData._id }
-                    );
-                    if (isMounted && universitiesData) {
-                        setUniversities(transformUniversitiesData(universitiesData));
-                        setUniversitiesLoading(false);
-                    }
-                }
-
-            } catch (error) {
-                console.error('Error loading country data:', error);
-                if (isMounted) {
-                    setUniversitiesLoading(false);
-                }
-            }
-        };
-
-        loadData();
-
-        return () => {
-            isMounted = false;
-        };
+        if (initialUniversitiesData?.length) { setUniLoading(false); return; }
+        client.fetch<SanityUniversity[]>(UNIVERSITIES_BY_COUNTRY_QUERY, { countryId: initialCountryData._id })
+            .then(data => { if (data?.length) setUniversities(transformUniversities(data)); })
+            .catch(console.error)
+            .finally(() => setUniLoading(false));
     }, [initialCountryData, initialUniversitiesData]);
 
-    if (!country) {
-        return (
-            <div className="min-h-screen bg-black flex items-center justify-center">
-                <div className="text-center">
-                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-yellow-500 mx-auto mb-4"></div>
-                    <p className="text-gray-300">Məlumatlar yüklənir...</p>
-                </div>
-            </div>
-        );
-    }
-
     return (
-        <div ref={containerRef} className="relative min-h-screen bg-black text-white">
-            {/* Hero Section */}
-            <motion.div
-                ref={heroRef}
-                style={{ y: heroY, opacity }}
-                className="relative h-screen flex items-center justify-center overflow-hidden"
-            >
-                <div className="absolute inset-0 z-0">
-                    <div className="absolute inset-0 bg-black/60 z-10" />
-                    <Image
-                        src={country.coverImage || '/assets/bg.webp'}
-                        alt={country.nameAz}
-                        fill
-                        priority
-                        quality={100}
-                        className="object-cover"
-                    />
-                </div>
+        <div className="flex-1 bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100">
 
-
-
-                <div className="container mx-auto px-4 relative z-20">
-                    <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.8 }}
-                        className="text-center"
-                    >
-                        {/* Flag and Country Name */}
-                        <div className="flex items-center justify-center gap-4 mb-6">
-                            {country.flagImage && (
-                                <div className="w-16 h-12 rounded overflow-hidden border-2 border-white shadow-lg">
-                                    <Image
-                                        src={country.flagImage}
-                                        alt={`${country.nameAz} bayrağı`}
-                                        width={64}
-                                        height={48}
-                                        className="object-cover w-full h-full"
-                                    />
-                                </div>
-                            )}
-                            <h1 className="text-6xl font-bold text-white">
-                                <span className="text-yellow-500">{country.nameAz}də</span> Təhsil
-                            </h1>
+            {/* ── PAGE HEADER ── */}
+            <div className="relative overflow-hidden bg-slate-900 dark:bg-black">
+                {/* Cover image as background */}
+                {country.coverImage && (
+                    <>
+                        <div className="absolute inset-0">
+                            <Image src={country.coverImage} alt={country.nameAz} fill className="object-cover opacity-20" priority />
                         </div>
+                        <div className="absolute inset-0 bg-gradient-to-r from-slate-900 via-slate-900/90 to-slate-900/70" />
+                    </>
+                )}
+                <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffd90008_1px,transparent_1px),linear-gradient(to_bottom,#ffd90008_1px,transparent_1px)] bg-[size:40px_40px] pointer-events-none" />
+                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-primary/5 rounded-full blur-3xl pointer-events-none" />
 
-                        <p className="text-2xl mb-8 max-w-3xl mx-auto text-gray-200">
-                            {country.shortDescription}
-                        </p>
-                    </motion.div>
-                </div>
+                <div className="relative z-10 max-w-[1200px] mx-auto px-6 md:px-10 py-14 md:py-20">
+                    <div className="flex items-center gap-2 text-slate-500 text-xs font-medium mb-6">
+                        <Link href="/" className="hover:text-primary transition-colors">Ana Səhifə</Link>
+                        <span className="material-symbols-outlined text-[14px]">chevron_right</span>
+                        <Link href="/studyabroad" className="hover:text-primary transition-colors">Xaricdə Təhsil</Link>
+                        <span className="material-symbols-outlined text-[14px]">chevron_right</span>
+                        <span className="text-primary">{country.nameAz}</span>
+                    </div>
 
-                <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-black to-transparent"></div>
-            </motion.div>
+                    <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-8">
+                        <div className="flex flex-col gap-4 max-w-2xl">
+                            <div className="flex items-center gap-3">
+                                <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs font-bold uppercase tracking-widest w-fit">
+                                    <span className="material-symbols-outlined text-[14px]">public</span>
+                                    Xaricdə Təhsil
+                                </span>
+                                {country.isFeatured && (
+                                    <span className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full bg-primary text-slate-900 text-xs font-bold uppercase tracking-widest w-fit">
+                                        <span className="material-symbols-outlined text-[14px]">star</span>
+                                        Tövsiyə Olunur
+                                    </span>
+                                )}
+                            </div>
 
-            {/* Country Information Section */}
-            <motion.section
-                initial="hidden"
-                whileInView="visible"
-                viewport={{ once: true }}
-                variants={sectionVariants}
-                className="py-24"
-            >
-                <div className="container mx-auto px-4">
-                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
-                        {/* Main Content */}
-                        <div className="lg:col-span-2">
-                            {country.fullDescription && (
-                                <div className="prose prose-invert prose-lg max-w-none">
-                                    <PortableText value={country.fullDescription} />
-                                </div>
-                            )}
-
-                            {/* Highlights */}
-                            {country.highlights && country.highlights.length > 0 && (
-                                <div className="mt-12">
-                                    <h3 className="text-2xl font-bold mb-6 text-yellow-500">Üstünlüklər</h3>
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                        {country.highlights.map((highlight, index) => (
-                                            <div
-                                                key={index}
-                                                className="p-6 bg-gray-900/50 border border-gray-800 rounded-lg hover:border-yellow-500/50 transition-all duration-300"
-                                            >
-                                                <h4 className="text-lg font-semibold text-white mb-2">
-                                                    {highlight.title}
-                                                </h4>
-                                                {highlight.description && (
-                                                    <p className="text-gray-300 text-sm">
-                                                        {highlight.description}
-                                                    </p>
-                                                )}
-                                            </div>
-                                        ))}
+                            <div className="flex items-center gap-4">
+                                {country.flagImage && (
+                                    <div className="w-14 h-10 rounded-lg overflow-hidden border-2 border-white/20 flex-shrink-0 shadow-lg">
+                                        <Image src={country.flagImage} alt={`${country.nameAz} bayrağı`} width={56} height={40} className="object-cover w-full h-full" />
                                     </div>
-                                </div>
+                                )}
+                                <h1 className="text-white text-3xl md:text-5xl font-black leading-tight tracking-tight">
+                                    {country.nameAz}də Təhsil
+                                </h1>
+                            </div>
+
+                            {country.shortDescription && (
+                                <p className="text-slate-400 text-base md:text-lg leading-relaxed">{country.shortDescription}</p>
                             )}
                         </div>
 
-                        {/* Sidebar */}
-                        <div className="lg:col-span-1">
-                            {/* Study Info Card */}
-                            {country.studyInfo && (
-                                <div className="top-8 bg-gray-900/50 border border-gray-800 rounded-lg p-6 mb-8">
-                                    <h3 className="text-xl font-bold mb-4 text-yellow-500">Təhsil Məlumatları</h3>
-                                    <div className="space-y-4">
-                                        {country.studyInfo.language && (
-                                            <div className="flex items-center">
-                                                <Globe className="w-5 h-5 text-gray-400 mr-3" />
-                                                <div>
-                                                    <div className="text-sm text-gray-400">Dil</div>
-                                                    <div className="text-white">{country.studyInfo.language}</div>
-                                                </div>
-                                            </div>
-                                        )}
-                                        {country.studyInfo.currency && (
-                                            <div className="flex items-center">
-                                                <DollarSign className="w-5 h-5 text-gray-400 mr-3" />
-                                                <div>
-                                                    <div className="text-sm text-gray-400">Valyuta</div>
-                                                    <div className="text-white">{country.studyInfo.currency}</div>
-                                                </div>
-                                            </div>
-                                        )}
-                                        {country.studyInfo.averageCost && (
-                                            <div className="flex items-center">
-                                                <FileText className="w-5 h-5 text-gray-400 mr-3" />
-                                                <div>
-                                                    <div className="text-sm text-gray-400">Orta Təhsil Haqqı</div>
-                                                    <div className="text-white">{country.studyInfo.averageCost}</div>
-                                                </div>
-                                            </div>
-                                        )}
-                                        {country.studyInfo.livingCost && (
-                                            <div className="flex items-center">
-                                                <Building2 className="w-5 h-5 text-gray-400 mr-3" />
-                                                <div>
-                                                    <div className="text-sm text-gray-400">Yaşayış Xərci</div>
-                                                    <div className="text-white">{country.studyInfo.livingCost}</div>
-                                                </div>
-                                            </div>
-                                        )}
-                                        {country.studyInfo.applicationDeadline && (
-                                            <div className="flex items-center">
-                                                <Calendar className="w-5 h-5 text-gray-400 mr-3" />
-                                                <div>
-                                                    <div className="text-sm text-gray-400">Müraciət Tarixi</div>
-                                                    <div className="text-white">{country.studyInfo.applicationDeadline}</div>
-                                                </div>
-                                            </div>
-                                        )}
-                                    </div>
-
-                                    {/* Visa Requirements */}
-                                    {country.studyInfo.visaRequirements && country.studyInfo.visaRequirements.length > 0 && (
-                                        <div className="mt-6 pt-6 border-t border-gray-700">
-                                            <h4 className="text-lg font-semibold mb-3 text-white">Viza Tələbləri</h4>
-                                            <ul className="space-y-2">
-                                                {country.studyInfo.visaRequirements.map((requirement, index) => (
-                                                    <li key={index} className="text-sm text-gray-300 flex items-start">
-                                                        <div className="w-2 h-2 bg-yellow-500 rounded-full mt-2 mr-3 flex-shrink-0"></div>
-                                                        {requirement}
-                                                    </li>
-                                                ))}
-                                            </ul>
-                                        </div>
-                                    )}
+                        <div className="flex gap-6 md:gap-8 flex-shrink-0">
+                            {[
+                                { value: `${universities.length || "10"}+`, label: "Tərəfdaş Uni." },
+                                { value: "98%", label: "Viza Uğuru" },
+                                { value: "Tam", label: "Müşayiət" },
+                            ].map(({ value, label }) => (
+                                <div key={label} className="text-center">
+                                    <p className="text-2xl font-black text-primary leading-none">{value}</p>
+                                    <p className="text-xs text-slate-500 mt-1 uppercase tracking-wide">{label}</p>
                                 </div>
-                            )}
-
-                            {/* Popular Programs */}
-                            {country.popularPrograms && country.popularPrograms.length > 0 && (
-                                <div className="bg-gray-900/50 border border-gray-800 rounded-lg p-6">
-                                    <h3 className="text-xl font-bold mb-4 text-yellow-500">Populyar Proqramlar</h3>
-                                    <div className="flex flex-wrap gap-2">
-                                        {country.popularPrograms.map((program, index) => (
-                                            <span
-                                                key={index}
-                                                className="bg-gray-800 text-yellow-400 px-3 py-1 rounded text-sm"
-                                            >
-                                                {program}
-                                            </span>
-                                        ))}
-                                    </div>
-                                </div>
-                            )}
+                            ))}
                         </div>
                     </div>
                 </div>
-            </motion.section>
+            </div>
 
-            {/* Universities Section - Creative Design */}
-            <motion.section
-                id="universities"
-                initial="hidden"
-                whileInView="visible"
-                viewport={{ once: true }}
-                variants={sectionVariants}
-                className="py-32 relative overflow-hidden"
-            >
-                {/* Animated background elements */}
-                <div className="absolute inset-0 bg-gradient-to-b from-black via-yellow-950/5 to-black"></div>
-                <div className="absolute inset-0 opacity-30">
-                    <div className="absolute top-20 left-1/4 w-96 h-96 bg-yellow-500/10 rounded-full blur-3xl animate-pulse"></div>
-                    <div className="absolute bottom-20 right-1/4 w-96 h-96 bg-yellow-500/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }}></div>
+            {/* ── MAIN CONTENT ── */}
+            <div className="max-w-[1200px] mx-auto px-6 md:px-10 py-16 md:py-20">
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 items-start">
+
+                    {/* Left: description + highlights */}
+                    <div className="lg:col-span-2 flex flex-col gap-12">
+
+                        {country.fullDescription && (
+                            <div className="prose prose-slate dark:prose-invert max-w-none text-slate-700 dark:text-slate-300 leading-relaxed">
+                                <PortableText value={country.fullDescription} />
+                            </div>
+                        )}
+
+                        {country.highlights && country.highlights.length > 0 && (
+                            <section>
+                                <p className="text-primary font-bold text-sm uppercase tracking-widest mb-2">Niyə {country.nameAz}?</p>
+                                <h2 className="text-2xl font-black text-slate-900 dark:text-white mb-6">Üstünlüklər</h2>
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                    {country.highlights.map((h, i) => (
+                                        <div key={i} className="flex gap-4 bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 p-5 shadow-sm">
+                                            <div className="size-10 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0 mt-0.5">
+                                                <span className="material-symbols-outlined text-primary text-[20px]">check_circle</span>
+                                            </div>
+                                            <div>
+                                                <h4 className="font-bold text-slate-900 dark:text-white mb-1 text-sm">{h.title}</h4>
+                                                {h.description && (
+                                                    <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">{h.description}</p>
+                                                )}
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </section>
+                        )}
+
+                        {/* Popular Programs */}
+                        {country.popularPrograms && country.popularPrograms.length > 0 && (
+                            <section>
+                                <p className="text-primary font-bold text-sm uppercase tracking-widest mb-2">Proqramlar</p>
+                                <h2 className="text-2xl font-black text-slate-900 dark:text-white mb-4">Populyar İxtisaslar</h2>
+                                <div className="flex flex-wrap gap-2">
+                                    {country.popularPrograms.map((prog, i) => (
+                                        <span key={i} className="px-3 py-1.5 bg-primary/10 border border-primary/20 text-primary text-xs font-bold rounded-full">
+                                            {prog}
+                                        </span>
+                                    ))}
+                                </div>
+                            </section>
+                        )}
+                    </div>
+
+                    {/* Right: study info sidebar */}
+                    <div className="flex flex-col gap-6">
+                        {country.studyInfo && (
+                            <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-sm overflow-hidden">
+                                <div className="px-6 py-4 border-b border-slate-100 dark:border-slate-800">
+                                    <p className="text-primary font-bold text-xs uppercase tracking-widest">Məlumatlar</p>
+                                    <h3 className="font-black text-slate-900 dark:text-white">Təhsil Məlumatları</h3>
+                                </div>
+                                <div className="px-6 py-5 flex flex-col gap-4">
+                                    {[
+                                        { icon: "translate", label: "Dil", value: country.studyInfo.language },
+                                        { icon: "payments", label: "Valyuta", value: country.studyInfo.currency },
+                                        { icon: "school", label: "Orta Təhsil Haqqı", value: country.studyInfo.averageCost },
+                                        { icon: "apartment", label: "Yaşayış Xərci", value: country.studyInfo.livingCost },
+                                        { icon: "event", label: "Müraciət Tarixi", value: country.studyInfo.applicationDeadline },
+                                    ].filter(r => r.value).map(({ icon, label, value }) => (
+                                        <div key={label} className="flex gap-3">
+                                            <span className="material-symbols-outlined text-primary text-[18px] flex-shrink-0 mt-0.5">{icon}</span>
+                                            <div>
+                                                <p className="text-[10px] font-bold text-slate-500 uppercase tracking-wide">{label}</p>
+                                                <p className="text-sm font-semibold text-slate-800 dark:text-slate-200">{value}</p>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+
+                                {country.studyInfo.visaRequirements && country.studyInfo.visaRequirements.length > 0 && (
+                                    <div className="px-6 py-5 border-t border-slate-100 dark:border-slate-800">
+                                        <p className="text-xs font-bold text-slate-500 uppercase tracking-wide mb-3">Viza Tələbləri</p>
+                                        <ul className="flex flex-col gap-2">
+                                            {country.studyInfo.visaRequirements.map((req, i) => (
+                                                <li key={i} className="flex gap-2 text-sm text-slate-600 dark:text-slate-400">
+                                                    <span className="material-symbols-outlined text-primary text-[14px] flex-shrink-0 mt-0.5">fiber_manual_record</span>
+                                                    {req}
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </div>
+                                )}
+                            </div>
+                        )}
+
+                        {/* CTA card */}
+                        <div className="bg-primary rounded-2xl p-6">
+                            <h4 className="font-black text-slate-900 text-base mb-1">Pulsuz Məsləhət</h4>
+                            <p className="text-slate-800 text-sm mb-4 leading-relaxed">{country.nameAz}də təhsil üçün bizimlə əlaqə saxlayın.</p>
+                            <Link
+                                href="/contact"
+                                className="flex items-center justify-center gap-2 w-full py-3 bg-slate-900 text-white rounded-xl font-bold text-sm hover:bg-slate-800 transition-colors"
+                            >
+                                Əlaqə saxla <span className="material-symbols-outlined text-[16px]">arrow_forward</span>
+                            </Link>
+                        </div>
+                    </div>
                 </div>
 
-                <div className="container mx-auto px-4 relative z-10">
-                    <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.6 }}
-                        viewport={{ once: true }}
-                        className="text-center mb-20"
-                    >
-                        <div className="inline-block mb-4">
-                            <span className="text-yellow-500 text-sm font-semibold tracking-wider uppercase px-4 py-2 bg-yellow-500/10 rounded-full border border-yellow-500/20">
-                                Tərəfdaş Universitetlər
-                            </span>
+                {/* ── UNIVERSITIES GRID ── */}
+                <section className="mt-20">
+                    <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-10">
+                        <div>
+                            <p className="text-primary font-bold text-sm uppercase tracking-widest mb-2">Tərəfdaşlar</p>
+                            <h2 className="text-2xl md:text-3xl font-black text-slate-900 dark:text-white">Tərəfdaş Universitetlər</h2>
                         </div>
-                        <h2 className="text-5xl md:text-7xl font-bold mb-6">
-                            Prestijli <span className="text-yellow-500">Universitetlər</span>
-                        </h2>
-                        <p className="text-gray-400 text-xl max-w-3xl mx-auto leading-relaxed">
-                            Dünya səviyyəli universitetlərdə akademik mükəmməlliyə doğru ilk addımınızı atın
-                        </p>
-                    </motion.div>
+                    </div>
 
-                    {universitiesLoading ? (
-                        <div className="flex justify-center items-center h-64">
-                            <div className="text-center">
-                                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-yellow-500 mx-auto mb-4"></div>
-                                <p className="text-gray-300">Universitetlər yüklənir...</p>
-                            </div>
+                    {uniLoading ? (
+                        <div className="flex justify-center py-20">
+                            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary" />
                         </div>
                     ) : universities.length === 0 ? (
-                        <div className="text-center py-12">
-                            <Building2 className="w-16 h-16 text-gray-600 mx-auto mb-4" />
-                            <h3 className="text-xl font-semibold text-gray-400 mb-2">
-                                Hal-hazırda universitet məlumatı yoxdur
-                            </h3>
-                            <p className="text-gray-500">
-                                Bu ölkədəki universitet imkanları haqqında məlumat üçün bizimlə əlaqə saxlayın
-                            </p>
+                        <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 p-12 text-center">
+                            <span className="material-symbols-outlined text-slate-300 dark:text-slate-700 text-[48px] mb-4 block">school</span>
+                            <h3 className="font-bold text-slate-600 dark:text-slate-400 mb-2">Hal-hazırda məlumat yoxdur</h3>
+                            <p className="text-sm text-slate-500">Bu ölkədəki universitet imkanları haqqında bizimlə əlaqə saxlayın.</p>
+                            <Link href="/contact" className="inline-flex items-center gap-2 mt-5 px-6 py-3 bg-primary text-slate-900 rounded-xl font-bold text-sm hover:brightness-105 transition-all">
+                                Əlaqə saxla <span className="material-symbols-outlined text-[16px]">arrow_forward</span>
+                            </Link>
                         </div>
                     ) : (
-                        <>
-                            {/* Top Row - Moving Right */}
-                            <div className="relative mb-8">
-                                <div className="overflow-hidden py-8">
-                                    <motion.div
-                                        className="flex gap-6"
-                                        animate={{
-                                            x: [0, -(420 * Math.ceil(universities.length / 2))],
-                                        }}
-                                        transition={{
-                                            x: {
-                                                repeat: Infinity,
-                                                repeatType: "loop",
-                                                duration: Math.ceil(universities.length / 2) * 8,
-                                                ease: "linear",
-                                            },
-                                        }}
-                                    >
-                                        {/* Render first half twice for seamless loop */}
-                                        {[...Array(3)].map((_, setIndex) => (
-                                            universities.slice(0, Math.ceil(universities.length / 2)).map((university) => (
-                                                <Link
-                                                    href={`/universities/${university.slug}`}
-                                                    key={`top-${setIndex}-${university.id}`}
-                                                    className="flex-shrink-0 w-[400px] h-[260px] group relative"
-                                                >
-                                                    {/* Glow effect */}
-                                                    <div className="absolute -inset-1 bg-gradient-to-r from-yellow-500/0 via-yellow-500/30 to-yellow-500/0 rounded-3xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
-
-                                                    {/* Card */}
-                                                    <div className="relative w-full h-full bg-gradient-to-br from-gray-900 to-black border border-gray-800 rounded-3xl p-12 flex items-center justify-center overflow-hidden group-hover:border-yellow-500/50 transition-all duration-500">
-                                                        {/* Background pattern */}
-                                                        <div className="absolute inset-0 opacity-5">
-                                                            <div className="absolute inset-0" style={{
-                                                                backgroundImage: 'radial-gradient(circle at 2px 2px, white 1px, transparent 0)',
-                                                                backgroundSize: '40px 40px'
-                                                            }}></div>
-                                                        </div>
-
-                                                        {/* Animated gradient overlay */}
-                                                        <div className="absolute inset-0 bg-gradient-to-tr from-yellow-500/0 via-yellow-500/5 to-yellow-500/0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-
-                                                        {/* Logo */}
-                                                        <div className="relative z-10 w-full h-full flex items-center justify-center">
-                                                            <Image
-                                                                src={university.logo}
-                                                                alt={university.name}
-                                                                width={350}
-                                                                height={220}
-                                                                className="object-contain w-full h-full transition-all duration-500 group-hover:scale-105"
-                                                            />
-                                                        </div>
-
-                                                        {/* University name overlay on hover */}
-                                                        <div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black/90 to-transparent translate-y-full group-hover:translate-y-0 transition-transform duration-500">
-                                                            <p className="text-white font-semibold text-lg text-center">
-                                                                {university.name}
-                                                            </p>
-                                                        </div>
-                                                    </div>
-                                                </Link>
-                                            ))
-                                        ))}
-                                    </motion.div>
-                                </div>
-                            </div>
-
-                            {/* Bottom Row - Moving Left */}
-                            {universities.length > 1 && (
-                                <div className="relative">
-                                    <div className="overflow-hidden py-8">
-                                        <motion.div
-                                            className="flex gap-6"
-                                            animate={{
-                                                x: [-(420 * Math.floor(universities.length / 2)), 0],
-                                            }}
-                                            transition={{
-                                                x: {
-                                                    repeat: Infinity,
-                                                    repeatType: "loop",
-                                                    duration: Math.floor(universities.length / 2) * 8,
-                                                    ease: "linear",
-                                                },
-                                            }}
-                                        >
-                                            {/* Render second half twice for seamless loop */}
-                                            {[...Array(3)].map((_, setIndex) => (
-                                                universities.slice(Math.ceil(universities.length / 2)).map((university) => (
-                                                    <Link
-                                                        href={`/universities/${university.slug}`}
-                                                        key={`bottom-${setIndex}-${university.id}`}
-                                                        className="flex-shrink-0 w-[400px] h-[260px] group relative"
-                                                    >
-                                                        <div className="absolute -inset-1 bg-gradient-to-r from-yellow-500/0 via-yellow-500/30 to-yellow-500/0 rounded-3xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
-
-                                                        <div className="relative w-full h-full bg-gradient-to-br from-gray-900 to-black border border-gray-800 rounded-3xl p-12 flex items-center justify-center overflow-hidden group-hover:border-yellow-500/50 transition-all duration-500">
-                                                            <div className="absolute inset-0 opacity-5">
-                                                                <div className="absolute inset-0" style={{
-                                                                    backgroundImage: 'radial-gradient(circle at 2px 2px, white 1px, transparent 0)',
-                                                                    backgroundSize: '40px 40px'
-                                                                }}></div>
-                                                            </div>
-
-                                                            <div className="absolute inset-0 bg-gradient-to-tr from-yellow-500/0 via-yellow-500/5 to-yellow-500/0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-
-                                                            <div className="relative z-10 w-full h-full flex items-center justify-center">
-                                                                <Image
-                                                                    src={university.logo}
-                                                                    alt={university.name}
-                                                                    width={350}
-                                                                    height={220}
-                                                                    className="object-contain w-full h-full transition-all duration-500 group-hover:scale-105"
-                                                                />
-                                                            </div>
-
-                                                            <div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black/90 to-transparent translate-y-full group-hover:translate-y-0 transition-transform duration-500">
-                                                                <p className="text-white font-semibold text-lg text-center">
-                                                                    {university.name}
-                                                                </p>
-                                                            </div>
-                                                        </div>
-                                                    </Link>
-                                                ))
-                                            ))}
-                                        </motion.div>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                            {universities.map(uni => (
+                                <Link
+                                    key={uni.id}
+                                    href={`/universities/${uni.slug}`}
+                                    className="group flex flex-col bg-white dark:bg-slate-900 rounded-2xl overflow-hidden border border-slate-100 dark:border-slate-800 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300"
+                                >
+                                    {/* Logo area */}
+                                    <div className="relative h-44 bg-slate-50 dark:bg-slate-800 flex items-center justify-center overflow-hidden px-8">
+                                        {uni.logo ? (
+                                            <Image
+                                                src={uni.logo}
+                                                alt={uni.name}
+                                                width={240}
+                                                height={120}
+                                                className="object-contain max-h-28 group-hover:scale-105 transition-transform duration-500"
+                                            />
+                                        ) : (
+                                            <span className="material-symbols-outlined text-slate-300 dark:text-slate-600 text-[64px]">school</span>
+                                        )}
                                     </div>
-                                </div>
-                            )}
 
-                            {/* Gradient overlays for fade effect */}
-                            <div className="absolute left-0 top-0 bottom-0 w-64 bg-gradient-to-r from-black via-black to-transparent pointer-events-none z-20"></div>
-                            <div className="absolute right-0 top-0 bottom-0 w-64 bg-gradient-to-l from-black via-black to-transparent pointer-events-none z-20"></div>
-                        </>
+                                    {/* Body */}
+                                    <div className="flex items-center justify-between p-5 border-t border-slate-100 dark:border-slate-800">
+                                        <h3 className="font-black text-slate-900 dark:text-white text-sm group-hover:text-primary transition-colors leading-snug line-clamp-2">
+                                            {uni.name}
+                                        </h3>
+                                        <span className="material-symbols-outlined text-primary text-[18px] flex-shrink-0 ml-3 group-hover:translate-x-0.5 transition-transform">arrow_forward</span>
+                                    </div>
+                                </Link>
+                            ))}
+                        </div>
                     )}
+                </section>
+            </div>
+
+            {/* ── CTA BANNER ── */}
+            <section className="py-16">
+                <div className="max-w-[1200px] mx-auto px-6 md:px-10">
+                    <div className="relative bg-primary rounded-3xl px-8 md:px-16 py-14 overflow-hidden flex flex-col md:flex-row items-center justify-between gap-8">
+                        <div className="absolute inset-0 bg-[linear-gradient(135deg,#ffffff20_0%,transparent_60%)] pointer-events-none" />
+                        <div className="relative z-10">
+                            <h2 className="text-2xl md:text-3xl font-black text-slate-900 mb-2">{country.nameAz}də Oxumaq İstəyirsiniz?</h2>
+                            <p className="text-slate-800 max-w-md">Pulsuz məsləhət üçün bu gün bizimlə əlaqə saxlayın.</p>
+                        </div>
+                        <div className="relative z-10 flex gap-3 flex-shrink-0">
+                            <Link
+                                href="/contact"
+                                className="px-7 py-3.5 bg-slate-900 text-white rounded-xl font-bold text-sm hover:bg-slate-800 transition-colors flex items-center gap-2"
+                            >
+                                Pulsuz Məsləhət <span className="material-symbols-outlined text-[16px]">arrow_forward</span>
+                            </Link>
+                        </div>
+                    </div>
                 </div>
+            </section>
 
-                {/* Bottom CTA */}
-
-            </motion.section>
         </div>
     );
 }
