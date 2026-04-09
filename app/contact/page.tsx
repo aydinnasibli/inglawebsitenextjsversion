@@ -17,26 +17,32 @@ const ContactSchema = z.object({
 type FormData   = z.infer<typeof ContactSchema>;
 type FormErrors = Partial<Record<keyof FormData, string>>;
 
-const OFFICES = [
+const LOCATIONS = [
     {
-        name: "Zahid Xəlilov 59",
-        address: "Zahid Xəlilov küç. 59, Bakı, Azərbaycan",
-        phones: ["010 310 71 17", "010 310 61 16", "010 310 41 14"],
+        name: "Grand Hayat Residence",
+        address: "Tbilisi pr., Grand Hayat Residence, Bakı, Azərbaycan",
         email: "inglabaku@gmail.com",
         hours: "09:00 – 21:00",
-        mapQuery: "Zahid+Xelilov+59+Baku",
-        badge: "Əsas Ofis",
-        icon: "location_on",
+        mapQuery: "Grand+Hayat+Residence+Tbilisi+prospekti+Baku",
+        badge: "Tbilisi prospekti",
+        icon: "apartment",
+        schools: [
+            { name: "Ingla School Baku",        phone: "010 310 71 17" },
+            { name: "Ingla Kids and Preschool", phone: "010 310 51 15" },
+        ],
     },
     {
-        name: "Grand Hayat",
-        address: "Neftçilər pr. 153, Bakı (Grand Hayat yanı), Azərbaycan",
-        phones: ["010 310 71 17"],
+        name: "Zahid Xəlilov 59a",
+        address: "Zahid Xəlilov küç. 59a, Bakı, Azərbaycan",
         email: "inglabaku@gmail.com",
-        hours: "09:00 – 18:00",
-        mapQuery: "Grand+Hayat+Baku",
-        badge: "İkinci Ofis",
-        icon: "apartment",
+        hours: "09:00 – 21:00",
+        mapQuery: "Zahid+Xelilov+59a+Baku",
+        badge: "Zahid Xəlilov",
+        icon: "location_on",
+        schools: [
+            { name: "Ingla School Baku",   phone: "010 310 61 16" },
+            { name: "Ingla International", phone: "010 310 41 14" },
+        ],
     },
 ];
 
@@ -116,8 +122,8 @@ export default function ContactPage() {
                         <div className="flex gap-6 md:gap-8 flex-shrink-0">
                             {[
                                 { value: "09:00–21:00", label: "İş Saatı" },
-                                { value: "3",           label: "Nömrə"    },
-                                { value: "2",           label: "Ofis"     },
+                                { value: "4",           label: "Filial"   },
+                                { value: "2",           label: "Ünvan"    },
                             ].map(({ value, label }) => (
                                 <div key={label} className="text-center">
                                     <p className="text-2xl font-black text-primary leading-none">{value}</p>
@@ -139,15 +145,15 @@ export default function ContactPage() {
                             <h2 className="text-2xl md:text-3xl font-black text-slate-900 dark:text-white">Ünvanlarımız</h2>
                         </div>
 
-                        {OFFICES.map((office) => (
-                            <div key={office.name} className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 overflow-hidden shadow-sm">
+                        {LOCATIONS.map((location) => (
+                            <div key={location.name} className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 overflow-hidden shadow-sm">
                                 <div className="flex items-center gap-3 px-6 py-4 border-b border-slate-100 dark:border-slate-800">
                                     <div className="size-10 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0">
-                                        <span className="material-symbols-outlined text-primary text-[20px]">{office.icon}</span>
+                                        <span className="material-symbols-outlined text-primary text-[20px]">{location.icon}</span>
                                     </div>
                                     <div>
-                                        <span className="text-[10px] font-bold text-primary uppercase tracking-widest">{office.badge}</span>
-                                        <p className="font-black text-slate-900 dark:text-white text-sm leading-tight">{office.name}</p>
+                                        <span className="text-[10px] font-bold text-primary uppercase tracking-widest">{location.badge}</span>
+                                        <p className="font-black text-slate-900 dark:text-white text-sm leading-tight">{location.name}</p>
                                     </div>
                                 </div>
                                 <div className="px-6 py-5 flex flex-col gap-4">
@@ -155,8 +161,8 @@ export default function ContactPage() {
                                         <span className="material-symbols-outlined text-primary text-[18px] flex-shrink-0 mt-0.5">location_on</span>
                                         <div>
                                             <p className="text-xs text-slate-500 uppercase tracking-wide font-bold mb-0.5">Ünvan</p>
-                                            <p className="text-sm text-slate-700 dark:text-slate-300">{office.address}</p>
-                                            <a href={`https://maps.google.com/?q=${office.mapQuery}`} target="_blank" rel="noreferrer"
+                                            <p className="text-sm text-slate-700 dark:text-slate-300">{location.address}</p>
+                                            <a href={`https://maps.google.com/?q=${location.mapQuery}`} target="_blank" rel="noreferrer"
                                                 className="text-xs text-primary font-bold mt-1 inline-flex items-center gap-1 hover:underline">
                                                 Xəritədə bax <span className="material-symbols-outlined text-[12px]">open_in_new</span>
                                             </a>
@@ -166,9 +172,12 @@ export default function ContactPage() {
                                         <span className="material-symbols-outlined text-primary text-[18px] flex-shrink-0 mt-0.5">call</span>
                                         <div>
                                             <p className="text-xs text-slate-500 uppercase tracking-wide font-bold mb-1">Telefon</p>
-                                            <div className="flex flex-col gap-1">
-                                                {office.phones.map(p => (
-                                                    <a key={p} href={`tel:${p.replace(/\s/g, "")}`} className="text-sm text-slate-700 dark:text-slate-300 hover:text-primary transition-colors">{p}</a>
+                                            <div className="flex flex-col gap-2">
+                                                {location.schools.map(s => (
+                                                    <div key={s.phone} className="flex items-center justify-between gap-4">
+                                                        <span className="text-xs text-slate-500 dark:text-slate-400">{s.name}</span>
+                                                        <a href={`tel:${s.phone.replace(/\s/g, "")}`} className="text-sm font-bold text-slate-700 dark:text-slate-300 hover:text-primary transition-colors">{s.phone}</a>
+                                                    </div>
                                                 ))}
                                             </div>
                                         </div>
@@ -178,14 +187,14 @@ export default function ContactPage() {
                                             <span className="material-symbols-outlined text-primary text-[18px] flex-shrink-0 mt-0.5">mail</span>
                                             <div>
                                                 <p className="text-xs text-slate-500 uppercase tracking-wide font-bold mb-0.5">E-poçt</p>
-                                                <a href={`mailto:${office.email}`} className="text-sm text-slate-700 dark:text-slate-300 hover:text-primary transition-colors break-all">{office.email}</a>
+                                                <a href={`mailto:${location.email}`} className="text-sm text-slate-700 dark:text-slate-300 hover:text-primary transition-colors break-all">{location.email}</a>
                                             </div>
                                         </div>
                                         <div className="flex gap-3">
                                             <span className="material-symbols-outlined text-primary text-[18px] flex-shrink-0 mt-0.5">schedule</span>
                                             <div>
                                                 <p className="text-xs text-slate-500 uppercase tracking-wide font-bold mb-0.5">İş Saatı</p>
-                                                <p className="text-sm font-bold text-primary">{office.hours}</p>
+                                                <p className="text-sm font-bold text-primary">{location.hours}</p>
                                             </div>
                                         </div>
                                     </div>
