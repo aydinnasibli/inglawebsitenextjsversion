@@ -70,7 +70,7 @@ export default function CountryClient({ initialCountryData, initialUniversitiesD
                 {country.coverImage && (
                     <>
                         <div className="absolute inset-0">
-                            <Image src={country.coverImage} alt={country.nameAz} fill className="object-cover opacity-20" priority />
+                            <Image src={country.coverImage} alt={country.nameAz} fill className="object-cover opacity-40" priority />
                         </div>
                         <div className="absolute inset-0 bg-gradient-to-r from-slate-900 via-slate-900/90 to-slate-900/70" />
                     </>
