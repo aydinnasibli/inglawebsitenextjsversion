@@ -10,32 +10,44 @@ import { SanityPreschoolServiceItem, PreschoolServiceItem } from "@/types/presch
 
 const transformSanityData = (sanityItems: SanityPreschoolServiceItem[]): PreschoolServiceItem[] =>
     sanityItems
-        .filter(item => item && item._id && item.title)
-        .map((item) => ({
-            id: item._id,
-            title: item.title,
-            slug: item.slug?.current || '',
-            shortDescription: item.shortDescription,
-            fullDescription: item.fullDescription,
-            featuredImage: item.featuredImage ? urlFor(item.featuredImage).width(640).height(420).quality(85).url() : '/assets/bg.webp',
-            gallery: item.gallery?.map(img => ({
-                url: urlFor(img.asset).width(800).height(600).quality(85).url(),
-                alt: img.alt,
-                caption: img.caption,
-            })),
-            keyFeatures: item.keyFeatures,
-            targetAgeGroup: item.targetAgeGroup,
-            duration: item.duration,
-            priceRange: item.priceRange,
-            contactInfo: item.contactInfo,
-            scheduleInfo: item.scheduleInfo,
-            requirements: item.requirements,
-            activities: item.activities,
-            learningOutcomes: item.learningOutcomes,
-            order: item.order,
-            isFeatured: item.isFeatured,
-            seoTitle: item.seoTitle,
-        }));
+        .filter(item => item && item._id)
+        .map((item): PreschoolServiceItem | null => {
+            try {
+                return {
+                    id: item._id,
+                    title: item.title || '',
+                    slug: item.slug?.current || '',
+                    shortDescription: item.shortDescription || '',
+                    fullDescription: item.fullDescription,
+                    featuredImage: item.featuredImage
+                        ? urlFor(item.featuredImage).width(640).height(420).quality(85).url()
+                        : '/assets/bg.webp',
+                    gallery: item.gallery
+                        ?.filter(img => img?.asset)
+                        .map(img => ({
+                            url: urlFor(img.asset).width(800).height(600).quality(85).url(),
+                            alt: img.alt,
+                            caption: img.caption,
+                        })),
+                    keyFeatures: item.keyFeatures,
+                    targetAgeGroup: item.targetAgeGroup,
+                    duration: item.duration,
+                    priceRange: item.priceRange,
+                    contactInfo: item.contactInfo,
+                    scheduleInfo: item.scheduleInfo,
+                    requirements: item.requirements,
+                    activities: item.activities,
+                    learningOutcomes: item.learningOutcomes,
+                    order: item.order,
+                    isFeatured: item.isFeatured,
+                    seoTitle: item.seoTitle,
+                };
+            } catch (e) {
+                console.error(`Failed to transform preschool item ${item._id}:`, e);
+                return null;
+            }
+        })
+        .filter((item): item is PreschoolServiceItem => item !== null);
 
 const FALLBACK_PROGRAMS: PreschoolServiceItem[] = [
     { id: "f1", title: "Erkən Kəşflər (3–4 yaş)", slug: "", shortDescription: "Mühiti kəşf etmə, ilkin dil bacarıqları və sosial davranışların formalaşdırılmasına fokuslanan xüsusi proqram.", featuredImage: "/assets/bg.webp", order: 1, isFeatured: false, targetAgeGroup: "3–4 yaş", duration: "İllik", keyFeatures: [{ feature: "Motor bacarıqları" }, { feature: "Sensorial oyunlar" }, { feature: "Nağıl vaxtı" }] },
