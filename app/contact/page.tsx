@@ -4,43 +4,47 @@ import { useState } from "react";
 import Link from "next/link";
 import { z } from "zod";
 import { toast } from "sonner";
+import {
+    ChevronRight, HelpCircle, Building2, MapPin, ExternalLink,
+    Phone, Mail, Clock, ArrowRight, Loader2, Send,
+} from 'lucide-react';
 import { submitRegistration } from "@/app/actions/registration";
 
 const ContactSchema = z.object({
-    name:    z.string().min(2, "Ad ən azı 2 hərf olmalıdır"),
+    name: z.string().min(2, "Ad ən azı 2 hərf olmalıdır"),
     surname: z.string().min(2, "Soyad ən azı 2 hərf olmalıdır"),
-    phone:   z.string().min(10, "Düzgün telefon nömrəsi daxil edin"),
-    email:   z.string().email("Düzgün e-poçt ünvanı daxil edin"),
+    phone: z.string().min(10, "Düzgün telefon nömrəsi daxil edin"),
+    email: z.string().email("Düzgün e-poçt ünvanı daxil edin"),
     message: z.string().min(10, "Mesaj ən azı 10 hərf olmalıdır"),
 });
 
-type FormData   = z.infer<typeof ContactSchema>;
+type FormData = z.infer<typeof ContactSchema>;
 type FormErrors = Partial<Record<keyof FormData, string>>;
 
 const LOCATIONS = [
     {
         name: "Grand Hayat Residence",
         address: "Tbilisi pr., Grand Hayat Residence, Bakı, Azərbaycan",
-        email: "inglabaku@gmail.com",
+        email: "info@inglaschool.com",
         hours: "09:00 – 21:00",
         mapQuery: "Grand+Hayat+Residence+Tbilisi+prospekti+Baku",
         badge: "Tbilisi prospekti",
-        icon: "apartment",
+        Icon: Building2,
         schools: [
-            { name: "Ingla School Baku",        phone: "010 310 71 17" },
+            { name: "Ingla School Baku", phone: "010 310 71 17" },
             { name: "Ingla Kids and Preschool", phone: "010 310 51 15" },
         ],
     },
     {
         name: "Zahid Xəlilov 59a",
         address: "Zahid Xəlilov küç. 59a, Bakı, Azərbaycan",
-        email: "inglabaku@gmail.com",
+        email: "info@inglaschool.com",
         hours: "09:00 – 21:00",
         mapQuery: "Zahid+Xelilov+59a+Baku",
         badge: "Zahid Xəlilov",
-        icon: "location_on",
+        Icon: MapPin,
         schools: [
-            { name: "Ingla School Baku",   phone: "010 310 61 16" },
+            { name: "Ingla School Baku", phone: "010 310 61 16" },
             { name: "Ingla International", phone: "010 310 41 14" },
         ],
     },
@@ -48,7 +52,7 @@ const LOCATIONS = [
 
 export default function ContactPage() {
     const [formData, setFormData] = useState<FormData>({ name: "", surname: "", phone: "", email: "", message: "" });
-    const [errors, setErrors]     = useState<FormErrors>({});
+    const [errors, setErrors] = useState<FormErrors>({});
     const [submitting, setSubmitting] = useState(false);
 
     const set = (field: keyof FormData) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -63,7 +67,7 @@ export default function ContactPage() {
         const result = ContactSchema.safeParse(formData);
         if (!result.success) {
             const fieldErrors: FormErrors = {};
-            result.error.errors.forEach(err => {
+            result.error.issues.forEach(err => {
                 const key = err.path[0] as keyof FormData;
                 if (!fieldErrors[key]) fieldErrors[key] = err.message;
             });
@@ -92,26 +96,26 @@ export default function ContactPage() {
     };
 
     const inputBase = "w-full px-4 py-3 rounded-xl border bg-white dark:bg-slate-800 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-primary transition-colors text-sm";
-    const inputOk   = "border-slate-200 dark:border-slate-700";
-    const inputErr  = "border-red-400 dark:border-red-500 focus:ring-red-400";
+    const inputOk = "border-slate-200 dark:border-slate-700";
+    const inputErr = "border-red-400 dark:border-red-500 focus:ring-red-400";
 
     return (
         <div className="flex-1 bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100">
 
             {/* ── PAGE HEADER ── */}
             <div className="relative overflow-hidden bg-slate-900 dark:bg-black">
-                <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffd90008_1px,transparent_1px),linear-gradient(to_bottom,#ffd90008_1px,transparent_1px)] bg-[size:40px_40px] pointer-events-none" />
+                <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffd90008_1px,transparent_1px),linear-gradient(to_bottom,#ffd90008_1px,transparent_1px)] bg-size-[40px_40px] pointer-events-none" />
                 <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-primary/5 rounded-full blur-3xl pointer-events-none" />
                 <div className="relative z-10 max-w-[1200px] mx-auto px-6 md:px-10 py-14 md:py-20">
                     <div className="flex items-center gap-2 text-slate-500 text-xs font-medium mb-6">
                         <Link href="/" className="hover:text-primary transition-colors">Ana Səhifə</Link>
-                        <span className="material-symbols-outlined text-[14px]">chevron_right</span>
+                        <ChevronRight className="w-3 h-3" />
                         <span className="text-primary">Əlaqə</span>
                     </div>
                     <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-8">
                         <div className="flex flex-col gap-4 max-w-2xl">
                             <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs font-bold uppercase tracking-widest w-fit">
-                                <span className="material-symbols-outlined text-[14px]">contact_support</span>
+                                <HelpCircle className="w-3.5 h-3.5" />
                                 Bizimlə Əlaqə
                             </span>
                             <h1 className="text-white text-3xl md:text-5xl font-black leading-tight tracking-tight">Əlaqə</h1>
@@ -119,11 +123,11 @@ export default function ContactPage() {
                                 Suallarınız üçün bizimlə əlaqə saxlayın — telefon, e-poçt və ya aşağıdakı form vasitəsilə.
                             </p>
                         </div>
-                        <div className="flex gap-6 md:gap-8 flex-shrink-0">
+                        <div className="flex gap-6 md:gap-8 shrink-0">
                             {[
                                 { value: "09:00–21:00", label: "İş Saatı" },
-                                { value: "4",           label: "Filial"   },
-                                { value: "2",           label: "Ünvan"    },
+                                { value: "4", label: "Filial" },
+                                { value: "2", label: "Ünvan" },
                             ].map(({ value, label }) => (
                                 <div key={label} className="text-center">
                                     <p className="text-2xl font-black text-primary leading-none">{value}</p>
@@ -148,8 +152,8 @@ export default function ContactPage() {
                         {LOCATIONS.map((location) => (
                             <div key={location.name} className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 overflow-hidden shadow-sm">
                                 <div className="flex items-center gap-3 px-6 py-4 border-b border-slate-100 dark:border-slate-800">
-                                    <div className="size-10 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0">
-                                        <span className="material-symbols-outlined text-primary text-[20px]">{location.icon}</span>
+                                    <div className="size-10 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
+                                        <location.Icon className="w-5 h-5 text-primary" />
                                     </div>
                                     <div>
                                         <span className="text-[10px] font-bold text-primary uppercase tracking-widest">{location.badge}</span>
@@ -158,18 +162,18 @@ export default function ContactPage() {
                                 </div>
                                 <div className="px-6 py-5 flex flex-col gap-4">
                                     <div className="flex gap-3">
-                                        <span className="material-symbols-outlined text-primary text-[18px] flex-shrink-0 mt-0.5">location_on</span>
+                                        <MapPin className="w-4 h-4 text-primary shrink-0 mt-0.5" />
                                         <div>
                                             <p className="text-xs text-slate-500 uppercase tracking-wide font-bold mb-0.5">Ünvan</p>
                                             <p className="text-sm text-slate-700 dark:text-slate-300">{location.address}</p>
                                             <a href={`https://maps.google.com/?q=${location.mapQuery}`} target="_blank" rel="noreferrer"
                                                 className="text-xs text-primary font-bold mt-1 inline-flex items-center gap-1 hover:underline">
-                                                Xəritədə bax <span className="material-symbols-outlined text-[12px]">open_in_new</span>
+                                                Xəritədə bax <ExternalLink className="w-3 h-3" />
                                             </a>
                                         </div>
                                     </div>
                                     <div className="flex gap-3">
-                                        <span className="material-symbols-outlined text-primary text-[18px] flex-shrink-0 mt-0.5">call</span>
+                                        <Phone className="w-4 h-4 text-primary shrink-0 mt-0.5" />
                                         <div>
                                             <p className="text-xs text-slate-500 uppercase tracking-wide font-bold mb-1">Telefon</p>
                                             <div className="flex flex-col gap-2">
@@ -184,14 +188,14 @@ export default function ContactPage() {
                                     </div>
                                     <div className="grid grid-cols-2 gap-4">
                                         <div className="flex gap-3">
-                                            <span className="material-symbols-outlined text-primary text-[18px] flex-shrink-0 mt-0.5">mail</span>
+                                            <Mail className="w-4 h-4 text-primary shrink-0 mt-0.5" />
                                             <div>
                                                 <p className="text-xs text-slate-500 uppercase tracking-wide font-bold mb-0.5">E-poçt</p>
                                                 <a href={`mailto:${location.email}`} className="text-sm text-slate-700 dark:text-slate-300 hover:text-primary transition-colors break-all">{location.email}</a>
                                             </div>
                                         </div>
                                         <div className="flex gap-3">
-                                            <span className="material-symbols-outlined text-primary text-[18px] flex-shrink-0 mt-0.5">schedule</span>
+                                            <Clock className="w-4 h-4 text-primary shrink-0 mt-0.5" />
                                             <div>
                                                 <p className="text-xs text-slate-500 uppercase tracking-wide font-bold mb-0.5">İş Saatı</p>
                                                 <p className="text-sm font-bold text-primary">{location.hours}</p>
@@ -205,14 +209,14 @@ export default function ContactPage() {
                         {/* WhatsApp */}
                         <a href="https://wa.me/994103107117" target="_blank" rel="noreferrer"
                             className="flex items-center gap-4 bg-[#25D366]/10 border border-[#25D366]/20 rounded-2xl px-6 py-4 hover:bg-[#25D366]/20 transition-colors group">
-                            <div className="size-12 rounded-xl bg-[#25D366] flex items-center justify-center flex-shrink-0">
-                                <svg className="w-6 h-6 fill-white" viewBox="0 0 24 24"><path d="M16.6 14c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1-.2.2-.6.8-.8 1-.1.2-.3.2-.5.1-.7-.3-1.4-.7-2-1.2-.5-.5-1-1.1-1.4-1.7-.1-.2 0-.4.1-.5.1-.1.2-.3.4-.4.1-.1.2-.3.2-.4.1-.2 0-.4 0-.5C10 9.5 9.4 8 9.3 7.8c-.2-.2-.4-.2-.6-.2h-.5c-.2 0-.5.1-.7.3-.6.6-.9 1.3-.9 2.1.1 1.3.8 2.5 1.6 3.4 1 1.1 2.2 2 3.5 2.7 1.3.7 2.8 1.2 4.2 1.2.9.1 1.9-.2 2.6-.8.4-.3.7-.7.9-1.2.1-.2.1-.4.1-.6 0-.1-.1-.1-.3-.2M12 20.3c-1.5 0-3-.4-4.2-1.1l-.3-.2-3.1.8.8-3-.2-.3c-.8-1.2-1.2-2.7-1.2-4.2 0-4.6 3.7-8.3 8.3-8.3 4.6 0 8.3 3.7 8.3 8.3S16.6 20.3 12 20.3M12 2C6.5 2 2 6.5 2 12c0 1.8.5 3.5 1.3 5L2 22l5.1-1.3C8.6 21.5 10.3 22 12 22c5.5 0 10-4.5 10-10S17.5 2 12 2z"/></svg>
+                            <div className="size-12 rounded-xl bg-[#25D366] flex items-center justify-center shrink-0">
+                                <svg className="w-6 h-6 fill-white" viewBox="0 0 24 24"><path d="M16.6 14c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1-.2.2-.6.8-.8 1-.1.2-.3.2-.5.1-.7-.3-1.4-.7-2-1.2-.5-.5-1-1.1-1.4-1.7-.1-.2 0-.4.1-.5.1-.1.2-.3.4-.4.1-.1.2-.3.2-.4.1-.2 0-.4 0-.5C10 9.5 9.4 8 9.3 7.8c-.2-.2-.4-.2-.6-.2h-.5c-.2 0-.5.1-.7.3-.6.6-.9 1.3-.9 2.1.1 1.3.8 2.5 1.6 3.4 1 1.1 2.2 2 3.5 2.7 1.3.7 2.8 1.2 4.2 1.2.9.1 1.9-.2 2.6-.8.4-.3.7-.7.9-1.2.1-.2.1-.4.1-.6 0-.1-.1-.1-.3-.2M12 20.3c-1.5 0-3-.4-4.2-1.1l-.3-.2-3.1.8.8-3-.2-.3c-.8-1.2-1.2-2.7-1.2-4.2 0-4.6 3.7-8.3 8.3-8.3 4.6 0 8.3 3.7 8.3 8.3S16.6 20.3 12 20.3M12 2C6.5 2 2 6.5 2 12c0 1.8.5 3.5 1.3 5L2 22l5.1-1.3C8.6 21.5 10.3 22 12 22c5.5 0 10-4.5 10-10S17.5 2 12 2z" /></svg>
                             </div>
                             <div>
                                 <p className="font-bold text-slate-900 dark:text-white text-sm">WhatsApp ilə yazın</p>
                                 <p className="text-xs text-slate-500">010 310 71 17</p>
                             </div>
-                            <span className="material-symbols-outlined text-[#25D366] ml-auto group-hover:translate-x-1 transition-transform">arrow_forward</span>
+                            <ArrowRight className="w-5 h-5 text-[#25D366] ml-auto group-hover:translate-x-1 transition-transform" />
                         </a>
                     </div>
 
@@ -263,13 +267,13 @@ export default function ContactPage() {
                             >
                                 {submitting ? (
                                     <>
-                                        <span className="animate-spin material-symbols-outlined text-[18px]">progress_activity</span>
+                                        <Loader2 className="w-4 h-4 animate-spin" />
                                         Göndərilir...
                                     </>
                                 ) : (
                                     <>
                                         Göndər
-                                        <span className="material-symbols-outlined text-[18px]">send</span>
+                                        <Send className="w-4 h-4" />
                                     </>
                                 )}
                             </button>

@@ -4,6 +4,12 @@ import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import {
+    Users, BadgeCheck, Building2, Star,
+    GraduationCap, Globe, User, Baby, Award,
+    ChevronRight, Trophy, Calendar, MapPin,
+    ArrowRight, ChevronDown,
+} from 'lucide-react';
 import { client } from "@/sanity/lib/client";
 import { urlFor } from "@/sanity/lib/image";
 import { FAQ_QUERY, TESTIMONIALS_QUERY, HOMEPAGE_BENTO_QUERY } from "@/sanity/lib/queries";
@@ -32,10 +38,10 @@ const transformTestimonialsData = (sanityItems: SanityTestimonialItem[]): Testim
         }));
 
 const STATS = [
-    { icon: "groups",         label: "Aktiv Tələbələr", value: "5,000+" },
-    { icon: "verified",       label: "Qəbul Faizi",     value: "98%"    },
-    { icon: "corporate_fare", label: "Tərəfdaşlar",     value: "50+"    },
-    { icon: "star",           label: "Məmnuniyyət",     value: "4.9/5"  },
+    { Icon: Users,      label: "Aktiv Tələbələr", value: "5,000+" },
+    { Icon: BadgeCheck, label: "Qəbul Faizi",     value: "98%"    },
+    { Icon: Building2,  label: "Tərəfdaşlar",     value: "50+"    },
+    { Icon: Star,       label: "Məmnuniyyət",      value: "4.9/5"  },
 ];
 
 export default function HomeClient({ initialBentoData, initialFaqData, initialTestimonialsData }: HomeClientProps) {
@@ -65,7 +71,7 @@ export default function HomeClient({ initialBentoData, initialFaqData, initialTe
             {/* ── HERO ─────────────────────────────────────────────────── */}
             <section className="relative overflow-hidden bg-background-light dark:bg-background-dark">
                 {/* Grid pattern */}
-                <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffd90009_1px,transparent_1px),linear-gradient(to_bottom,#ffd90009_1px,transparent_1px)] bg-[size:44px_44px] pointer-events-none" />
+                <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffd90009_1px,transparent_1px),linear-gradient(to_bottom,#ffd90009_1px,transparent_1px)] bg-size-[44px_44px] pointer-events-none" />
                 {/* Top-right glow */}
                 <div className="absolute -top-32 -right-32 w-[500px] h-[500px] bg-primary/8 rounded-full blur-3xl pointer-events-none" />
 
@@ -104,12 +110,12 @@ export default function HomeClient({ initialBentoData, initialFaqData, initialTe
                             {/* Key advantages */}
                             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                                 {[
-                                    { icon: "school",     text: "Sertifikatlı Müəllimlər" },
-                                    { icon: "public",     text: "Beynəlxalq Proqramlar"   },
-                                    { icon: "person",     text: "Fərdi Yanaşma"            },
-                                ].map(({ icon, text }) => (
+                                    { Icon: GraduationCap, text: "Sertifikatlı Müəllimlər" },
+                                    { Icon: Globe,         text: "Beynəlxalq Proqramlar"   },
+                                    { Icon: User,          text: "Fərdi Yanaşma"            },
+                                ].map(({ Icon, text }) => (
                                     <div key={text} className="flex items-center gap-2.5 bg-white dark:bg-slate-800/60 border border-slate-100 dark:border-slate-700 rounded-xl px-4 py-3">
-                                        <span className="material-symbols-outlined text-primary text-[20px] flex-shrink-0">{icon}</span>
+                                        <Icon className="w-5 h-5 text-primary shrink-0" />
                                         <span className="text-sm font-semibold text-slate-800 dark:text-slate-200">{text}</span>
                                     </div>
                                 ))}
@@ -120,21 +126,21 @@ export default function HomeClient({ initialBentoData, initialFaqData, initialTe
                                 <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">Əsas İstiqamətlər</p>
                                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                                     {[
-                                        { icon: "school",            label: "Tədris İstiqamətləri", sub: "Dil, IELTS, SAT",      href: "/services"        },
-                                        { icon: "child_care",        label: "Preschool",             sub: "3–6 yaş proqramları", href: "/preschool"       },
-                                        { icon: "workspace_premium", label: "Təlim Mərkəzi",         sub: "Korporativ & sertifikat", href: "/training-center" },
-                                    ].map(({ icon, label, sub, href }) => (
+                                        { Icon: GraduationCap, label: "Tədris İstiqamətləri", sub: "Dil, IELTS, SAT",         href: "/services"        },
+                                        { Icon: Baby,          label: "Preschool",             sub: "3–6 yaş proqramları",     href: "/preschool"       },
+                                        { Icon: Award,         label: "Təlim Mərkəzi",         sub: "Korporativ & sertifikat", href: "/training-center" },
+                                    ].map(({ Icon, label, sub, href }) => (
                                         <Link
                                             key={label}
                                             href={href}
                                             className="group flex items-center gap-3 bg-white dark:bg-slate-800/60 border border-slate-100 dark:border-slate-700 rounded-xl px-4 py-3 hover:border-primary hover:shadow-md transition-all"
                                         >
-                                            <span className="material-symbols-outlined text-primary text-[22px] flex-shrink-0">{icon}</span>
+                                            <Icon className="w-5 h-5 text-primary shrink-0" />
                                             <div className="min-w-0">
                                                 <p className="text-sm font-bold text-slate-900 dark:text-white leading-none truncate">{label}</p>
                                                 <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5 truncate">{sub}</p>
                                             </div>
-                                            <span className="material-symbols-outlined text-slate-300 dark:text-slate-600 text-[16px] ml-auto flex-shrink-0 group-hover:text-primary transition-colors">chevron_right</span>
+                                            <ChevronRight className="w-4 h-4 text-slate-300 dark:text-slate-600 ml-auto shrink-0 group-hover:text-primary transition-colors" />
                                         </Link>
                                     ))}
                                 </div>
@@ -146,7 +152,7 @@ export default function HomeClient({ initialBentoData, initialFaqData, initialTe
                                     href="/studyabroad"
                                     className="px-8 py-3.5 bg-primary text-slate-900 rounded-xl font-bold text-base hover:shadow-xl hover:shadow-primary/25 hover:-translate-y-0.5 transition-all flex items-center gap-2"
                                 >
-                                    Xaricdə Təhsil <span className="material-symbols-outlined text-[20px]">public</span>
+                                    Xaricdə Təhsil <Globe className="w-5 h-5" />
                                 </Link>
                                 <button
                                     onClick={() => router.push("/about")}
@@ -162,11 +168,11 @@ export default function HomeClient({ initialBentoData, initialFaqData, initialTe
                         <div className="relative hidden lg:flex flex-col gap-3">
                             {/* Main image */}
                             <div className="relative w-full aspect-[4/3] rounded-2xl overflow-hidden shadow-2xl">
-                                <Image src="/assets/bg.webp" alt="Ingla School" fill className="object-cover" priority />
-                                <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
+                                <Image src="/assets/bg.webp" alt="Ingla School" fill sizes="(max-width: 1024px) 0vw, 50vw" className="object-cover" priority />
+                                <div className="absolute inset-0 bg-linear-to-t from-black/40 via-transparent to-transparent" />
                                 {/* Overlay chip inside image */}
                                 <div className="absolute top-4 left-4 flex items-center gap-2 bg-white/90 dark:bg-slate-900/90 backdrop-blur-sm rounded-xl px-3 py-2 shadow-lg">
-                                    <span className="material-symbols-outlined text-primary text-[18px]">location_on</span>
+                                    <MapPin className="w-4 h-4 text-primary" />
                                     <span className="text-xs font-bold text-slate-800 dark:text-slate-200">Zahid Xəlilov 59, Bakı</span>
                                 </div>
                             </div>
@@ -175,8 +181,8 @@ export default function HomeClient({ initialBentoData, initialFaqData, initialTe
                             <div className="grid grid-cols-2 gap-3">
                                 {/* Achievement card */}
                                 <div className="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-2xl px-5 py-4 shadow-md flex items-center gap-3">
-                                    <div className="size-10 rounded-xl bg-primary flex items-center justify-center flex-shrink-0">
-                                        <span className="material-symbols-outlined text-slate-900 text-[20px]">emoji_events</span>
+                                    <div className="size-10 rounded-xl bg-primary flex items-center justify-center shrink-0">
+                                        <Trophy className="w-5 h-5 text-slate-900" />
                                     </div>
                                     <div>
                                         <p className="text-lg font-black text-slate-900 dark:text-white leading-none">98%</p>
@@ -185,8 +191,8 @@ export default function HomeClient({ initialBentoData, initialFaqData, initialTe
                                 </div>
                                 {/* Next intake card */}
                                 <div className="bg-slate-900 dark:bg-slate-800 border border-slate-800 rounded-2xl px-5 py-4 shadow-md flex items-center gap-3">
-                                    <div className="size-10 rounded-xl bg-primary/15 flex items-center justify-center flex-shrink-0">
-                                        <span className="material-symbols-outlined text-primary text-[20px]">calendar_month</span>
+                                    <div className="size-10 rounded-xl bg-primary/15 flex items-center justify-center shrink-0">
+                                        <Calendar className="w-5 h-5 text-primary" />
                                     </div>
                                     <div>
                                         <p className="text-[11px] text-slate-400 mb-0.5 leading-tight">Növbəti Başlanğıc</p>
@@ -208,10 +214,10 @@ export default function HomeClient({ initialBentoData, initialFaqData, initialTe
             <section className="bg-white dark:bg-slate-900 border-y border-slate-100 dark:border-slate-800">
                 <div className="max-w-7xl mx-auto px-6 py-8">
                     <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
-                        {STATS.map(({ icon, label, value }) => (
+                        {STATS.map(({ Icon, label, value }) => (
                             <div key={label} className="flex items-center gap-4">
-                                <div className="size-12 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0">
-                                    <span className="material-symbols-outlined text-primary text-[22px]">{icon}</span>
+                                <div className="size-12 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
+                                    <Icon className="w-5 h-5 text-primary" />
                                 </div>
                                 <div>
                                     <p className="text-2xl font-extrabold text-slate-900 dark:text-white leading-none">{value}</p>
@@ -244,7 +250,7 @@ export default function HomeClient({ initialBentoData, initialFaqData, initialTe
                                     </h2>
                                 </div>
                                 <Link href="/services" className="inline-flex items-center gap-2 text-sm font-bold text-primary hover:underline">
-                                    Bütün proqramlara bax <span className="material-symbols-outlined text-[18px]">arrow_forward</span>
+                                    Bütün proqramlara bax <ArrowRight className="w-4 h-4" />
                                 </Link>
                             </div>
                             <BentoBox items={displayItems} />
@@ -265,30 +271,28 @@ export default function HomeClient({ initialBentoData, initialFaqData, initialTe
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                             {testimonials.slice(0, 3).map((t) => (
                                 <div key={t.id} className="bg-background-light dark:bg-slate-800 p-8 rounded-2xl border border-slate-100 dark:border-slate-700 flex flex-col gap-5">
-                                    <div className="flex text-primary gap-0.5">
+                                    <div className="flex gap-0.5">
                                         {[...Array(5)].map((_, i) => (
-                                            <span key={i} className="material-symbols-outlined text-[18px]">
-                                                {i < t.rating ? "star" : "star_border"}
-                                            </span>
+                                            <Star key={i} className={`w-4 h-4 ${i < t.rating ? "fill-primary text-primary" : "text-slate-300 dark:text-slate-600"}`} />
                                         ))}
                                     </div>
                                     <p className="text-slate-700 dark:text-slate-300 italic text-sm leading-relaxed line-clamp-4 flex-1">
                                         &ldquo;{t.testimonial}&rdquo;
                                     </p>
                                     <div className="flex items-center gap-3 pt-4 border-t border-slate-100 dark:border-slate-700">
-                                        <div className="size-10 rounded-full overflow-hidden bg-slate-200 dark:bg-slate-700 flex-shrink-0">
+                                        <div className="size-10 rounded-full overflow-hidden bg-slate-200 dark:bg-slate-700 shrink-0">
                                             {t.image ? (
                                                 <Image src={t.image} alt={t.name} width={40} height={40} className="object-cover w-full h-full" />
                                             ) : (
                                                 <div className="w-full h-full flex items-center justify-center">
-                                                    <span className="material-symbols-outlined text-slate-400 text-[18px]">person</span>
+                                                    <User className="w-4 h-4 text-slate-400" />
                                                 </div>
                                             )}
                                         </div>
                                         <div>
                                             <p className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-1">
                                                 {t.name}
-                                                {t.featured && <span className="material-symbols-outlined text-primary text-[14px]">verified</span>}
+                                                {t.featured && <BadgeCheck className="w-3.5 h-3.5 text-primary" />}
                                             </p>
                                             <p className="text-xs text-slate-500">{t.position}{t.company && ` · ${t.company}`}</p>
                                         </div>
@@ -357,12 +361,10 @@ export default function HomeClient({ initialBentoData, initialFaqData, initialTe
                                             onClick={() => setActiveFaq(activeFaq === faq.id ? null : faq.id)}
                                         >
                                             <span className="font-semibold text-slate-900 dark:text-white text-sm">{faq.question}</span>
-                                            <span
-                                                className="material-symbols-outlined text-primary flex-shrink-0 transition-transform duration-300"
+                                            <ChevronDown
+                                                className="w-5 h-5 text-primary shrink-0 transition-transform duration-300"
                                                 style={{ transform: activeFaq === faq.id ? "rotate(180deg)" : "rotate(0deg)" }}
-                                            >
-                                                expand_more
-                                            </span>
+                                            />
                                         </button>
                                         {activeFaq === faq.id && (
                                             <div className="px-6 pb-5 pt-1 text-slate-600 dark:text-slate-400 text-sm leading-relaxed border-t border-slate-100 dark:border-slate-700">
@@ -386,12 +388,12 @@ export default function HomeClient({ initialBentoData, initialFaqData, initialTe
                             <h2 className="text-2xl md:text-3xl font-black text-slate-900 mb-2">Bu gün başlayın</h2>
                             <p className="text-slate-800 max-w-md">Peşəkar müəllimlər, beynəlxalq proqramlar və sizin uğurunuza həsr olunmuş bir komanda sizi gözləyir.</p>
                         </div>
-                        <div className="relative z-10 flex gap-3 flex-shrink-0">
+                        <div className="relative z-10 flex gap-3 shrink-0">
                             <Link
                                 href="/services"
                                 className="px-7 py-3.5 bg-slate-900 text-white rounded-xl font-bold text-sm hover:bg-slate-800 transition-colors flex items-center gap-2"
                             >
-                                Proqramlara Bax <span className="material-symbols-outlined text-[16px]">arrow_forward</span>
+                                Proqramlara Bax <ArrowRight className="w-4 h-4" />
                             </Link>
                         </div>
                     </div>

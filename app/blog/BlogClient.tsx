@@ -3,6 +3,7 @@
 import { useState, useMemo } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { Search, X, SearchX, Sparkles, ImageIcon, User, ArrowRight, Mail } from 'lucide-react';
 import { BlogPost, Category } from "@/types/sanity";
 import { urlFor } from "@/sanity/lib/image";
 
@@ -199,6 +200,7 @@ export default function BlogClient({ posts, categories }: BlogClientProps) {
                                                 src={urlFor(featuredPost.mainImage).width(800).height(600).url()}
                                                 alt={featuredPost.title}
                                                 fill
+                                                sizes="(max-width: 1024px) 100vw, 50vw"
                                                 className="object-cover transition-transform duration-500 group-hover:scale-105"
                                             />
                                         ) : (
@@ -231,15 +233,15 @@ export default function BlogClient({ posts, categories }: BlogClientProps) {
                                         )}
                                         <div className="flex items-center gap-3 mt-auto">
                                             {featuredPost.author?.image ? (
-                                                <div className="size-8 rounded-full overflow-hidden relative flex-shrink-0">
+                                                <div className="size-8 rounded-full overflow-hidden relative shrink-0">
                                                     <Image
                                                         src={urlFor(featuredPost.author.image).width(32).height(32).url()}
                                                         alt={featuredPost.author.name}
-                                                        fill className="object-cover"
+                                                        fill sizes="32px" className="object-cover"
                                                     />
                                                 </div>
                                             ) : (
-                                                <div className="size-8 rounded-full bg-slate-200 dark:bg-slate-700 flex items-center justify-center flex-shrink-0">
+                                                <div className="size-8 rounded-full bg-slate-200 dark:bg-slate-700 flex items-center justify-center shrink-0">
                                                     <span className="material-symbols-outlined text-[16px]">person</span>
                                                 </div>
                                             )}
@@ -273,12 +275,13 @@ export default function BlogClient({ posts, categories }: BlogClientProps) {
                                             className="flex flex-col bg-white dark:bg-slate-800 rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition-all border border-slate-100 dark:border-slate-700 group"
                                         >
                                             {/* Thumbnail */}
-                                            <div className="h-48 overflow-hidden relative flex-shrink-0">
+                                            <div className="h-48 overflow-hidden relative shrink-0">
                                                 {post.mainImage ? (
                                                     <Image
                                                         src={urlFor(post.mainImage).width(600).height(400).url()}
                                                         alt={post.title}
                                                         fill
+                                                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                                                         className="object-cover group-hover:scale-105 transition-transform duration-300"
                                                     />
                                                 ) : (
@@ -333,7 +336,7 @@ export default function BlogClient({ posts, categories }: BlogClientProps) {
                                                                 <Image
                                                                     src={urlFor(post.author.image).width(24).height(24).url()}
                                                                     alt={post.author.name}
-                                                                    fill className="object-cover"
+                                                                    fill sizes="24px" className="object-cover"
                                                                 />
                                                             </div>
                                                         ) : (
@@ -371,7 +374,7 @@ export default function BlogClient({ posts, categories }: BlogClientProps) {
                                             <Image
                                                 src={urlFor(filteredPosts[0].mainImage).width(600).height(400).url()}
                                                 alt={filteredPosts[0].title}
-                                                fill className="object-cover group-hover:scale-105 transition-transform duration-300"
+                                                fill sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" className="object-cover group-hover:scale-105 transition-transform duration-300"
                                             />
                                         ) : (
                                             <div className="w-full h-full bg-slate-100 dark:bg-slate-700 flex items-center justify-center">

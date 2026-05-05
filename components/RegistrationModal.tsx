@@ -82,20 +82,13 @@ export default function RegistrationModal({ isOpen, onClose, serviceTitle }: Reg
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
-        console.log("Form submission started"); // Debug log
-
-        if (!validateForm()) {
-            console.log("Validation failed"); // Debug log
-            return;
-        }
+        if (!validateForm()) return;
 
         setIsSubmitting(true);
         setSubmitStatus('idle');
         setErrorMessage("");
 
         try {
-            console.log("Submitting data:", { ...formData, serviceTitle }); // Debug log
-
             const result = await submitRegistration({
                 name: formData.name.trim(),
                 surname: formData.surname.trim(),
@@ -104,8 +97,6 @@ export default function RegistrationModal({ isOpen, onClose, serviceTitle }: Reg
                 message: formData.message.trim(),
                 serviceTitle,
             });
-
-            console.log("Submission result:", result); // Debug log
 
             if (result.success) {
                 setSubmitStatus('success');

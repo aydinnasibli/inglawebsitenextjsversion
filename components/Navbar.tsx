@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { Menu, X } from 'lucide-react';
 import Logo from '@/public/assets/logoingla.png'
 
 const Navbar = () => {
@@ -90,9 +91,7 @@ const Navbar = () => {
                         aria-label={mobileMenuOpen ? "Close mobile menu" : "Open mobile menu"}
                         aria-expanded={mobileMenuOpen}
                     >
-                        <span className="material-symbols-outlined text-2xl">
-                            {mobileMenuOpen ? 'close' : 'menu'}
-                        </span>
+                        {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
                     </button>
                 </div>
             </header>

@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { ArrowRight } from 'lucide-react';
 import { urlFor } from "@/sanity/lib/image";
 
 export interface BentoItem {
@@ -90,10 +91,11 @@ function CardContent({ item, imageUrl }: CardProps) {
                         src={imageUrl!}
                         alt={item.title}
                         fill
+                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                         className="object-cover opacity-50 group-hover:opacity-60 group-hover:scale-105 transition-all duration-500"
                     />
                     {/* Gradient overlay for readability */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/30 to-black/10" />
+                    <div className="absolute inset-0 bg-linear-to-t from-black/75 via-black/30 to-black/10" />
                 </>
             )}
 
@@ -132,7 +134,7 @@ function CardContent({ item, imageUrl }: CardProps) {
                             className={`mt-1 inline-flex items-center gap-1 text-sm font-bold group-hover:gap-2 transition-all ${ctaColor(item.variant, hasImage)}`}
                         >
                             {item.linkLabel}
-                            <span className="material-symbols-outlined text-[16px]">arrow_forward</span>
+                            <ArrowRight className="w-4 h-4" />
                         </span>
                     )}
                 </div>

@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { ChevronRight, Globe, Star, CheckCircle2, Dot, ArrowRight, GraduationCap, Languages, CreditCard, Building2, CalendarDays } from 'lucide-react';
 import { client } from "@/sanity/lib/client";
 import { urlFor } from "@/sanity/lib/image";
 import { PortableText } from "@portabletext/react";
@@ -72,18 +73,18 @@ export default function CountryClient({ initialCountryData, initialUniversitiesD
                         <div className="absolute inset-0">
                             <Image src={country.coverImage} alt={country.nameAz} fill className="object-cover opacity-40" priority />
                         </div>
-                        <div className="absolute inset-0 bg-gradient-to-r from-slate-900 via-slate-900/90 to-slate-900/70" />
+                        <div className="absolute inset-0 bg-linear-to-r from-slate-900 via-slate-900/90 to-slate-900/70" />
                     </>
                 )}
-                <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffd90008_1px,transparent_1px),linear-gradient(to_bottom,#ffd90008_1px,transparent_1px)] bg-[size:40px_40px] pointer-events-none" />
+                <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffd90008_1px,transparent_1px),linear-gradient(to_bottom,#ffd90008_1px,transparent_1px)] bg-size-[40px_40px] pointer-events-none" />
                 <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-primary/5 rounded-full blur-3xl pointer-events-none" />
 
                 <div className="relative z-10 max-w-[1200px] mx-auto px-6 md:px-10 py-14 md:py-20">
                     <div className="flex items-center gap-2 text-slate-500 text-xs font-medium mb-6">
                         <Link href="/" className="hover:text-primary transition-colors">Ana Səhifə</Link>
-                        <span className="material-symbols-outlined text-[14px]">chevron_right</span>
+                        <ChevronRight className="w-3 h-3" />
                         <Link href="/studyabroad" className="hover:text-primary transition-colors">Xaricdə Təhsil</Link>
-                        <span className="material-symbols-outlined text-[14px]">chevron_right</span>
+                        <ChevronRight className="w-3 h-3" />
                         <span className="text-primary">{country.nameAz}</span>
                     </div>
 
@@ -91,12 +92,12 @@ export default function CountryClient({ initialCountryData, initialUniversitiesD
                         <div className="flex flex-col gap-4 max-w-2xl">
                             <div className="flex items-center gap-3">
                                 <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs font-bold uppercase tracking-widest w-fit">
-                                    <span className="material-symbols-outlined text-[14px]">public</span>
+                                    <Globe className="w-3.5 h-3.5" />
                                     Xaricdə Təhsil
                                 </span>
                                 {country.isFeatured && (
                                     <span className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full bg-primary text-slate-900 text-xs font-bold uppercase tracking-widest w-fit">
-                                        <span className="material-symbols-outlined text-[14px]">star</span>
+                                        <Star className="w-3.5 h-3.5 fill-slate-900" />
                                         Tövsiyə Olunur
                                     </span>
                                 )}
@@ -104,7 +105,7 @@ export default function CountryClient({ initialCountryData, initialUniversitiesD
 
                             <div className="flex items-center gap-4">
                                 {country.flagImage && (
-                                    <div className="w-14 h-10 rounded-lg overflow-hidden border-2 border-white/20 flex-shrink-0 shadow-lg">
+                                    <div className="w-14 h-10 rounded-lg overflow-hidden border-2 border-white/20 shrink-0 shadow-lg">
                                         <Image src={country.flagImage} alt={`${country.nameAz} bayrağı`} width={56} height={40} className="object-cover w-full h-full" />
                                     </div>
                                 )}
@@ -118,7 +119,7 @@ export default function CountryClient({ initialCountryData, initialUniversitiesD
                             )}
                         </div>
 
-                        <div className="flex gap-6 md:gap-8 flex-shrink-0">
+                        <div className="flex gap-6 md:gap-8 shrink-0">
                             {[
                                 { value: `${universities.length || "10"}+`, label: "Tərəfdaş Uni." },
                                 { value: "98%", label: "Viza Uğuru" },
@@ -154,8 +155,8 @@ export default function CountryClient({ initialCountryData, initialUniversitiesD
                                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                     {country.highlights.map((h, i) => (
                                         <div key={i} className="flex gap-4 bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 p-5 shadow-sm">
-                                            <div className="size-10 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0 mt-0.5">
-                                                <span className="material-symbols-outlined text-primary text-[20px]">check_circle</span>
+                                            <div className="size-10 rounded-xl bg-primary/10 flex items-center justify-center shrink-0 mt-0.5">
+                                                <CheckCircle2 className="w-5 h-5 text-primary" />
                                             </div>
                                             <div>
                                                 <h4 className="font-bold text-slate-900 dark:text-white mb-1 text-sm">{h.title}</h4>
@@ -195,14 +196,14 @@ export default function CountryClient({ initialCountryData, initialUniversitiesD
                                 </div>
                                 <div className="px-6 py-5 flex flex-col gap-4">
                                     {[
-                                        { icon: "translate", label: "Dil", value: country.studyInfo.language },
-                                        { icon: "payments", label: "Valyuta", value: country.studyInfo.currency },
-                                        { icon: "school", label: "Orta Təhsil Haqqı", value: country.studyInfo.averageCost },
-                                        { icon: "apartment", label: "Yaşayış Xərci", value: country.studyInfo.livingCost },
-                                        { icon: "event", label: "Müraciət Tarixi", value: country.studyInfo.applicationDeadline },
-                                    ].filter(r => r.value).map(({ icon, label, value }) => (
+                                        { Icon: Languages,     label: "Dil",              value: country.studyInfo.language },
+                                        { Icon: CreditCard,    label: "Valyuta",           value: country.studyInfo.currency },
+                                        { Icon: GraduationCap, label: "Orta Təhsil Haqqı", value: country.studyInfo.averageCost },
+                                        { Icon: Building2,     label: "Yaşayış Xərci",     value: country.studyInfo.livingCost },
+                                        { Icon: CalendarDays,  label: "Müraciət Tarixi",   value: country.studyInfo.applicationDeadline },
+                                    ].filter(r => r.value).map(({ Icon, label, value }) => (
                                         <div key={label} className="flex gap-3">
-                                            <span className="material-symbols-outlined text-primary text-[18px] flex-shrink-0 mt-0.5">{icon}</span>
+                                            <Icon className="w-4 h-4 text-primary shrink-0 mt-0.5" />
                                             <div>
                                                 <p className="text-[10px] font-bold text-slate-500 uppercase tracking-wide">{label}</p>
                                                 <p className="text-sm font-semibold text-slate-800 dark:text-slate-200">{value}</p>
@@ -217,7 +218,7 @@ export default function CountryClient({ initialCountryData, initialUniversitiesD
                                         <ul className="flex flex-col gap-2">
                                             {country.studyInfo.visaRequirements.map((req, i) => (
                                                 <li key={i} className="flex gap-2 text-sm text-slate-600 dark:text-slate-400">
-                                                    <span className="material-symbols-outlined text-primary text-[14px] flex-shrink-0 mt-0.5">fiber_manual_record</span>
+                                                    <Dot className="w-4 h-4 text-primary shrink-0 mt-0.5" />
                                                     {req}
                                                 </li>
                                             ))}
@@ -235,7 +236,7 @@ export default function CountryClient({ initialCountryData, initialUniversitiesD
                                 href="/contact"
                                 className="flex items-center justify-center gap-2 w-full py-3 bg-slate-900 text-white rounded-xl font-bold text-sm hover:bg-slate-800 transition-colors"
                             >
-                                Əlaqə saxla <span className="material-symbols-outlined text-[16px]">arrow_forward</span>
+                                Əlaqə saxla <ArrowRight className="w-4 h-4" />
                             </Link>
                         </div>
                     </div>
@@ -256,11 +257,11 @@ export default function CountryClient({ initialCountryData, initialUniversitiesD
                         </div>
                     ) : universities.length === 0 ? (
                         <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 p-12 text-center">
-                            <span className="material-symbols-outlined text-slate-300 dark:text-slate-700 text-[48px] mb-4 block">school</span>
+                            <GraduationCap className="w-12 h-12 text-slate-300 dark:text-slate-700 mb-4 mx-auto" />
                             <h3 className="font-bold text-slate-600 dark:text-slate-400 mb-2">Hal-hazırda məlumat yoxdur</h3>
                             <p className="text-sm text-slate-500">Bu ölkədəki universitet imkanları haqqında bizimlə əlaqə saxlayın.</p>
                             <Link href="/contact" className="inline-flex items-center gap-2 mt-5 px-6 py-3 bg-primary text-slate-900 rounded-xl font-bold text-sm hover:brightness-105 transition-all">
-                                Əlaqə saxla <span className="material-symbols-outlined text-[16px]">arrow_forward</span>
+                                Əlaqə saxla <ArrowRight className="w-4 h-4" />
                             </Link>
                         </div>
                     ) : (
@@ -281,7 +282,7 @@ export default function CountryClient({ initialCountryData, initialUniversitiesD
                                                 className="object-contain max-h-28"
                                             />
                                         ) : (
-                                            <span className="material-symbols-outlined text-slate-300 dark:text-slate-600 text-[64px]">school</span>
+                                            <GraduationCap className="w-16 h-16 text-slate-300 dark:text-slate-600" />
                                         )}
                                     </div>
 
@@ -307,12 +308,12 @@ export default function CountryClient({ initialCountryData, initialUniversitiesD
                             <h2 className="text-2xl md:text-3xl font-black text-slate-900 mb-2">{country.nameAz}də Oxumaq İstəyirsiniz?</h2>
                             <p className="text-slate-800 max-w-md">Pulsuz məsləhət üçün bu gün bizimlə əlaqə saxlayın.</p>
                         </div>
-                        <div className="relative z-10 flex gap-3 flex-shrink-0">
+                        <div className="relative z-10 flex gap-3 shrink-0">
                             <Link
                                 href="/contact"
                                 className="px-7 py-3.5 bg-slate-900 text-white rounded-xl font-bold text-sm hover:bg-slate-800 transition-colors flex items-center gap-2"
                             >
-                                Pulsuz Məsləhət <span className="material-symbols-outlined text-[16px]">arrow_forward</span>
+                                Pulsuz Məsləhət <ArrowRight className="w-4 h-4" />
                             </Link>
                         </div>
                     </div>

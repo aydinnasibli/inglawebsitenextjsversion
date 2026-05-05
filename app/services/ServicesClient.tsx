@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { ChevronRight, GraduationCap, Star, Clock, CreditCard, ArrowRight } from 'lucide-react';
 import { client } from "@/sanity/lib/client";
 import { urlFor } from "@/sanity/lib/image";
 import { SERVICES_QUERY } from "@/sanity/lib/queries";
@@ -68,21 +69,21 @@ export default function ServicesPage({ initialServicesData }: ServicesPageProps)
             {/* Page Header */}
             <div className="relative overflow-hidden bg-slate-900 dark:bg-black">
                 {/* Subtle grid pattern */}
-                <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffd90008_1px,transparent_1px),linear-gradient(to_bottom,#ffd90008_1px,transparent_1px)] bg-[size:40px_40px] pointer-events-none" />
+                <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffd90008_1px,transparent_1px),linear-gradient(to_bottom,#ffd90008_1px,transparent_1px)] bg-size-[40px_40px] pointer-events-none" />
                 <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-primary/5 rounded-full blur-3xl pointer-events-none" />
 
                 <div className="relative z-10 max-w-[1200px] mx-auto px-6 md:px-10 py-14 md:py-20">
                     {/* Breadcrumb */}
                     <div className="flex items-center gap-2 text-slate-500 text-xs font-medium mb-6">
                         <Link href="/" className="hover:text-primary transition-colors">Ana Səhifə</Link>
-                        <span className="material-symbols-outlined text-[14px]">chevron_right</span>
+                        <ChevronRight className="w-3 h-3" />
                         <span className="text-primary">Tədris İstiqamətləri</span>
                     </div>
 
                     <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-8">
                         <div className="flex flex-col gap-4 max-w-2xl">
                             <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs font-bold uppercase tracking-widest w-fit">
-                                <span className="material-symbols-outlined text-[14px]">school</span>
+                                <GraduationCap className="w-3.5 h-3.5" />
                                 Peşəkar Təhsil
                             </span>
                             <h1 className="text-white text-3xl md:text-5xl font-black leading-tight tracking-tight">
@@ -94,10 +95,10 @@ export default function ServicesPage({ initialServicesData }: ServicesPageProps)
                         </div>
 
                         {/* Quick stats */}
-                        <div className="flex gap-6 md:gap-8 flex-shrink-0">
+                        <div className="flex gap-6 md:gap-8 shrink-0">
                             {[
                                 { value: "6+", label: "Proqram" },
-                                { value: "5000+", label: "Tələbə" },
+                                { value: "2500+", label: "Tələbə" },
                                 { value: "98%", label: "Məmnuniyyət" },
                             ].map(({ value, label }) => (
                                 <div key={label} className="text-center">
@@ -119,7 +120,7 @@ export default function ServicesPage({ initialServicesData }: ServicesPageProps)
                         </div>
                     ) : (
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                            {(services.length > 0 ? services : FALLBACK_SERVICES).map((service) => (
+                            {(services.length > 0 ? services : FALLBACK_SERVICES).map((service, idx) => (
                                 <Link
                                     key={service.id}
                                     href={`/services/${service.slug}`}
@@ -131,17 +132,19 @@ export default function ServicesPage({ initialServicesData }: ServicesPageProps)
                                             src={service.featuredImage || "/assets/bg.webp"}
                                             alt={service.title}
                                             fill
+                                            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                                             className="object-cover group-hover:scale-105 transition-transform duration-500"
+                                            priority={idx === 0}
                                         />
-                                        <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
-                                        {service.category && (
+                                        <div className="absolute inset-0 bg-linear-to-t from-black/50 to-transparent" />
+                                        {service.category && service.category.toLowerCase() !== 'general' && (
                                             <span className="absolute top-3 left-3 px-2.5 py-1 bg-primary text-slate-900 text-[10px] font-bold uppercase tracking-wider rounded-full">
                                                 {service.category}
                                             </span>
                                         )}
                                         {service.isFeatured && (
                                             <span className="absolute top-3 right-3 px-2 py-1 bg-slate-900/80 text-primary text-[10px] font-bold uppercase tracking-wider rounded-full flex items-center gap-1">
-                                                <span className="material-symbols-outlined text-[12px]">star</span>
+                                                <Star className="w-3 h-3 fill-primary" />
                                                 Seçilmiş
                                             </span>
                                         )}
@@ -159,18 +162,18 @@ export default function ServicesPage({ initialServicesData }: ServicesPageProps)
                                         <div className="flex flex-wrap gap-3 mt-auto pt-3 border-t border-slate-100 dark:border-slate-800">
                                             {service.duration && (
                                                 <span className="flex items-center gap-1 text-xs text-slate-500 dark:text-slate-400">
-                                                    <span className="material-symbols-outlined text-[14px] text-primary">schedule</span>
+                                                    <Clock className="w-3.5 h-3.5 text-primary" />
                                                     {service.duration}
                                                 </span>
                                             )}
                                             {service.priceRange && (
                                                 <span className="flex items-center gap-1 text-xs text-slate-500 dark:text-slate-400">
-                                                    <span className="material-symbols-outlined text-[14px] text-primary">payments</span>
+                                                    <CreditCard className="w-3.5 h-3.5 text-primary" />
                                                     {service.priceRange}
                                                 </span>
                                             )}
                                             <span className="ml-auto flex items-center gap-1 text-xs font-bold text-primary group-hover:gap-2 transition-all">
-                                                Ətraflı <span className="material-symbols-outlined text-[14px]">arrow_forward</span>
+                                                Ətraflı <ArrowRight className="w-3.5 h-3.5" />
                                             </span>
                                         </div>
                                     </div>
@@ -183,7 +186,7 @@ export default function ServicesPage({ initialServicesData }: ServicesPageProps)
 
             {/* Newsletter Call to Action */}
             <section className="max-w-[1200px] mx-auto px-6 md:px-10 py-20">
-                <div className="bg-primary rounded-[2rem] p-8 md:p-16 text-slate-900 flex flex-col md:flex-row items-center justify-between gap-10">
+                <div className="bg-primary rounded-4xl p-8 md:p-16 text-slate-900 flex flex-col md:flex-row items-center justify-between gap-10">
                     <div className="max-w-md">
                         <h2 className="text-3xl md:text-4xl font-black mb-4">Bu gün təhsil səyahətinizə başlayın</h2>
                         <p className="text-slate-800 font-medium">Bilik və inkişaf dolu icmamıza qoşulun, ən son xəbərlərdən və təhsil fürsətlərindən xəbərdar olun.</p>

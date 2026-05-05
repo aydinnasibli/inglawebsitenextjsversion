@@ -1,5 +1,6 @@
 // sanity/structure.ts
 import type { StructureResolver } from 'sanity/structure'
+import { apiVersion } from './env'
 
 // https://www.sanity.io/docs/structure-builder-cheat-sheet
 export const structure: StructureResolver = (S) =>
@@ -23,6 +24,7 @@ export const structure: StructureResolver = (S) =>
                   S.documentTypeList('post')
                     .title('Blog Posts')
                     .filter('_type == "post"')
+                    .apiVersion(apiVersion)
                     .defaultOrdering([{ field: 'publishedAt', direction: 'desc' }])
                 ),
               S.documentTypeListItem('author').title('Authors'),

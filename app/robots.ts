@@ -6,7 +6,7 @@ export default function robots(): MetadataRoute.Robots {
             {
                 userAgent: '*',
                 allow: '/',
-                disallow: ['/studio/', '/api/', '/studio/'],
+                disallow: ['/studio/', '/api/'],
             },
         ],
         sitemap: 'https://inglaschool.az/sitemap.xml',

@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { ChevronRight, Award, BookOpen, ArrowRight, Headphones, User, Clock, BarChart2, Tag, CalendarDays, CalendarX } from 'lucide-react';
 import { PortableText } from "@portabletext/react";
 import { urlFor } from "@/sanity/lib/image";
 import { Training } from "@/types/training";
@@ -36,20 +37,20 @@ export default function TrainingDetailClient({ training }: TrainingDetailClientP
                 {coverUrl && (
                     <>
                         <div className="absolute inset-0">
-                            <Image src={coverUrl} alt={training.title} fill className="object-cover opacity-20" priority />
+                            <Image src={coverUrl} alt={training.title} fill sizes="100vw" className="object-cover opacity-20" priority />
                         </div>
-                        <div className="absolute inset-0 bg-gradient-to-r from-slate-900 via-slate-900/90 to-slate-900/70" />
+                        <div className="absolute inset-0 bg-linear-to-r from-slate-900 via-slate-900/90 to-slate-900/70" />
                     </>
                 )}
-                <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffd90008_1px,transparent_1px),linear-gradient(to_bottom,#ffd90008_1px,transparent_1px)] bg-[size:40px_40px] pointer-events-none" />
+                <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffd90008_1px,transparent_1px),linear-gradient(to_bottom,#ffd90008_1px,transparent_1px)] bg-size-[40px_40px] pointer-events-none" />
                 <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-primary/5 rounded-full blur-3xl pointer-events-none" />
 
                 <div className="relative z-10 max-w-[1200px] mx-auto px-6 md:px-10 py-14 md:py-20">
                     <div className="flex items-center gap-2 text-slate-500 text-xs font-medium mb-6">
                         <Link href="/" className="hover:text-primary transition-colors">Ana Səhifə</Link>
-                        <span className="material-symbols-outlined text-[14px]">chevron_right</span>
+                        <ChevronRight className="w-3 h-3" />
                         <Link href="/training-center" className="hover:text-primary transition-colors">Təlim Mərkəzi</Link>
-                        <span className="material-symbols-outlined text-[14px]">chevron_right</span>
+                        <ChevronRight className="w-3 h-3" />
                         <span className="text-primary line-clamp-1">{training.title}</span>
                     </div>
 
@@ -57,7 +58,7 @@ export default function TrainingDetailClient({ training }: TrainingDetailClientP
                         <div className="flex flex-col gap-4 max-w-2xl">
                             <div className="flex flex-wrap items-center gap-2">
                                 <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs font-bold uppercase tracking-widest w-fit">
-                                    <span className="material-symbols-outlined text-[14px]">workspace_premium</span>
+                                    <Award className="w-3.5 h-3.5" />
                                     Təlim Mərkəzi
                                 </span>
                                 {training.category && (
@@ -76,7 +77,7 @@ export default function TrainingDetailClient({ training }: TrainingDetailClientP
                         </div>
 
                         {training.price && (
-                            <div className="flex-shrink-0 bg-primary/10 border border-primary/20 rounded-2xl px-6 py-4 text-center">
+                            <div className="shrink-0 bg-primary/10 border border-primary/20 rounded-2xl px-6 py-4 text-center">
                                 <p className="text-xs text-slate-500 uppercase tracking-widest mb-1">Qiymət</p>
                                 <p className="text-3xl font-black text-primary leading-none">{training.price} ₼</p>
                             </div>
@@ -95,7 +96,7 @@ export default function TrainingDetailClient({ training }: TrainingDetailClientP
                             <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-sm p-8">
                                 <div className="flex items-center gap-3 mb-6">
                                     <div className="size-10 rounded-xl bg-primary/10 flex items-center justify-center">
-                                        <span className="material-symbols-outlined text-primary text-[20px]">menu_book</span>
+                                        <BookOpen className="w-5 h-5 text-primary" />
                                     </div>
                                     <h2 className="font-black text-slate-900 dark:text-white text-xl">Təlim Məzmunu</h2>
                                 </div>
@@ -105,7 +106,7 @@ export default function TrainingDetailClient({ training }: TrainingDetailClientP
                             </div>
                         ) : (
                             <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-sm p-12 text-center">
-                                <span className="material-symbols-outlined text-slate-300 dark:text-slate-700 text-[48px] mb-4 block">menu_book</span>
+                                <BookOpen className="w-12 h-12 text-slate-300 dark:text-slate-700 mb-4 mx-auto" />
                                 <h3 className="font-bold text-slate-600 dark:text-slate-400 mb-2">Məzmun tezliklə əlavə ediləcək</h3>
                                 <p className="text-sm text-slate-500">Bu təlim haqqında ətraflı məlumat üçün bizimlə əlaqə saxlayın.</p>
                             </div>
@@ -122,15 +123,15 @@ export default function TrainingDetailClient({ training }: TrainingDetailClientP
                             </div>
                             <div className="px-6 py-5 flex flex-col gap-4">
                                 {[
-                                    training.instructor  && { icon: "person",    label: "İnstruktor",       value: training.instructor },
-                                    training.duration    && { icon: "schedule",  label: "Müddət",           value: training.duration },
-                                    training.level       && { icon: "bar_chart", label: "Səviyyə",          value: levelLabel[training.level] ?? training.level },
-                                    training.category    && { icon: "category",  label: "Kateqoriya",       value: training.category },
-                                    training.startDate   && { icon: "event",     label: "Başlama Tarixi",   value: formatDate(training.startDate) },
-                                    training.endDate     && { icon: "event_busy",label: "Bitmə Tarixi",     value: formatDate(training.endDate) },
+                                    training.instructor  && { Icon: User,          label: "İnstruktor",       value: training.instructor },
+                                    training.duration    && { Icon: Clock,         label: "Müddət",           value: training.duration },
+                                    training.level       && { Icon: BarChart2,     label: "Səviyyə",          value: levelLabel[training.level] ?? training.level },
+                                    training.category    && { Icon: Tag,           label: "Kateqoriya",       value: training.category },
+                                    training.startDate   && { Icon: CalendarDays,  label: "Başlama Tarixi",   value: formatDate(training.startDate) },
+                                    training.endDate     && { Icon: CalendarX,     label: "Bitmə Tarixi",     value: formatDate(training.endDate) },
                                 ].filter(Boolean).map((row: any) => (
                                     <div key={row.label} className="flex gap-3">
-                                        <span className="material-symbols-outlined text-primary text-[18px] flex-shrink-0 mt-0.5">{row.icon}</span>
+                                        <row.Icon className="w-4 h-4 text-primary shrink-0 mt-0.5" />
                                         <div>
                                             <p className="text-[10px] font-bold text-slate-500 uppercase tracking-wide">{row.label}</p>
                                             <p className="text-sm font-semibold text-slate-800 dark:text-slate-200">{row.value}</p>
@@ -146,7 +147,7 @@ export default function TrainingDetailClient({ training }: TrainingDetailClientP
                             className="w-full py-4 bg-primary text-slate-900 rounded-xl font-bold text-sm hover:brightness-105 hover:-translate-y-0.5 transition-all flex items-center justify-center gap-2"
                         >
                             İndi Qeydiyyatdan Keç
-                            <span className="material-symbols-outlined text-[18px]">arrow_forward</span>
+                            <ArrowRight className="w-4 h-4" />
                         </button>
 
                         {/* Contact fallback */}
@@ -154,7 +155,7 @@ export default function TrainingDetailClient({ training }: TrainingDetailClientP
                             href="/contact"
                             className="w-full py-3.5 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 rounded-xl font-bold text-sm hover:border-primary hover:text-primary transition-colors flex items-center justify-center gap-2"
                         >
-                            <span className="material-symbols-outlined text-[18px]">support_agent</span>
+                            <Headphones className="w-4 h-4" />
                             Sual vermək istəyirəm
                         </Link>
                     </div>
@@ -170,12 +171,12 @@ export default function TrainingDetailClient({ training }: TrainingDetailClientP
                             <h2 className="text-2xl md:text-3xl font-black text-slate-900 mb-2">Bu təlimə qeydiyyatdan keçin</h2>
                             <p className="text-slate-800 max-w-md">Suallarınız varsa pulsuz məsləhət üçün bizimlə əlaqə saxlayın.</p>
                         </div>
-                        <div className="relative z-10 flex gap-3 flex-shrink-0">
+                        <div className="relative z-10 flex gap-3 shrink-0">
                             <button
                                 onClick={() => setIsModalOpen(true)}
                                 className="px-7 py-3.5 bg-slate-900 text-white rounded-xl font-bold text-sm hover:bg-slate-800 transition-colors flex items-center gap-2"
                             >
-                                Qeydiyyat <span className="material-symbols-outlined text-[16px]">arrow_forward</span>
+                                Qeydiyyat <ArrowRight className="w-4 h-4" />
                             </button>
                         </div>
                     </div>

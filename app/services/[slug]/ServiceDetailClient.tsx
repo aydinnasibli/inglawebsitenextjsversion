@@ -3,6 +3,11 @@
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import {
+    AlertCircle, ArrowLeft, Star, Info, ZoomIn, X,
+    ChevronLeft, ChevronRight, Clock, CreditCard, Calendar,
+    ArrowRight, Phone,
+} from 'lucide-react';
 import { PortableText, PortableTextComponents } from '@portabletext/react';
 import { client } from "@/sanity/lib/client";
 import { urlFor } from "@/sanity/lib/image";
@@ -26,6 +31,7 @@ const portableTextComponents: PortableTextComponents = {
                         src={urlFor(value).url()}
                         alt={value.alt || 'Service Image'}
                         fill
+                        sizes="100vw"
                         className="object-cover"
                     />
                     {value.caption && (
@@ -148,7 +154,7 @@ export default function ServiceDetailClient({ slug, initialServiceData }: Servic
     if (error || !service) {
         return (
             <div className="flex-1 min-h-screen bg-background-light dark:bg-background-dark flex flex-col justify-center items-center text-center px-4">
-                <span className="material-symbols-outlined text-6xl text-slate-400 mb-6">error_outline</span>
+                <AlertCircle className="w-16 h-16 text-slate-400 mb-6" />
                 <h1 className="text-3xl font-bold text-slate-900 dark:text-white mb-4">
                     {error || "Səhifə Tapılmadı"}
                 </h1>
@@ -170,10 +176,11 @@ export default function ServiceDetailClient({ slug, initialServiceData }: Servic
                     src={service.featuredImage}
                     alt={service.title}
                     fill
+                    sizes="100vw"
                     priority
-                    className="object-cover opacity-60 mix-blend-overlay"
+                    className="object-cover opacity-90 mix-blend-overlay"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-background-dark via-background-dark/50 to-transparent"></div>
+                <div className="absolute inset-0 bg-linear-to-t from-background-dark via-background-dark/50 to-transparent"></div>
 
                 <div className="absolute inset-0 flex items-end">
                     <div className="max-w-[1200px] mx-auto w-full px-6 md:px-10 pb-16">
@@ -181,14 +188,14 @@ export default function ServiceDetailClient({ slug, initialServiceData }: Servic
                             href="/services"
                             className="inline-flex items-center text-sm font-medium text-slate-300 hover:text-primary transition-colors mb-6 group"
                         >
-                            <span className="material-symbols-outlined mr-2 group-hover:-translate-x-1 transition-transform">arrow_back</span>
+                            <ArrowLeft className="w-4 h-4 mr-2 group-hover:-translate-x-1 transition-transform" />
                             Bütün Xidmətlər
                         </Link>
 
                         <div className="flex items-center gap-3 mb-4">
                             {service.isFeatured && (
                                 <span className="px-3 py-1 bg-white/10 text-white text-xs font-bold rounded-full flex items-center gap-1">
-                                    <span className="material-symbols-outlined text-[14px]">star</span> Populyar
+                                    <Star className="w-3.5 h-3.5 fill-white" /> Populyar
                                 </span>
                             )}
                         </div>
@@ -207,7 +214,7 @@ export default function ServiceDetailClient({ slug, initialServiceData }: Servic
                 <div className="lg:col-span-2">
                     <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-8 md:p-10 shadow-sm mb-10">
                         <h2 className="text-2xl font-bold mb-6 flex items-center gap-2">
-                            <span className="material-symbols-outlined text-primary">info</span>
+                            <Info className="w-6 h-6 text-primary" />
                             Xidmət Haqqında
                         </h2>
                         <p className="text-lg text-slate-600 dark:text-slate-400 leading-relaxed mb-8 font-medium">
@@ -243,10 +250,11 @@ export default function ServiceDetailClient({ slug, initialServiceData }: Servic
                                             src={img.url}
                                             alt={img.alt || `Gallery image ${idx}`}
                                             fill
+                                            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
                                             className="object-cover group-hover:scale-105 transition-transform duration-500"
                                         />
                                         <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors flex items-center justify-center">
-                                            <span className="material-symbols-outlined text-white text-4xl opacity-0 group-hover:opacity-100 transition-opacity drop-shadow-lg">zoom_in</span>
+                                            <ZoomIn className="w-10 h-10 text-white opacity-0 group-hover:opacity-100 transition-opacity drop-shadow-lg" />
                                         </div>
                                     </button>
                                 ))}
@@ -265,7 +273,7 @@ export default function ServiceDetailClient({ slug, initialServiceData }: Servic
                                 className="absolute top-4 right-4 text-white bg-white/10 hover:bg-white/20 rounded-full p-2 transition-colors"
                                 onClick={() => setLightboxIdx(null)}
                             >
-                                <span className="material-symbols-outlined text-[28px]">close</span>
+                                <X className="w-7 h-7" />
                             </button>
 
                             {/* Prev */}
@@ -274,7 +282,7 @@ export default function ServiceDetailClient({ slug, initialServiceData }: Servic
                                     className="absolute left-4 text-white bg-white/10 hover:bg-white/20 rounded-full p-3 transition-colors"
                                     onClick={(e) => { e.stopPropagation(); setLightboxIdx(lightboxIdx - 1); }}
                                 >
-                                    <span className="material-symbols-outlined text-[28px]">chevron_left</span>
+                                    <ChevronLeft className="w-7 h-7" />
                                 </button>
                             )}
 
@@ -306,7 +314,7 @@ export default function ServiceDetailClient({ slug, initialServiceData }: Servic
                                     className="absolute right-4 text-white bg-white/10 hover:bg-white/20 rounded-full p-3 transition-colors"
                                     onClick={(e) => { e.stopPropagation(); setLightboxIdx(lightboxIdx + 1); }}
                                 >
-                                    <span className="material-symbols-outlined text-[28px]">chevron_right</span>
+                                    <ChevronRight className="w-7 h-7" />
                                 </button>
                             )}
                         </div>
@@ -320,8 +328,8 @@ export default function ServiceDetailClient({ slug, initialServiceData }: Servic
 
                         <ul className="space-y-4 mb-8">
                             <li className="flex items-start gap-4">
-                                <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary flex-shrink-0">
-                                    <span className="material-symbols-outlined text-[20px]">schedule</span>
+                                <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary shrink-0">
+                                    <Clock className="w-5 h-5" />
                                 </div>
                                 <div>
                                     <p className="text-xs text-slate-500 uppercase font-bold tracking-wider mb-1">Müddət</p>
@@ -329,8 +337,8 @@ export default function ServiceDetailClient({ slug, initialServiceData }: Servic
                                 </div>
                             </li>
                             <li className="flex items-start gap-4">
-                                <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary flex-shrink-0">
-                                    <span className="material-symbols-outlined text-[20px]">payments</span>
+                                <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary shrink-0">
+                                    <CreditCard className="w-5 h-5" />
                                 </div>
                                 <div>
                                     <p className="text-xs text-slate-500 uppercase font-bold tracking-wider mb-1">Qiymət</p>
@@ -338,8 +346,8 @@ export default function ServiceDetailClient({ slug, initialServiceData }: Servic
                                 </div>
                             </li>
                             <li className="flex items-start gap-4">
-                                <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary flex-shrink-0">
-                                    <span className="material-symbols-outlined text-[20px]">calendar_month</span>
+                                <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary shrink-0">
+                                    <Calendar className="w-5 h-5" />
                                 </div>
                                 <div>
                                     <p className="text-xs text-slate-500 uppercase font-bold tracking-wider mb-1">Qrafik</p>
@@ -353,7 +361,7 @@ export default function ServiceDetailClient({ slug, initialServiceData }: Servic
                             className="w-full bg-primary text-background-dark py-4 rounded-xl font-bold text-lg hover:brightness-105 transition-all shadow-lg shadow-primary/20 flex justify-center items-center gap-2 cursor-pointer"
                         >
                             Qeydiyyatdan Keç
-                            <span className="material-symbols-outlined">arrow_forward</span>
+                            <ArrowRight className="w-5 h-5" />
                         </button>
                     </div>
 
@@ -365,7 +373,7 @@ export default function ServiceDetailClient({ slug, initialServiceData }: Servic
                         </p>
                         <div className="flex flex-col gap-3 relative z-10">
                             <a href="tel:+994103107117" className="flex items-center gap-3 bg-white/10 hover:bg-white/20 p-3 rounded-lg transition-colors text-sm font-medium">
-                                <span className="material-symbols-outlined text-primary">call</span>
+                                <Phone className="w-5 h-5 text-primary" />
                                 +994 10 310 71 17
                             </a>
                             <a href="https://wa.me/994103107117" className="flex items-center gap-3 bg-[#25D366]/10 hover:bg-[#25D366]/20 text-[#25D366] p-3 rounded-lg transition-colors text-sm font-medium">

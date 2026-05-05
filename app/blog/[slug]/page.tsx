@@ -3,6 +3,7 @@ import { Metadata } from 'next'
 import Image from 'next/image'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
+import { ArrowLeft, User, CalendarDays } from 'lucide-react'
 import { PortableText, PortableTextComponents } from '@portabletext/react'
 import { client } from '@/sanity/lib/client'
 import { postQuery, postSlugsQuery } from '@/sanity/lib/queries'
@@ -57,6 +58,7 @@ const portableTextComponents: PortableTextComponents = {
                         src={urlFor(value).url()}
                         alt={value.alt || ' ' }
                         fill
+                        sizes="100vw"
                         className="object-cover"
                     />
                     {value.caption && (
@@ -179,10 +181,11 @@ export default async function BlogPostPage({ params }: Props) {
                             src={urlFor(post.mainImage).width(1200).height(675).url()}
                             alt={post.title}
                             fill
+                            sizes="100vw"
                             priority
                             className="object-cover"
                         />
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
+                        <div className="absolute inset-0 bg-linear-to-t from-black/20 to-transparent"></div>
                     </div>
                 )}
 

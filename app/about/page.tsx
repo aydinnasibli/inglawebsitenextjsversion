@@ -1,6 +1,10 @@
 "use client";
 
-import Image from "next/image";
+import {
+    Award, GraduationCap, Users, Globe,
+    Lightbulb, UserCheck, Handshake, Heart, Eye,
+    TrendingUp, ThumbsUp, Sparkles, BadgeCheck,
+} from 'lucide-react';
 
 export default function AboutPage() {
     return (
@@ -37,22 +41,22 @@ export default function AboutPage() {
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                     <div className="flex flex-col gap-2 rounded-xl p-8 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm text-center">
-                        <span className="material-symbols-outlined text-primary text-3xl mb-2 mx-auto">workspace_premium</span>
+                        <Award className="w-8 h-8 text-primary mb-2 mx-auto" />
                         <p className="text-3xl font-extrabold text-primary">13+</p>
                         <p className="text-slate-500 dark:text-slate-400 text-sm font-medium uppercase tracking-wider mt-1">İllik Təcrübə</p>
                     </div>
                     <div className="flex flex-col gap-2 rounded-xl p-8 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm text-center">
-                        <span className="material-symbols-outlined text-primary text-3xl mb-2 mx-auto">school</span>
+                        <GraduationCap className="w-8 h-8 text-primary mb-2 mx-auto" />
                         <p className="text-3xl font-extrabold text-primary">500+</p>
                         <p className="text-slate-500 dark:text-slate-400 text-sm font-medium uppercase tracking-wider mt-1">Məzun Tələbə</p>
                     </div>
                     <div className="flex flex-col gap-2 rounded-xl p-8 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm text-center">
-                        <span className="material-symbols-outlined text-primary text-3xl mb-2 mx-auto">groups</span>
+                        <Users className="w-8 h-8 text-primary mb-2 mx-auto" />
                         <p className="text-3xl font-extrabold text-primary">50+</p>
                         <p className="text-slate-500 dark:text-slate-400 text-sm font-medium uppercase tracking-wider mt-1">Təcrübəli Müəllim</p>
                     </div>
                     <div className="flex flex-col gap-2 rounded-xl p-8 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm text-center">
-                        <span className="material-symbols-outlined text-primary text-3xl mb-2 mx-auto">public</span>
+                        <Globe className="w-8 h-8 text-primary mb-2 mx-auto" />
                         <p className="text-3xl font-extrabold text-primary">15+</p>
                         <p className="text-slate-500 dark:text-slate-400 text-sm font-medium uppercase tracking-wider mt-1">Ölkəyə Məzun</p>
                     </div>
@@ -72,7 +76,7 @@ export default function AboutPage() {
                         {/* Value 1 */}
                         <div className="group flex flex-col gap-5 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-8 hover:border-primary transition-all shadow-sm">
                             <div className="w-14 h-14 rounded-xl bg-primary/10 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-slate-900 transition-colors">
-                                <span className="material-symbols-outlined text-[32px]">workspace_premium</span>
+                                <Award className="w-8 h-8" />
                             </div>
                             <div className="flex flex-col gap-2">
                                 <h4 className="text-xl font-bold">Keyfiyyət</h4>
@@ -84,7 +88,7 @@ export default function AboutPage() {
                         {/* Value 2 */}
                         <div className="group flex flex-col gap-5 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-8 hover:border-primary transition-all shadow-sm">
                             <div className="w-14 h-14 rounded-xl bg-primary/10 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-slate-900 transition-colors">
-                                <span className="material-symbols-outlined text-[32px]">lightbulb</span>
+                                <Lightbulb className="w-8 h-8" />
                             </div>
                             <div className="flex flex-col gap-2">
                                 <h4 className="text-xl font-bold">İnnovasiya</h4>
@@ -96,7 +100,7 @@ export default function AboutPage() {
                         {/* Value 3 */}
                         <div className="group flex flex-col gap-5 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-8 hover:border-primary transition-all shadow-sm">
                             <div className="w-14 h-14 rounded-xl bg-primary/10 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-slate-900 transition-colors">
-                                <span className="material-symbols-outlined text-[32px]">person_check</span>
+                                <UserCheck className="w-8 h-8" />
                             </div>
                             <div className="flex flex-col gap-2">
                                 <h4 className="text-xl font-bold">Fərdi Yanaşma</h4>
@@ -108,7 +112,7 @@ export default function AboutPage() {
                         {/* Value 4 */}
                         <div className="group flex flex-col gap-5 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-8 hover:border-primary transition-all shadow-sm">
                             <div className="w-14 h-14 rounded-xl bg-primary/10 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-slate-900 transition-colors">
-                                <span className="material-symbols-outlined text-[32px]">handshake</span>
+                                <Handshake className="w-8 h-8" />
                             </div>
                             <div className="flex flex-col gap-2">
                                 <h4 className="text-xl font-bold">Beynəlxalq Əməkdaşlıq</h4>
@@ -120,7 +124,7 @@ export default function AboutPage() {
                         {/* Value 5 */}
                         <div className="group flex flex-col gap-5 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-8 hover:border-primary transition-all shadow-sm">
                             <div className="w-14 h-14 rounded-xl bg-primary/10 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-slate-900 transition-colors">
-                                <span className="material-symbols-outlined text-[32px]">favorite</span>
+                                <Heart className="w-8 h-8" />
                             </div>
                             <div className="flex flex-col gap-2">
                                 <h4 className="text-xl font-bold">Məsuliyyətlilik</h4>
@@ -132,7 +136,7 @@ export default function AboutPage() {
                         {/* Value 6 */}
                         <div className="group flex flex-col gap-5 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-8 hover:border-primary transition-all shadow-sm">
                             <div className="w-14 h-14 rounded-xl bg-primary/10 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-slate-900 transition-colors">
-                                <span className="material-symbols-outlined text-[32px]">visibility</span>
+                                <Eye className="w-8 h-8" />
                             </div>
                             <div className="flex flex-col gap-2">
                                 <h4 className="text-xl font-bold">Şəffaflıq və Dürüstlük</h4>
@@ -157,8 +161,8 @@ export default function AboutPage() {
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                     <div className="flex gap-4 p-6 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-sm">
-                        <div className="size-12 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0 text-primary">
-                            <span className="material-symbols-outlined">trending_up</span>
+                        <div className="size-12 rounded-full bg-primary/20 flex items-center justify-center shrink-0 text-primary">
+                            <TrendingUp className="w-6 h-6" />
                         </div>
                         <div>
                             <h4 className="font-bold text-lg mb-2">Qlobal Mövqe və İnkişaf</h4>
@@ -166,8 +170,8 @@ export default function AboutPage() {
                         </div>
                     </div>
                     <div className="flex gap-4 p-6 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-sm">
-                        <div className="size-12 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0 text-primary">
-                            <span className="material-symbols-outlined">thumb_up</span>
+                        <div className="size-12 rounded-full bg-primary/20 flex items-center justify-center shrink-0 text-primary">
+                            <ThumbsUp className="w-6 h-6" />
                         </div>
                         <div>
                             <h4 className="font-bold text-lg mb-2">Müştəri Məmnuniyyəti</h4>
@@ -175,8 +179,8 @@ export default function AboutPage() {
                         </div>
                     </div>
                     <div className="flex gap-4 p-6 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-sm">
-                        <div className="size-12 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0 text-primary">
-                            <span className="material-symbols-outlined">auto_awesome</span>
+                        <div className="size-12 rounded-full bg-primary/20 flex items-center justify-center shrink-0 text-primary">
+                            <Sparkles className="w-6 h-6" />
                         </div>
                         <div>
                             <h4 className="font-bold text-lg mb-2">İnnovasiya və Fərdi Yanaşma</h4>
@@ -184,8 +188,8 @@ export default function AboutPage() {
                         </div>
                     </div>
                     <div className="flex gap-4 p-6 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-sm">
-                        <div className="size-12 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0 text-primary">
-                            <span className="material-symbols-outlined">verified</span>
+                        <div className="size-12 rounded-full bg-primary/20 flex items-center justify-center shrink-0 text-primary">
+                            <BadgeCheck className="w-6 h-6" />
                         </div>
                         <div>
                             <h4 className="font-bold text-lg mb-2">Dəyər Yaratmaq</h4>
