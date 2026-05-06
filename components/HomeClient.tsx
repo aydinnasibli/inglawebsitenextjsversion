@@ -8,7 +8,7 @@ import {
     Users, BadgeCheck, Building2, Star,
     GraduationCap, Globe, User, Baby, Award,
     ChevronRight, Trophy, Calendar, MapPin,
-    ArrowRight,  ChevronDown,
+    ArrowRight, ChevronDown,
 } from 'lucide-react';
 import { client } from "@/sanity/lib/client";
 import { urlFor } from "@/sanity/lib/image";
@@ -41,10 +41,10 @@ const transformTestimonialsData = (sanityItems: SanityTestimonialItem[]): Testim
         }));
 
 const STATS = [
-    { Icon: Users,      label: "Aktiv Tələbələr", value: "5,000+" },
-    { Icon: BadgeCheck, label: "Qəbul Faizi",     value: "98%"    },
-    { Icon: Building2,  label: "Tərəfdaşlar",     value: "50+"    },
-    { Icon: Star,       label: "Məmnuniyyət",      value: "4.9/5"  },
+    { Icon: Users, label: "Aktiv Tələbələr", value: "750+" },
+    { Icon: BadgeCheck, label: "Qəbul Faizi", value: "98%" },
+    { Icon: Building2, label: "Tərəfdaşlar", value: "50+" },
+    { Icon: Star, label: "Məmnuniyyət", value: "4.9/5" },
 ];
 
 export default function HomeClient({ initialBentoData, initialFaqData, initialTestimonialsData, initialNewsData }: HomeClientProps) {
@@ -92,7 +92,7 @@ export default function HomeClient({ initialBentoData, initialFaqData, initialTe
                                     <span className="relative whitespace-nowrap">
                                         <span className="text-primary">Beynəlxalq</span>
                                         <svg className="absolute -bottom-1 left-0 w-full" viewBox="0 0 200 8" preserveAspectRatio="none" height="5">
-                                            <path d="M0 6 Q100 0 200 6" stroke="#ffd900" strokeWidth="2.5" fill="none" strokeLinecap="round"/>
+                                            <path d="M0 6 Q100 0 200 6" stroke="#ffd900" strokeWidth="2.5" fill="none" strokeLinecap="round" />
                                         </svg>
                                     </span>{" "}
                                     Standartlarda Təhsil
@@ -106,8 +106,8 @@ export default function HomeClient({ initialBentoData, initialFaqData, initialTe
                             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                                 {[
                                     { Icon: GraduationCap, text: "Sertifikatlı Müəllimlər" },
-                                    { Icon: Globe,         text: "Beynəlxalq Proqramlar"   },
-                                    { Icon: User,          text: "Fərdi Yanaşma"            },
+                                    { Icon: Globe, text: "Beynəlxalq Proqramlar" },
+                                    { Icon: User, text: "Fərdi Yanaşma" },
                                 ].map(({ Icon, text }) => (
                                     <div key={text} className="flex items-center gap-2.5 bg-background-light dark:bg-slate-800/60 border border-slate-100 dark:border-slate-700 rounded-xl px-4 py-3">
                                         <Icon className="w-5 h-5 text-primary shrink-0" />
@@ -121,9 +121,9 @@ export default function HomeClient({ initialBentoData, initialFaqData, initialTe
                                 <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">Əsas İstiqamətlər</p>
                                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                                     {[
-                                        { Icon: GraduationCap, label: "Tədris İstiqamətləri", sub: "Dil, IELTS, SAT",         href: "/services"        },
-                                        { Icon: Baby,          label: "Preschool",             sub: "3–6 yaş proqramları",     href: "/preschool"       },
-                                        { Icon: Award,         label: "Təlim Mərkəzi",         sub: "Korporativ & sertifikat", href: "/training-center" },
+                                        { Icon: GraduationCap, label: "Tədris İstiqamətləri", sub: "Dil, IELTS, SAT", href: "/services" },
+                                        { Icon: Baby, label: "Preschool", sub: "3–6 yaş proqramları", href: "/preschool" },
+                                        { Icon: Award, label: "Təlim Mərkəzi", sub: "Korporativ & sertifikat", href: "/training-center" },
                                     ].map(({ Icon, label, sub, href }) => (
                                         <Link
                                             key={label}
@@ -176,7 +176,7 @@ export default function HomeClient({ initialBentoData, initialFaqData, initialTe
                                     </div>
                                     <div>
                                         <p className="text-lg font-black text-slate-900 dark:text-white leading-none">98%</p>
-                                        <p className="text-[11px] text-slate-500 mt-0.5 leading-tight">IELTS məzunları<br/>hədəf bala çatır</p>
+                                        <p className="text-[11px] text-slate-500 mt-0.5 leading-tight">IELTS məzunları<br />hədəf bala çatır</p>
                                     </div>
                                 </div>
                                 <div className="bg-slate-900 dark:bg-slate-800 border border-slate-800 rounded-2xl px-5 py-4 shadow-sm flex items-center gap-3">
@@ -218,10 +218,10 @@ export default function HomeClient({ initialBentoData, initialFaqData, initialTe
             {/* ── BENTO BOX ────────────────────────────────────────────── */}
             {(() => {
                 const STATIC_BENTO: BentoItem[] = [
-                    { _id: "b1", title: "Dil Kursları & IELTS",  description: "Başlanğıcdan C1-ə qədər intensiv dil proqramları və sınaq hazırlığı.",    icon: "language",          link: "/services",        linkLabel: "Proqramlara bax", size: "large",  variant: "dark",    order: 1 },
-                    { _id: "b2", title: "Xaricdə Təhsil",         description: "50+ aparıcı universitetə qəbul, viza dəstəyi və tam müşayiət.",            icon: "public",            link: "/studyabroad",     linkLabel: "Ölkələrə bax",   size: "tall",   variant: "dark",    order: 2 },
-                    { _id: "b3", title: "Preschool",               description: "3–6 yaş uşaqlar üçün oyun əsaslı erkən inkişaf proqramları.",             icon: "child_care",        link: "/preschool",       linkLabel: "Ətraflı",         size: "small",  variant: "primary", order: 3 },
-                    { _id: "b4", title: "Təlim Mərkəzi",           description: "Peşəkar sertifikat proqramları.",                                          icon: "workspace_premium", link: "/training-center", linkLabel: "Bax",             size: "small",  variant: "dark",    order: 4 },
+                    { _id: "b1", title: "Dil Kursları & IELTS", description: "Başlanğıcdan C1-ə qədər intensiv dil proqramları və sınaq hazırlığı.", icon: "language", link: "/services", linkLabel: "Proqramlara bax", size: "large", variant: "dark", order: 1 },
+                    { _id: "b2", title: "Xaricdə Təhsil", description: "50+ aparıcı universitetə qəbul, viza dəstəyi və tam müşayiət.", icon: "public", link: "/studyabroad", linkLabel: "Ölkələrə bax", size: "tall", variant: "dark", order: 2 },
+                    { _id: "b3", title: "Preschool", description: "3–6 yaş uşaqlar üçün oyun əsaslı erkən inkişaf proqramları.", icon: "child_care", link: "/preschool", linkLabel: "Ətraflı", size: "small", variant: "primary", order: 3 },
+                    { _id: "b4", title: "Təlim Mərkəzi", description: "Peşəkar sertifikat proqramları.", icon: "workspace_premium", link: "/training-center", linkLabel: "Bax", size: "small", variant: "dark", order: 4 },
                 ];
                 const displayItems = bentoItems.length > 0 ? bentoItems : STATIC_BENTO;
                 return (
