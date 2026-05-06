@@ -118,7 +118,7 @@ export const preschool = defineType({
             name: 'targetAgeGroup',
             title: 'Hədəf Yaş Qrupu',
             type: 'string',
-            placeholder: 'Məsələn: 3-6 yaş',
+            placeholder: 'Məsələn: 2-6 yaş',
         }),
         defineField({
             name: 'duration',

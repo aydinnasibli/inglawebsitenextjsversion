@@ -274,10 +274,10 @@ export default function PreschoolDetailClient({ initialData }: Props) {
                         <h3 className="text-xl font-bold mb-6">Xidmət Detalları</h3>
                         <ul className="space-y-4 mb-8">
                             {[
-                                service.duration      && { Icon: Clock,      label: "Müddət",    value: service.duration },
-                                service.targetAgeGroup && { Icon: Baby,      label: "Yaş Qrupu", value: service.targetAgeGroup },
-                                service.priceRange    && { Icon: CreditCard, label: "Qiymət",    value: service.priceRange },
-                                service.scheduleInfo  && { Icon: Calendar,   label: "Qrafik",    value: service.scheduleInfo },
+                                service.duration && { Icon: Clock, label: "Müddət", value: service.duration },
+                                service.targetAgeGroup && { Icon: Baby, label: "Yaş Qrupu", value: service.targetAgeGroup },
+                                service.priceRange && { Icon: CreditCard, label: "Qiymət", value: service.priceRange },
+                                service.scheduleInfo && { Icon: Calendar, label: "Qrafik", value: service.scheduleInfo },
                             ].filter(Boolean).map((item: any) => (
                                 <li key={item.label} className="flex items-start gap-4">
                                     <div className="size-10 rounded-full bg-primary/10 flex items-center justify-center text-primary shrink-0">
@@ -325,10 +325,10 @@ export default function PreschoolDetailClient({ initialData }: Props) {
                         <div className="flex flex-col gap-3 relative z-10">
                             <a href="tel:+994103107117" className="flex items-center gap-3 bg-white/10 hover:bg-white/20 p-3 rounded-lg transition-colors text-sm font-medium">
                                 <Phone className="w-5 h-5 text-primary" />
-                                +994 10 310 71 17
+                                +994 10 310 51 15
                             </a>
                             <a href="https://wa.me/994103107117" className="flex items-center gap-3 bg-[#25D366]/10 hover:bg-[#25D366]/20 text-[#25D366] p-3 rounded-lg transition-colors text-sm font-medium">
-                                <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24"><path d="M16.6 14c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1-.2.2-.6.8-.8 1-.1.2-.3.2-.5.1-.7-.3-1.4-.7-2-1.2-.5-.5-1-1.1-1.4-1.7-.1-.2 0-.4.1-.5.1-.1.2-.3.4-.4.1-.1.2-.3.2-.4.1-.2 0-.4 0-.5C10 9.5 9.4 8 9.3 7.8c-.2-.2-.4-.2-.6-.2h-.5c-.2 0-.5.1-.7.3-.6.6-.9 1.3-.9 2.1.1 1.3.8 2.5 1.6 3.4 1 1.1 2.2 2 3.5 2.7 1.3.7 2.8 1.2 4.2 1.2.9.1 1.9-.2 2.6-.8.4-.3.7-.7.9-1.2.1-.2.1-.4.1-.6 0-.1-.1-.1-.3-.2M12 20.3c-1.5 0-3-.4-4.2-1.1l-.3-.2-3.1.8.8-3-.2-.3c-.8-1.2-1.2-2.7-1.2-4.2 0-4.6 3.7-8.3 8.3-8.3 4.6 0 8.3 3.7 8.3 8.3S16.6 20.3 12 20.3M12 2C6.5 2 2 6.5 2 12c0 1.8.5 3.5 1.3 5L2 22l5.1-1.3C8.6 21.5 10.3 22 12 22c5.5 0 10-4.5 10-10S17.5 2 12 2z"/></svg>
+                                <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24"><path d="M16.6 14c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1-.2.2-.6.8-.8 1-.1.2-.3.2-.5.1-.7-.3-1.4-.7-2-1.2-.5-.5-1-1.1-1.4-1.7-.1-.2 0-.4.1-.5.1-.1.2-.3.4-.4.1-.1.2-.3.2-.4.1-.2 0-.4 0-.5C10 9.5 9.4 8 9.3 7.8c-.2-.2-.4-.2-.6-.2h-.5c-.2 0-.5.1-.7.3-.6.6-.9 1.3-.9 2.1.1 1.3.8 2.5 1.6 3.4 1 1.1 2.2 2 3.5 2.7 1.3.7 2.8 1.2 4.2 1.2.9.1 1.9-.2 2.6-.8.4-.3.7-.7.9-1.2.1-.2.1-.4.1-.6 0-.1-.1-.1-.3-.2M12 20.3c-1.5 0-3-.4-4.2-1.1l-.3-.2-3.1.8.8-3-.2-.3c-.8-1.2-1.2-2.7-1.2-4.2 0-4.6 3.7-8.3 8.3-8.3 4.6 0 8.3 3.7 8.3 8.3S16.6 20.3 12 20.3M12 2C6.5 2 2 6.5 2 12c0 1.8.5 3.5 1.3 5L2 22l5.1-1.3C8.6 21.5 10.3 22 12 22c5.5 0 10-4.5 10-10S17.5 2 12 2z" /></svg>
                                 WhatsApp ilə yaz
                             </a>
                             <Link href="/contact" className="flex items-center gap-3 bg-white/10 hover:bg-white/20 p-3 rounded-lg transition-colors text-sm font-medium">

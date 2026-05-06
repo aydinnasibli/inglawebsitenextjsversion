@@ -6,8 +6,8 @@ import PreschoolClient from "./PreschoolClient";
 
 export const metadata: Metadata = {
     title: "Preschool",
-    description: "Ingla Preschool — 3–6 yaş uşaqlar üçün oyun əsaslı öyrənmə, ingilis dili və yaradıcı inkişaf proqramları. Bakıda ən yaxşı preschool.",
-    keywords: "preschool baku, uşaq bağçası, erkən inkişaf, ingilis dili uşaqlar, 3-6 yaş, ingla preschool",
+    description: "Ingla Preschool — 2–6 yaş uşaqlar üçün oyun əsaslı öyrənmə, ingilis dili və yaradıcı inkişaf proqramları. Bakıda ən yaxşı preschool.",
+    keywords: "preschool baku, uşaq bağçası, erkən inkişaf, ingilis dili uşaqlar, 2-6 yaş, ingla preschool",
 };
 
 export const revalidate = 60;
