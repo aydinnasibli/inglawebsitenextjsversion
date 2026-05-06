@@ -70,7 +70,7 @@ export async function submitRegistration(formData: RegistrationFormData): Promis
 
     try {
         const transporter = createTransporter();
-        const emailTo = process.env.EMAIL_TO || 'aydinnasibli7@gmail.com';
+        const emailTo = process.env.EMAIL_TO || 'info@inglaschool.com';
 
         await transporter.sendMail({
             from: process.env.EMAIL_USER,
