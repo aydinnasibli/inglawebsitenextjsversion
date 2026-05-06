@@ -58,12 +58,14 @@ function transform(s: SanityPreschoolServiceItem): PreschoolServiceItem {
         slug: s.slug?.current || "",
         shortDescription: s.shortDescription,
         fullDescription: s.fullDescription,
-        featuredImage: s.featuredImage ? urlFor(s.featuredImage).width(1200).height(800).quality(90).url() : "/assets/bg.webp",
-        gallery: s.gallery?.map(img => ({
-            url: urlFor(img.asset).width(800).height(600).quality(85).url(),
-            alt: img.alt,
-            caption: img.caption,
-        })),
+        featuredImage: (s.featuredImage && s.featuredImage.asset) ? urlFor(s.featuredImage).width(1200).height(800).quality(90).url() : "/assets/bg.webp",
+        gallery: s.gallery
+            ?.filter(img => img && img.asset)
+            .map(img => ({
+                url: urlFor(img.asset).width(800).height(600).quality(85).url(),
+                alt: img.alt,
+                caption: img.caption,
+            })),
         keyFeatures: s.keyFeatures,
         targetAgeGroup: s.targetAgeGroup,
         duration: s.duration,

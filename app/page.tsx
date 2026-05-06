@@ -2,8 +2,9 @@ import { Suspense } from 'react';
 import HomeClient from "@/components/HomeClient";
 import { client } from "@/sanity/lib/client";
 import { urlFor } from "@/sanity/lib/image";
-import { HOMEPAGE_BENTO_QUERY, BENTO_CATEGORY_IMAGES_QUERY } from "@/sanity/lib/queries";
+import { HOMEPAGE_BENTO_QUERY, BENTO_CATEGORY_IMAGES_QUERY, HOMEPAGE_NEWS_QUERY } from "@/sanity/lib/queries";
 import { BentoItem } from "@/components/BentoBox";
+import { HomepageNewsData } from "@/types/news";
 
 type CategoryImages = {
     services?:    { img?: any } | null;
@@ -12,13 +13,11 @@ type CategoryImages = {
     training?:    { img?: any } | null;
 };
 
-// Resolve a Sanity image ref to a URL string (or null)
 function resolveImg(ref?: any): string | null {
     if (!ref) return null;
     try { return urlFor(ref).width(900).height(700).quality(85).url(); } catch { return null; }
 }
 
-// Build 4 bento items from category images (large+tall+small+small fills 4×2 grid perfectly)
 function buildBentoFromImages(imgs: CategoryImages): BentoItem[] {
     return [
         {
@@ -74,7 +73,6 @@ function buildBentoFromImages(imgs: CategoryImages): BentoItem[] {
 
 async function getBentoData(): Promise<BentoItem[]> {
     try {
-        // 1. Try CMS bento items first
         const cmsBento = await client.fetch<BentoItem[]>(
             HOMEPAGE_BENTO_QUERY,
             {},
@@ -82,7 +80,6 @@ async function getBentoData(): Promise<BentoItem[]> {
         );
         if (Array.isArray(cmsBento) && cmsBento.length > 0) return cmsBento;
 
-        // 2. Auto-build from category images
         const imgs = await client.fetch<CategoryImages>(
             BENTO_CATEGORY_IMAGES_QUERY,
             {},
@@ -92,6 +89,20 @@ async function getBentoData(): Promise<BentoItem[]> {
     } catch (error) {
         console.error('Error fetching bento data:', error);
         return [];
+    }
+}
+
+async function getNewsData(): Promise<HomepageNewsData> {
+    try {
+        const data = await client.fetch<HomepageNewsData>(
+            HOMEPAGE_NEWS_QUERY,
+            {},
+            { cache: 'force-cache', next: { revalidate: 1800 } }
+        );
+        return data ?? { featured: null, latest: [] };
+    } catch (error) {
+        console.error('Error fetching homepage news:', error);
+        return { featured: null, latest: [] };
     }
 }
 
@@ -107,11 +118,14 @@ function LoadingFallback() {
 }
 
 export default async function Home() {
-    const bentoItems = await getBentoData();
+    const [bentoItems, newsData] = await Promise.all([
+        getBentoData(),
+        getNewsData(),
+    ]);
 
     return (
         <Suspense fallback={<LoadingFallback />}>
-            <HomeClient initialBentoData={bentoItems} />
+            <HomeClient initialBentoData={bentoItems} initialNewsData={newsData} />
         </Suspense>
     );
 }

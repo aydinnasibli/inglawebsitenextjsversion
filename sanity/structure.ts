@@ -11,6 +11,27 @@ export const structure: StructureResolver = (S) =>
       S.documentTypeListItem('services').title('Services (Tədris İstiqamətləri)'),
       S.divider(),
 
+      // News Section
+      S.listItem()
+        .title('Xəbərlər (News)')
+        .child(
+          S.list()
+            .title('News Management')
+            .items([
+              S.documentTypeListItem('news')
+                .title('News Posts')
+                .child(
+                  S.documentTypeList('news')
+                    .title('News Posts')
+                    .filter('_type == "news"')
+                    .apiVersion(apiVersion)
+                    .defaultOrdering([{ field: 'publishedAt', direction: 'desc' }])
+                ),
+              S.documentTypeListItem('newsCategory').title('News Categories'),
+            ])
+        ),
+      S.divider(),
+
       // Blog Section
       S.listItem()
         .title('Blog')
@@ -63,7 +84,9 @@ export const structure: StructureResolver = (S) =>
           'post',
           'author',
           'category',
-          'blockContent'
+          'blockContent',
+          'news',
+          'newsCategory',
         ].includes(item.getId()!),
       ),
     ])

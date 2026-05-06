@@ -157,3 +157,46 @@ export const postQuery = groq`
 export const postSlugsQuery = groq`
   *[_type == "post" && defined(slug.current)][].slug.current
 `
+
+// ─── News ─────────────────────────────────────────────────────────────────────
+
+export const newsQuery = groq`
+  *[_type == "news"] | order(publishedAt desc) {
+    _id, title, slug, mainImage,
+    categories[]->{ _id, title, slug, color },
+    publishedAt, excerpt, featured
+  }
+`
+
+export const newsCategoriesQuery = groq`
+  *[_type == "newsCategory"] | order(title asc) {
+    _id, title, slug, description, color
+  }
+`
+
+export const newsBySlugQuery = groq`
+  *[_type == "news" && slug.current == $slug][0] {
+    _id, title, slug, mainImage,
+    categories[]->{ _id, title, slug, color },
+    publishedAt, excerpt, body, featured, seo
+  }
+`
+
+export const newsSlugsQuery = groq`
+  *[_type == "news" && defined(slug.current)][].slug.current
+`
+
+export const HOMEPAGE_NEWS_QUERY = groq`
+  {
+    "featured": *[_type == "news" && featured == true] | order(publishedAt desc) [0] {
+      _id, title, slug, mainImage,
+      categories[]->{ _id, title, slug, color },
+      publishedAt, excerpt
+    },
+    "latest": *[_type == "news"] | order(publishedAt desc) [0...4] {
+      _id, title, slug, mainImage,
+      categories[]->{ _id, title, slug, color },
+      publishedAt, excerpt
+    }
+  }
+`

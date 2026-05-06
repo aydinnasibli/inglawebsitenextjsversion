@@ -8,18 +8,21 @@ import {
     Users, BadgeCheck, Building2, Star,
     GraduationCap, Globe, User, Baby, Award,
     ChevronRight, Trophy, Calendar, MapPin,
-    ArrowRight, ChevronDown,
+    ArrowRight,  ChevronDown,
 } from 'lucide-react';
 import { client } from "@/sanity/lib/client";
 import { urlFor } from "@/sanity/lib/image";
 import { FAQ_QUERY, TESTIMONIALS_QUERY, HOMEPAGE_BENTO_QUERY } from "@/sanity/lib/queries";
 import { SanityFAQItem, SanityTestimonialItem, FAQItem, TestimonialItem } from "@/types/faq-testimonials";
 import BentoBox, { BentoItem } from "@/components/BentoBox";
+import FeaturedNewsHero from "@/components/FeaturedNewsHero";
+import { HomepageNewsData } from "@/types/news";
 
 interface HomeClientProps {
     initialBentoData?: BentoItem[];
     initialFaqData?: SanityFAQItem[];
     initialTestimonialsData?: SanityTestimonialItem[];
+    initialNewsData?: HomepageNewsData;
 }
 
 const transformFaqData = (sanityItems: SanityFAQItem[]): FAQItem[] =>
@@ -44,7 +47,7 @@ const STATS = [
     { Icon: Star,       label: "Məmnuniyyət",      value: "4.9/5"  },
 ];
 
-export default function HomeClient({ initialBentoData, initialFaqData, initialTestimonialsData }: HomeClientProps) {
+export default function HomeClient({ initialBentoData, initialFaqData, initialTestimonialsData, initialNewsData }: HomeClientProps) {
     const [bentoItems, setBentoItems] = useState<BentoItem[]>(initialBentoData || []);
     const [faqItems, setFaqItems] = useState<FAQItem[]>([]);
     const [activeFaq, setActiveFaq] = useState<string | null>(null);
@@ -65,44 +68,36 @@ export default function HomeClient({ initialBentoData, initialFaqData, initialTe
         else client.fetch<SanityTestimonialItem[]>(TESTIMONIALS_QUERY).then(d => { if (d) setTestimonials(transformTestimonialsData(d)); }).catch(console.error);
     }, [initialFaqData, initialTestimonialsData]);
 
+    const hasNews = initialNewsData && (initialNewsData.featured || initialNewsData.latest.length > 0);
+
     return (
         <div className="flex-1 bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100">
 
-            {/* ── HERO ─────────────────────────────────────────────────── */}
-            <section className="relative overflow-hidden bg-background-light dark:bg-background-dark">
-                {/* Grid pattern */}
-                <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffd90009_1px,transparent_1px),linear-gradient(to_bottom,#ffd90009_1px,transparent_1px)] bg-size-[44px_44px] pointer-events-none" />
-                {/* Top-right glow */}
-                <div className="absolute -top-32 -right-32 w-[500px] h-[500px] bg-primary/8 rounded-full blur-3xl pointer-events-none" />
+            {/* ── FEATURED NEWS HERO ───────────────────────────────────── */}
+            {hasNews && <FeaturedNewsHero data={initialNewsData!} />}
 
-                <div className="max-w-7xl mx-auto px-6 py-14 md:py-20 relative z-10">
-                    <div className="grid grid-cols-1 lg:grid-cols-[1fr_480px] gap-10 xl:gap-16 items-center">
+            {/* ── ABOUT / WHY INGLA ────────────────────────────────────── */}
+            <section className="bg-white dark:bg-slate-900 border-y border-slate-100 dark:border-slate-800">
+                <div className="max-w-7xl mx-auto px-6 py-16 md:py-20">
+                    <div className="grid grid-cols-1 lg:grid-cols-[1fr_420px] gap-10 xl:gap-16 items-center">
 
                         {/* ── LEFT ── */}
                         <div className="flex flex-col gap-6">
 
-                            {/* Live badge */}
-                            <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-slate-800 dark:text-primary text-xs font-bold uppercase tracking-widest w-fit">
-                                <span className="relative flex h-2 w-2">
-                                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75" />
-                                    <span className="relative inline-flex rounded-full h-2 w-2 bg-primary" />
-                                </span>
-                                Yeni Qəbul Davam Edir
-                            </span>
-
-                            {/* Headline */}
-                            <div className="flex flex-col gap-3">
-                                <h1 className="text-4xl md:text-5xl xl:text-6xl font-black leading-[1.06] tracking-tight text-slate-900 dark:text-white">
+                            {/* Section label */}
+                            <div>
+                                <p className="text-primary font-bold text-sm uppercase tracking-widest mb-3">Niyə Ingla School?</p>
+                                <h2 className="text-3xl md:text-4xl xl:text-5xl font-black leading-[1.08] tracking-tight text-slate-900 dark:text-white">
                                     Bakıda{" "}
                                     <span className="relative whitespace-nowrap">
                                         <span className="text-primary">Beynəlxalq</span>
-                                        <svg className="absolute -bottom-1 left-0 w-full" viewBox="0 0 200 8" preserveAspectRatio="none" height="6">
+                                        <svg className="absolute -bottom-1 left-0 w-full" viewBox="0 0 200 8" preserveAspectRatio="none" height="5">
                                             <path d="M0 6 Q100 0 200 6" stroke="#ffd900" strokeWidth="2.5" fill="none" strokeLinecap="round"/>
                                         </svg>
                                     </span>{" "}
                                     Standartlarda Təhsil
-                                </h1>
-                                <p className="text-base md:text-lg text-slate-600 dark:text-slate-400 max-w-xl leading-relaxed">
+                                </h2>
+                                <p className="text-base text-slate-600 dark:text-slate-400 max-w-xl leading-relaxed mt-4">
                                     Dil kurslarından xaricdə təhsilə, preschooldan peşəkar sertifikat proqramlarına qədər — hər ehtiyacınız üçün doğru proqram burada.
                                 </p>
                             </div>
@@ -114,14 +109,14 @@ export default function HomeClient({ initialBentoData, initialFaqData, initialTe
                                     { Icon: Globe,         text: "Beynəlxalq Proqramlar"   },
                                     { Icon: User,          text: "Fərdi Yanaşma"            },
                                 ].map(({ Icon, text }) => (
-                                    <div key={text} className="flex items-center gap-2.5 bg-white dark:bg-slate-800/60 border border-slate-100 dark:border-slate-700 rounded-xl px-4 py-3">
+                                    <div key={text} className="flex items-center gap-2.5 bg-background-light dark:bg-slate-800/60 border border-slate-100 dark:border-slate-700 rounded-xl px-4 py-3">
                                         <Icon className="w-5 h-5 text-primary shrink-0" />
                                         <span className="text-sm font-semibold text-slate-800 dark:text-slate-200">{text}</span>
                                     </div>
                                 ))}
                             </div>
 
-                            {/* Main program links */}
+                            {/* Program links */}
                             <div className="flex flex-col gap-3">
                                 <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">Əsas İstiqamətlər</p>
                                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
@@ -133,7 +128,7 @@ export default function HomeClient({ initialBentoData, initialFaqData, initialTe
                                         <Link
                                             key={label}
                                             href={href}
-                                            className="group flex items-center gap-3 bg-white dark:bg-slate-800/60 border border-slate-100 dark:border-slate-700 rounded-xl px-4 py-3 hover:border-primary hover:shadow-md transition-all"
+                                            className="group flex items-center gap-3 bg-background-light dark:bg-slate-800/60 border border-slate-100 dark:border-slate-700 rounded-xl px-4 py-3 hover:border-primary hover:shadow-md transition-all"
                                         >
                                             <Icon className="w-5 h-5 text-primary shrink-0" />
                                             <div className="min-w-0">
@@ -147,40 +142,35 @@ export default function HomeClient({ initialBentoData, initialFaqData, initialTe
                             </div>
 
                             {/* CTAs */}
-                            <div className="flex flex-wrap gap-3 pt-1">
+                            <div className="flex flex-wrap gap-3">
                                 <Link
                                     href="/studyabroad"
-                                    className="px-8 py-3.5 bg-primary text-slate-900 rounded-xl font-bold text-base hover:shadow-xl hover:shadow-primary/25 hover:-translate-y-0.5 transition-all flex items-center gap-2"
+                                    className="px-7 py-3 bg-primary text-slate-900 rounded-xl font-bold text-sm hover:shadow-xl hover:shadow-primary/25 hover:-translate-y-0.5 transition-all flex items-center gap-2"
                                 >
-                                    Xaricdə Təhsil <Globe className="w-5 h-5" />
+                                    Xaricdə Təhsil <Globe className="w-4 h-4" />
                                 </Link>
                                 <button
                                     onClick={() => router.push("/about")}
-                                    className="px-8 py-3.5 border-2 border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white rounded-xl font-bold text-base hover:border-primary hover:text-primary transition-all"
+                                    className="px-7 py-3 border-2 border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white rounded-xl font-bold text-sm hover:border-primary hover:text-primary transition-all"
                                 >
                                     Haqqımızda
                                 </button>
                             </div>
-
                         </div>
 
                         {/* ── RIGHT ── */}
                         <div className="relative hidden lg:flex flex-col gap-3">
-                            {/* Main image */}
-                            <div className="relative w-full aspect-[4/3] rounded-2xl overflow-hidden shadow-2xl">
-                                <Image src="/assets/bg.webp" alt="Ingla School" fill sizes="(max-width: 1024px) 0vw, 50vw" className="object-cover" priority />
+                            <div className="relative w-full aspect-[4/3] rounded-2xl overflow-hidden shadow-xl">
+                                <Image src="/assets/bg.webp" alt="Ingla School" fill sizes="(max-width: 1024px) 0vw, 50vw" className="object-cover" />
                                 <div className="absolute inset-0 bg-linear-to-t from-black/40 via-transparent to-transparent" />
-                                {/* Overlay chip inside image */}
                                 <div className="absolute top-4 left-4 flex items-center gap-2 bg-white/90 dark:bg-slate-900/90 backdrop-blur-sm rounded-xl px-3 py-2 shadow-lg">
                                     <MapPin className="w-4 h-4 text-primary" />
                                     <span className="text-xs font-bold text-slate-800 dark:text-slate-200">Zahid Xəlilov 59, Bakı</span>
                                 </div>
                             </div>
 
-                            {/* Bottom info cards row */}
                             <div className="grid grid-cols-2 gap-3">
-                                {/* Achievement card */}
-                                <div className="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-2xl px-5 py-4 shadow-md flex items-center gap-3">
+                                <div className="bg-background-light dark:bg-slate-800 border border-slate-100 dark:border-slate-700 rounded-2xl px-5 py-4 shadow-sm flex items-center gap-3">
                                     <div className="size-10 rounded-xl bg-primary flex items-center justify-center shrink-0">
                                         <Trophy className="w-5 h-5 text-slate-900" />
                                     </div>
@@ -189,8 +179,7 @@ export default function HomeClient({ initialBentoData, initialFaqData, initialTe
                                         <p className="text-[11px] text-slate-500 mt-0.5 leading-tight">IELTS məzunları<br/>hədəf bala çatır</p>
                                     </div>
                                 </div>
-                                {/* Next intake card */}
-                                <div className="bg-slate-900 dark:bg-slate-800 border border-slate-800 rounded-2xl px-5 py-4 shadow-md flex items-center gap-3">
+                                <div className="bg-slate-900 dark:bg-slate-800 border border-slate-800 rounded-2xl px-5 py-4 shadow-sm flex items-center gap-3">
                                     <div className="size-10 rounded-xl bg-primary/15 flex items-center justify-center shrink-0">
                                         <Calendar className="w-5 h-5 text-primary" />
                                     </div>
@@ -201,9 +190,6 @@ export default function HomeClient({ initialBentoData, initialFaqData, initialTe
                                     </div>
                                 </div>
                             </div>
-
-                            {/* Decorative glow */}
-                            <div className="absolute -bottom-10 -right-10 w-48 h-48 bg-primary/10 rounded-full blur-3xl -z-10 pointer-events-none" />
                         </div>
 
                     </div>
@@ -211,7 +197,7 @@ export default function HomeClient({ initialBentoData, initialFaqData, initialTe
             </section>
 
             {/* ── STATS STRIP ──────────────────────────────────────────── */}
-            <section className="bg-white dark:bg-slate-900 border-y border-slate-100 dark:border-slate-800">
+            <section className="bg-background-light dark:bg-background-dark border-b border-slate-100 dark:border-slate-800">
                 <div className="max-w-7xl mx-auto px-6 py-8">
                     <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
                         {STATS.map(({ Icon, label, value }) => (
@@ -231,7 +217,6 @@ export default function HomeClient({ initialBentoData, initialFaqData, initialTe
 
             {/* ── BENTO BOX ────────────────────────────────────────────── */}
             {(() => {
-                // 4 items: large + tall + small + small fills a 4-col × 2-row grid perfectly
                 const STATIC_BENTO: BentoItem[] = [
                     { _id: "b1", title: "Dil Kursları & IELTS",  description: "Başlanğıcdan C1-ə qədər intensiv dil proqramları və sınaq hazırlığı.",    icon: "language",          link: "/services",        linkLabel: "Proqramlara bax", size: "large",  variant: "dark",    order: 1 },
                     { _id: "b2", title: "Xaricdə Təhsil",         description: "50+ aparıcı universitetə qəbul, viza dəstəyi və tam müşayiət.",            icon: "public",            link: "/studyabroad",     linkLabel: "Ölkələrə bax",   size: "tall",   variant: "dark",    order: 2 },
@@ -307,42 +292,12 @@ export default function HomeClient({ initialBentoData, initialFaqData, initialTe
             {/* ── FAQ ──────────────────────────────────────────────────── */}
             {(() => {
                 const STATIC_FAQ: FAQItem[] = [
-                    {
-                        id: "s1",
-                        question: "Ingla School-da hansı yaş qrupları üçün proqramlar var?",
-                        answer: "3 yaşdan yetkinlərə qədər hər kəs üçün proqramımız mövcuddur. Preschool (3–6 yaş), uşaq dil kursları (7–14 yaş), yeniyetmə qrupları (15–17 yaş) və yetkin tələbələr üçün ayrıca proqramlar keçirilir.",
-                        category: "general",
-                    },
-                    {
-                        id: "s2",
-                        question: "IELTS hazırlıq kursunun müddəti nə qədərdir?",
-                        answer: "Başlanğıc səviyyənizə görə dəyişir — adətən 2 aydan 4 aya qədər sürür. İntensiv proqramla daha qısa müddətdə hədəf bala çatmaq mümkündür. Pulsuz ilkin qiymətləndirmə üçün bizimlə əlaqə saxlayın.",
-                        category: "ielts",
-                    },
-                    {
-                        id: "s3",
-                        question: "Dərslər qrup şəklindədir, yoxsa fərdi?",
-                        answer: "Hər iki formatı təklif edirik. Qrup dərsləri (8–12 nəfər) daha əlverişli qiymətə daha çox sosial öyrənmə mühiti yaradır. Fərdi dərslər isə şəxsi cədvəlinizə və sürətinizə tam uyğunlaşır.",
-                        category: "general",
-                    },
-                    {
-                        id: "s4",
-                        question: "Xaricdə təhsil üçün nə vaxt müraciət etmək lazımdır?",
-                        answer: "Əksər universitetlər üçün qəbul müddəti sona 12–18 ay qalmış başlamaq tövsiyə olunur. Sənəd hazırlığı, dil imtahanları və viza prosesi nəzərə alınmaqla erkən müraciət üstünlük verir. İlk məsləhət üçün bu gün bizimlə əlaqə saxlaya bilərsiniz.",
-                        category: "studyabroad",
-                    },
-                    {
-                        id: "s5",
-                        question: "Sertifikatlar beynəlxalq səviyyədə tanınırmı?",
-                        answer: "IELTS, SAT və digər beynəlxalq imtahanlara hazırlıq proqramlarımız dünya standartlarına uyğundur. Buraxılış sertifikatlarımız isə Azərbaycanda tanınan bir sıra tərəfdaş qurumlar tərəfindən qəbul edilir.",
-                        category: "general",
-                    },
-                    {
-                        id: "s6",
-                        question: "Qeydiyyat üçün nə etmək lazımdır?",
-                        answer: "Bizimlə telefon, WhatsApp və ya e-poçt vasitəsilə əlaqə saxlaya bilərsiniz. Pulsuz ilkin məsləhət və yerləşdirmə testi keçirdikdən sonra sizə ən uyğun proqram tövsiyə ediləcək.",
-                        category: "general",
-                    },
+                    { id: "s1", question: "Ingla School-da hansı yaş qrupları üçün proqramlar var?", answer: "3 yaşdan yetkinlərə qədər hər kəs üçün proqramımız mövcuddur. Preschool (3–6 yaş), uşaq dil kursları (7–14 yaş), yeniyetmə qrupları (15–17 yaş) və yetkin tələbələr üçün ayrıca proqramlar keçirilir.", category: "general" },
+                    { id: "s2", question: "IELTS hazırlıq kursunun müddəti nə qədərdir?", answer: "Başlanğıc səviyyənizə görə dəyişir — adətən 2 aydan 4 aya qədər sürür. İntensiv proqramla daha qısa müddətdə hədəf bala çatmaq mümkündür. Pulsuz ilkin qiymətləndirmə üçün bizimlə əlaqə saxlayın.", category: "ielts" },
+                    { id: "s3", question: "Dərslər qrup şəklindədir, yoxsa fərdi?", answer: "Hər iki formatı təklif edirik. Qrup dərsləri (8–12 nəfər) daha əlverişli qiymətə daha çox sosial öyrənmə mühiti yaradır. Fərdi dərslər isə şəxsi cədvəlinizə və sürətinizə tam uyğunlaşır.", category: "general" },
+                    { id: "s4", question: "Xaricdə təhsil üçün nə vaxt müraciət etmək lazımdır?", answer: "Əksər universitetlər üçün qəbul müddəti sona 12–18 ay qalmış başlamaq tövsiyə olunur. Sənəd hazırlığı, dil imtahanları və viza prosesi nəzərə alınmaqla erkən müraciət üstünlük verir.", category: "studyabroad" },
+                    { id: "s5", question: "Sertifikatlar beynəlxalq səviyyədə tanınırmı?", answer: "IELTS, SAT və digər beynəlxalq imtahanlara hazırlıq proqramlarımız dünya standartlarına uyğundur. Buraxılış sertifikatlarımız isə Azərbaycanda tanınan bir sıra tərəfdaş qurumlar tərəfindən qəbul edilir.", category: "general" },
+                    { id: "s6", question: "Qeydiyyat üçün nə etmək lazımdır?", answer: "Bizimlə telefon, WhatsApp və ya e-poçt vasitəsilə əlaqə saxlaya bilərsiniz. Pulsuz ilkin məsləhət və yerləşdirmə testi keçirdikdən sonra sizə ən uyğun proqram tövsiyə ediləcək.", category: "general" },
                 ];
                 const displayFaqs = faqItems.length > 0 ? faqItems.slice(0, 6) : STATIC_FAQ;
                 return (

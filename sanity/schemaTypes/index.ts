@@ -15,6 +15,10 @@ import { author } from './author'
 import { category } from './category'
 import { blockContent } from './blockContent'
 
+// News related schemas
+import { newsPost } from './newsPost'
+import { newsCategory } from './newsCategory'
+
 export const schema: { types: SchemaTypeDefinition[] } = {
   types: [
     // Existing schemas
@@ -32,5 +36,9 @@ export const schema: { types: SchemaTypeDefinition[] } = {
     author,
     category,
     blockContent,
+
+    // News schemas
+    newsPost,
+    newsCategory,
   ],
 }
