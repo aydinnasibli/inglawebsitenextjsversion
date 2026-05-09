@@ -93,3 +93,25 @@ export interface University {
     };
     logo: string;
 }
+
+export interface SanityFair {
+    _id: string;
+    name: string;
+    slug: { current: string };
+    startDate: string;
+    endDate?: string;
+    location: string;
+    shortDescription: string;
+    fullDescription?: any[];
+    coverImage: any;
+    status: 'upcoming' | 'ongoing' | 'completed';
+    registrationLink?: string;
+    order: number;
+    participatingUniversities?: Array<{
+        universityName: string;
+        country?: string;
+        logo?: any;
+    }>;
+    seoTitle?: string;
+    seoDescription?: string;
+}

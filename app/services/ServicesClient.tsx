@@ -98,7 +98,7 @@ export default function ServicesPage({ initialServicesData }: ServicesPageProps)
                         <div className="flex gap-6 md:gap-8 shrink-0">
                             {[
                                 { value: "6+", label: "Proqram" },
-                                { value: "2500+", label: "Tələbə" },
+                                { value: "750+", label: "Tələbə" },
                                 { value: "98%", label: "Məmnuniyyət" },
                             ].map(({ value, label }) => (
                                 <div key={label} className="text-center">

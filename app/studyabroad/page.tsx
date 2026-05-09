@@ -1,8 +1,8 @@
 import { Metadata } from 'next';
 import StudyAbroadClient from '@/components/StudyAbroadClient';
 import { client } from '@/sanity/lib/client';
-import { COUNTRIES_QUERY } from '@/sanity/lib/queries';
-import { SanityCountry } from '@/types/study-abroad';
+import { COUNTRIES_QUERY, FAIRS_QUERY } from '@/sanity/lib/queries';
+import { SanityCountry, SanityFair } from '@/types/study-abroad';
 
 export const metadata: Metadata = {
     title: 'Xaricdə Təhsil | Ingla School',
@@ -18,32 +18,34 @@ export const metadata: Metadata = {
 
 async function getStudyAbroadData() {
     try {
-        const [countriesData] = await Promise.all([
+        const [countriesData, fairsData] = await Promise.all([
             client.fetch<SanityCountry[]>(COUNTRIES_QUERY, {}, {
                 cache: 'force-cache',
-                next: { revalidate: 3600 } // Revalidate every hour
+                next: { revalidate: 3600 },
             }),
-
+            client.fetch<SanityFair[]>(FAIRS_QUERY, {}, {
+                cache: 'force-cache',
+                next: { revalidate: 3600 },
+            }),
         ]);
 
         return {
             countries: countriesData || [],
+            fairs: fairsData || [],
         };
     } catch (error) {
         console.error('Error fetching study abroad data:', error);
-        return {
-            countries: [],
-            exhibitions: []
-        };
+        return { countries: [], fairs: [] };
     }
 }
 
 export default async function StudyAbroadPage() {
-    const { countries } = await getStudyAbroadData();
+    const { countries, fairs } = await getStudyAbroadData();
 
     return (
         <StudyAbroadClient
             initialCountriesData={countries}
+            initialFairsData={fairs}
         />
     );
 }

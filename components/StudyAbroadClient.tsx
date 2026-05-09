@@ -3,14 +3,15 @@
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { ChevronRight, Globe, GraduationCap, ArrowRight } from 'lucide-react';
+import { ChevronRight, Globe, GraduationCap, ArrowRight, Calendar, MapPin } from 'lucide-react';
 import { client } from "@/sanity/lib/client";
 import { urlFor } from "@/sanity/lib/image";
 import { COUNTRIES_QUERY } from "@/sanity/lib/queries";
-import { SanityCountry, Country } from "@/types/study-abroad";
+import { SanityCountry, SanityFair, Country } from "@/types/study-abroad";
 
 interface StudyAbroadClientProps {
     initialCountriesData?: SanityCountry[];
+    initialFairsData?: SanityFair[];
 }
 
 const FALLBACK_COUNTRIES = [
@@ -22,7 +23,7 @@ const FALLBACK_COUNTRIES = [
     { id: "f6", name: "Avstriya", nameAz: "Avstriya", slug: "", shortDescription: "Avropa mədəniyyətinin mərkəzi, keyfiyyətli ali təhsil.", image: "/assets/bg.webp", flagImage: "", coverImage: "", universitiesCount: 6 },
 ];
 
-export default function StudyAbroadClient({ initialCountriesData }: StudyAbroadClientProps) {
+export default function StudyAbroadClient({ initialCountriesData, initialFairsData = [] }: StudyAbroadClientProps) {
     const [countries, setCountries] = useState<Country[]>(
         initialCountriesData?.length
             ? initialCountriesData.map(c => ({
@@ -100,70 +101,193 @@ export default function StudyAbroadClient({ initialCountriesData }: StudyAbroadC
                 </div>
             </div>
 
-            {/* ── COUNTRIES GRID ── */}
+            {/* ── COUNTRIES + FAIRS PANEL ── */}
             <section className="py-16 md:py-20">
                 <div className="max-w-[1200px] mx-auto px-6 md:px-10">
-                    <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-10">
+                    <div className="grid lg:grid-cols-[1fr_300px] gap-8 items-start">
+
+                        {/* Left: Countries */}
                         <div>
-                            <p className="text-primary font-bold text-sm uppercase tracking-widest mb-2">Ölkələr</p>
-                            <h2 className="text-2xl md:text-3xl font-black text-slate-900 dark:text-white">Populyar Təhsil Mərkəzləri</h2>
-                        </div>
-                    </div>
+                            <div className="mb-8">
+                                <p className="text-primary font-bold text-sm uppercase tracking-widest mb-2">Ölkələr</p>
+                                <h2 className="text-2xl md:text-3xl font-black text-slate-900 dark:text-white">Populyar Təhsil Mərkəzləri</h2>
+                            </div>
 
-                    {isLoading ? (
-                        <div className="flex justify-center py-20">
-                            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary" />
+                            {isLoading ? (
+                                <div className="flex justify-center py-20">
+                                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary" />
+                                </div>
+                            ) : (
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                                    {display.map((country, idx) => (
+                                        <Link
+                                            href={country.slug ? `/studyabroad/${country.slug}` : "#"}
+                                            key={country.id}
+                                            className="group flex flex-col bg-white dark:bg-slate-900 rounded-2xl overflow-hidden border border-slate-100 dark:border-slate-800 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300"
+                                        >
+                                            <div className="relative h-48 overflow-hidden bg-slate-100 dark:bg-slate-800">
+                                                <Image
+                                                    src={(country as any).image || '/assets/bg.webp'}
+                                                    alt={country.name || 'Country'}
+                                                    fill
+                                                    sizes="(max-width: 768px) 100vw, 50vw"
+                                                    className="object-cover group-hover:scale-105 transition-transform duration-500"
+                                                    priority={idx === 0}
+                                                />
+                                                <div className="absolute inset-0 bg-linear-to-t from-black/50 to-transparent" />
+                                                {(country.universitiesCount ?? 0) > 0 && (
+                                                    <span className="absolute top-3 left-3 px-2.5 py-1 bg-primary text-slate-900 text-[10px] font-bold uppercase tracking-wider rounded-full">
+                                                        {country.universitiesCount}+ Universitet
+                                                    </span>
+                                                )}
+                                            </div>
+                                            <div className="flex flex-col gap-2 p-5 grow">
+                                                <h3 className="text-base font-black text-slate-900 dark:text-white group-hover:text-primary transition-colors leading-snug">
+                                                    {country.nameAz || country.name}
+                                                </h3>
+                                                {country.shortDescription && (
+                                                    <p className="text-sm text-slate-600 dark:text-slate-400 line-clamp-2 leading-relaxed">
+                                                        {country.shortDescription}
+                                                    </p>
+                                                )}
+                                                <div className="mt-auto pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between">
+                                                    <span className="flex items-center gap-1 text-xs text-slate-500 dark:text-slate-400">
+                                                        <GraduationCap className="w-3.5 h-3.5 text-primary" />
+                                                        {country.universitiesCount}+ tərəfdaş
+                                                    </span>
+                                                    <span className="flex items-center gap-1 text-xs font-bold text-primary group-hover:gap-2 transition-all">
+                                                        Universitetlər <ArrowRight className="w-3.5 h-3.5" />
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </Link>
+                                    ))}
+                                </div>
+                            )}
                         </div>
-                    ) : (
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                            {display.map((country, idx) => (
-                                <Link
-                                    href={country.slug ? `/studyabroad/${country.slug}` : "#"}
-                                    key={country.id}
-                                    className="group flex flex-col bg-white dark:bg-slate-900 rounded-2xl overflow-hidden border border-slate-100 dark:border-slate-800 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300"
-                                >
-                                    {/* Image */}
-                                    <div className="relative h-52 overflow-hidden bg-slate-100 dark:bg-slate-800">
-                                        <Image
-                                            src={(country as any).image || '/assets/bg.webp'}
-                                            alt={country.name || 'Country'}
-                                            fill
-                                            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                                            className="object-cover group-hover:scale-105 transition-transform duration-500"
-                                            priority={idx === 0}
-                                        />
-                                        <div className="absolute inset-0 bg-linear-to-t from-black/50 to-transparent" />
-                                        {(country.universitiesCount ?? 0) > 0 && (
-                                            <span className="absolute top-3 left-3 px-2.5 py-1 bg-primary text-slate-900 text-[10px] font-bold uppercase tracking-wider rounded-full">
-                                                {country.universitiesCount}+ Universitet
-                                            </span>
-                                        )}
+
+                        {/* Right: Sticky Fairs Panel */}
+                        <aside className="lg:sticky lg:top-24">
+                            <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-sm overflow-hidden">
+                                {/* Panel header */}
+                                <div className="flex items-center justify-between px-5 py-4 border-b border-slate-100 dark:border-slate-800">
+                                    <div>
+                                        <p className="text-primary font-bold text-xs uppercase tracking-widest mb-0.5">Tədbirlər</p>
+                                        <h3 className="font-black text-slate-900 dark:text-white text-base leading-none">Sərgilər</h3>
                                     </div>
+                                    <Link
+                                        href="/studyabroad/fairs"
+                                        className="flex items-center gap-1 text-xs font-bold text-primary hover:gap-2 transition-all shrink-0"
+                                    >
+                                        Hamısı <ArrowRight className="w-3.5 h-3.5" />
+                                    </Link>
+                                </div>
 
-                                    {/* Body */}
-                                    <div className="flex flex-col gap-2 p-6 grow">
-                                        <h3 className="text-lg font-black text-slate-900 dark:text-white group-hover:text-primary transition-colors leading-snug">
-                                            {country.nameAz || country.name}
-                                        </h3>
-                                        {country.shortDescription && (
-                                            <p className="text-sm text-slate-600 dark:text-slate-400 line-clamp-2 leading-relaxed">
-                                                {country.shortDescription}
-                                            </p>
-                                        )}
-                                        <div className="mt-auto pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between">
-                                            <span className="flex items-center gap-1 text-xs text-slate-500 dark:text-slate-400">
-                                                <GraduationCap className="w-3.5 h-3.5 text-primary" />
-                                                {country.universitiesCount}+ tərəfdaş
-                                            </span>
-                                            <span className="flex items-center gap-1 text-xs font-bold text-primary group-hover:gap-2 transition-all">
-                                                Universitetlər <ArrowRight className="w-3.5 h-3.5" />
-                                            </span>
+                                {/* Fair cards */}
+                                <div className="max-h-[520px] overflow-y-auto divide-y divide-slate-100 dark:divide-slate-800">
+                                    {initialFairsData.length === 0 ? (
+                                        <div className="px-5 py-10 text-center">
+                                            <p className="text-sm text-slate-400">Tezliklə yeni sərgilər elan olunacaq.</p>
                                         </div>
-                                    </div>
-                                </Link>
-                            ))}
-                        </div>
-                    )}
+                                    ) : (
+                                        initialFairsData.map((fair) => {
+                                            const statusStyles = {
+                                                upcoming:  "bg-primary/10 text-primary border-primary/20",
+                                                ongoing:   "bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950 dark:text-emerald-400 dark:border-emerald-800",
+                                                completed: "bg-slate-100 text-slate-400 border-slate-200 dark:bg-slate-800 dark:border-slate-700",
+                                            }[fair.status] ?? "bg-primary/10 text-primary border-primary/20";
+
+                                            const statusLabel = {
+                                                upcoming:  "Tezliklə",
+                                                ongoing:   "Davam edir",
+                                                completed: "Tamamlandı",
+                                            }[fair.status] ?? "Tezliklə";
+
+                                            const dateStr = new Date(fair.startDate).toLocaleDateString("az-AZ", {
+                                                day: "numeric", month: "long", year: "numeric",
+                                            });
+
+                                            const uniCount = fair.participatingUniversities?.length ?? 0;
+                                            const thumbUrl = fair.coverImage
+                                                ? urlFor(fair.coverImage).width(600).height(240).url()
+                                                : null;
+
+                                            return (
+                                                <Link
+                                                    key={fair._id}
+                                                    href={`/studyabroad/fairs/${fair.slug.current}`}
+                                                    className="flex flex-col group hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors"
+                                                >
+                                                    {/* Thumbnail */}
+                                                    <div className="relative h-28 overflow-hidden bg-slate-100 dark:bg-slate-800">
+                                                        {thumbUrl ? (
+                                                            <Image
+                                                                src={thumbUrl}
+                                                                alt={fair.name}
+                                                                fill
+                                                                sizes="300px"
+                                                                className="object-cover group-hover:scale-105 transition-transform duration-500"
+                                                            />
+                                                        ) : (
+                                                            <div className="w-full h-full bg-primary/5 flex items-center justify-center">
+                                                                <GraduationCap className="w-8 h-8 text-primary/30" />
+                                                            </div>
+                                                        )}
+                                                        <div className="absolute inset-0 bg-linear-to-t from-black/50 to-transparent" />
+                                                        <span className={`absolute top-2.5 left-2.5 inline-flex items-center px-2 py-0.5 rounded-full border text-[10px] font-bold uppercase tracking-wide ${statusStyles}`}>
+                                                            {statusLabel}
+                                                        </span>
+                                                        <ArrowRight className="absolute top-2.5 right-2.5 w-3.5 h-3.5 text-white/60 group-hover:text-primary transition-colors" />
+                                                    </div>
+
+                                                    {/* Card body */}
+                                                    <div className="flex flex-col gap-2 px-4 py-3">
+                                                        <p className="text-sm font-black text-slate-900 dark:text-white group-hover:text-primary transition-colors leading-snug line-clamp-2">
+                                                            {fair.name}
+                                                        </p>
+
+                                                        {fair.shortDescription && (
+                                                            <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-relaxed line-clamp-2">
+                                                                {fair.shortDescription}
+                                                            </p>
+                                                        )}
+
+                                                        <div className="flex flex-col gap-1 mt-0.5">
+                                                            <span className="flex items-center gap-1.5 text-[11px] text-slate-400">
+                                                                <Calendar className="w-3 h-3 text-primary shrink-0" />
+                                                                {dateStr}
+                                                            </span>
+                                                            <span className="flex items-center gap-1.5 text-[11px] text-slate-400">
+                                                                <MapPin className="w-3 h-3 text-primary shrink-0" />
+                                                                {fair.location}
+                                                            </span>
+                                                            {uniCount > 0 && (
+                                                                <span className="flex items-center gap-1.5 text-[11px] text-slate-400">
+                                                                    <GraduationCap className="w-3 h-3 text-primary shrink-0" />
+                                                                    {uniCount} iştirakçı universitet
+                                                                </span>
+                                                            )}
+                                                        </div>
+                                                    </div>
+                                                </Link>
+                                            );
+                                        })
+                                    )}
+                                </div>
+
+                                {/* Panel footer */}
+                                <div className="px-5 py-4 border-t border-slate-100 dark:border-slate-800">
+                                    <Link
+                                        href="/contact"
+                                        className="flex items-center justify-center gap-2 w-full py-2.5 bg-primary text-slate-900 rounded-xl font-bold text-xs hover:bg-primary/90 transition-colors"
+                                    >
+                                        Pulsuz Məsləhət <ArrowRight className="w-3.5 h-3.5" />
+                                    </Link>
+                                </div>
+                            </div>
+                        </aside>
+
+                    </div>
                 </div>
             </section>
 
@@ -193,7 +317,7 @@ export default function StudyAbroadClient({ initialCountriesData }: StudyAbroadC
                         </div>
 
                         <div className="relative">
-                            <div className="relative rounded-2xl overflow-hidden aspect-[4/3] shadow-xl">
+                            <div className="relative rounded-2xl overflow-hidden aspect-4/3 shadow-xl">
                                 <Image src="/assets/bg.webp" alt="Student" fill sizes="100vw" className="object-cover" />
                                 <div className="absolute inset-0 bg-linear-to-t from-black/40 to-transparent" />
                             </div>

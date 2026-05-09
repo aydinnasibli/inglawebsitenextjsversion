@@ -46,7 +46,7 @@ export default function Footer() {
                         <li className="flex items-start gap-3">
                             <MapPin className="w-4 h-4 text-primary mt-0.5 shrink-0" />
                             <div>
-                                <span className="block">Zahid Xəlilov 59</span>
+                                <span className="block">Zahid Xəlilov </span>
                                 <span className="block">Baku, Azerbaijan</span>
                             </div>
                         </li>

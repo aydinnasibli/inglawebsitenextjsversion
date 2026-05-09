@@ -8,6 +8,7 @@ import { university } from './university'
 import { preschool } from './preschoolService'
 import training from './training'
 import { homepageBento } from './homepageBento'
+import { fair } from './fair'
 
 // Blog related schemas
 import { blogPost } from './blogPost'
@@ -30,6 +31,7 @@ export const schema: { types: SchemaTypeDefinition[] } = {
     preschool,
     training,
     homepageBento,
+    fair,
 
     // Blog schemas
     blogPost,

@@ -135,6 +135,7 @@ const NavLinks = ({ isMobile = false, closeMenu = () => { } }: NavLinksProps) =>
     const links = [
         { name: 'Tədris İstiqamətlərimiz', path: '/services' },
         { name: 'Xaricdə Təhsil', path: '/studyabroad' },
+        { name: 'Tədbirlər', path: '/studyabroad/fairs' },
         { name: 'Preschool', path: '/preschool' },
         { name: 'Təlim Mərkəzi', path: '/training-center' },
         { name: 'Haqqımızda', path: '/about' },

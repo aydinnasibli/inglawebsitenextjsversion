@@ -165,7 +165,7 @@ export default function HomeClient({ initialBentoData, initialFaqData, initialTe
                                 <div className="absolute inset-0 bg-linear-to-t from-black/40 via-transparent to-transparent" />
                                 <div className="absolute top-4 left-4 flex items-center gap-2 bg-white/90 dark:bg-slate-900/90 backdrop-blur-sm rounded-xl px-3 py-2 shadow-lg">
                                     <MapPin className="w-4 h-4 text-primary" />
-                                    <span className="text-xs font-bold text-slate-800 dark:text-slate-200">Zahid Xəlilov 59, Bakı</span>
+                                    <span className="text-xs font-bold text-slate-800 dark:text-slate-200">Zahid Xəlilov, Bakı</span>
                                 </div>
                             </div>
 

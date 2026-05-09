@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
     title: 'Əlaqə',
-    description: 'Ingla School ilə əlaqə saxlayın. Bakı, Tbilisi prospekti Grand Hayat Residence və Zahid Xəlilov 59a. Tel: 010 310 71 17.',
+    description: 'Ingla School ilə əlaqə saxlayın. Bakı, Tbilisi prospekti Grand Hayat Residence və Zahid Xəlilov . Tel: 010 310 71 17.',
     alternates: { canonical: '/contact' },
     openGraph: {
         title: 'Əlaqə | Ingla School',

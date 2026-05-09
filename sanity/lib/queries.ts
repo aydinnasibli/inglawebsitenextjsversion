@@ -80,6 +80,29 @@ export const PRESCHOOL_SERVICE_BY_SLUG_QUERY = groq`
   }
 `
 
+// ─── Fairs (Sərgilər) ─────────────────────────────────────────────────────────
+
+export const FAIRS_QUERY = groq`
+  *[_type == "fair" && isActive == true] | order(startDate desc) {
+    _id, name, slug, startDate, endDate, location, shortDescription,
+    coverImage, status, registrationLink, order,
+    participatingUniversities[] { universityName, country, logo }
+  }
+`
+
+export const FAIR_BY_SLUG_QUERY = groq`
+  *[_type == "fair" && slug.current == $slug && isActive == true][0] {
+    _id, name, slug, startDate, endDate, location, shortDescription, fullDescription,
+    coverImage, status, registrationLink, order,
+    participatingUniversities[] { universityName, country, logo },
+    seoTitle, seoDescription
+  }
+`
+
+export const FAIR_SLUGS_QUERY = groq`
+  *[_type == "fair" && isActive == true] { "slug": slug.current }
+`
+
 // ─── Study Abroad ─────────────────────────────────────────────────────────────
 
 export const COUNTRIES_QUERY = groq`
