@@ -203,7 +203,7 @@ export default function StudyAbroadClient({ initialCountriesData, initialFairsDa
                                                 completed: "Tamamlandı",
                                             }[fair.status] ?? "Tezliklə";
 
-                                            const dateStr = new Date(fair.startDate).toLocaleDateString("az-AZ", {
+                                            const dateStr = new Date(fair.startDate).toLocaleDateString("en-US", {
                                                 day: "numeric", month: "long", year: "numeric",
                                             });
 

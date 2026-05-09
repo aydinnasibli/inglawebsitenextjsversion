@@ -19,16 +19,17 @@ const STATUS_CONFIG = {
 
 function formatDateRange(startDate: string, endDate?: string) {
     const start = new Date(startDate);
-    const opts: Intl.DateTimeFormatOptions = { day: "numeric", month: "long", year: "numeric" };
-    if (!endDate) return start.toLocaleDateString("az-AZ", opts);
+    const full: Intl.DateTimeFormatOptions = { day: "numeric", month: "long", year: "numeric" };
+    if (!endDate) return start.toLocaleDateString("en-US", full);
     const end = new Date(endDate);
-    if (
-        start.getMonth() === end.getMonth() &&
-        start.getFullYear() === end.getFullYear()
-    ) {
-        return `${start.getDate()}–${end.toLocaleDateString("az-AZ", opts)}`;
+    if (start.getMonth() === end.getMonth() && start.getFullYear() === end.getFullYear()) {
+        // e.g. "May 19–21, 2026"
+        const month = start.toLocaleDateString("en-US", { month: "long" });
+        const year = start.getFullYear();
+        return `${month} ${start.getDate()}–${end.getDate()}, ${year}`;
     }
-    return `${start.toLocaleDateString("az-AZ", { day: "numeric", month: "long" })} – ${end.toLocaleDateString("az-AZ", opts)}`;
+    // e.g. "May 19 – June 2, 2026"
+    return `${start.toLocaleDateString("en-US", { day: "numeric", month: "long" })} – ${end.toLocaleDateString("en-US", full)}`;
 }
 
 const portableTextComponents = {
