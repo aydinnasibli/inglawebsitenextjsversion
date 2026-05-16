@@ -10,6 +10,8 @@ import { postQuery, postSlugsQuery } from '@/sanity/lib/queries'
 import { BlogPost } from '@/types/sanity'
 import { urlFor } from '@/sanity/lib/image'
 
+export const revalidate = 1800
+
 interface Props {
     params: Promise<{ slug: string }>
 }
@@ -191,7 +193,7 @@ export default async function BlogPostPage({ params }: Props) {
 
                 <div className="prose prose-lg dark:prose-invert prose-slate max-w-none prose-headings:font-bold prose-a:text-primary hover:prose-a:text-yellow-600 prose-img:rounded-xl">
                     <PortableText
-                        value={post.body}
+                        value={post.body ?? []}
                         components={portableTextComponents}
                     />
                 </div>

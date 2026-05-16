@@ -5,6 +5,8 @@ import { postsQuery, categoriesQuery } from '@/sanity/lib/queries'
 import { BlogPost, Category } from '@/types/sanity'
 import BlogClient from './BlogClient'
 
+export const revalidate = 1800
+
 export const metadata: Metadata = {
     title: 'Blog | Ingla School',
     description: 'Ingla School-un blogu: təhsil, dil öyrənmə, xaricdə təhsil və karyera inkişafı haqqında ən son məqalələr.',
